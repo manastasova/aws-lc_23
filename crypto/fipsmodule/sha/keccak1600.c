@@ -27,6 +27,88 @@
 
 #if !defined(KECCAK1600_ASM)
 
+#if defined(__i386) || defined(__i386__) || defined(_M_IX86) || \
+    (defined(__x86_64) && !defined(__BMI__)) || defined(_M_X64) || \
+    defined(__mips) || defined(__riscv) || defined(__s390__) || \
+    defined(__EMSCRIPTEN__)
+
+ // These platforms don't support "logical and with complement" instruction.
+# define KECCAK_COMPLEMENTING_TRANSFORM
+#endif
+
+ // SHA3_Absorb can be called multiple times; at each invocation the
+ // largest multiple of |r| out of |len| bytes are processed. The
+ // remaining amount of bytes is returned. This is done to spare caller
+ // trouble of calculating the largest multiple of |r|. |r| can be viewed
+ // as blocksize. It is commonly (1600 - 256*n)/8, e.g. 168, 136, 104,
+ // 72, but can also be (1600 - 448)/8 = 144. All this means that message
+ // padding and intermediate sub-block buffering, byte- or bitwise, is
+ // caller's responsibility.
+size_t SHA3_Absorb(uint64_t A[SHA3_ROWS][SHA3_ROWS], const uint8_t *inp, size_t len,
+                   size_t r)
+{
+    uint64_t *A_flat = (uint64_t *)A;
+    size_t i, w = r / 8;
+
+    assert(r < (25 * sizeof(A[0][0])) && (r % 8) == 0);
+
+    while (len >= r) {
+        for (i = 0; i < w; i++) {
+            uint64_t Ai = (uint64_t)inp[0]       | (uint64_t)inp[1] << 8  |
+                          (uint64_t)inp[2] << 16 | (uint64_t)inp[3] << 24 |
+                          (uint64_t)inp[4] << 32 | (uint64_t)inp[5] << 40 |
+                          (uint64_t)inp[6] << 48 | (uint64_t)inp[7] << 56;
+            inp += 8;
+
+            A_flat[i] ^= BitInterleave(Ai);
+        }
+        KeccakF1600(A);
+        len -= r;
+    }
+
+    return len;
+}
+
+static uint64_t BitInterleave(uint64_t Ai)
+{
+    if (BIT_INTERLEAVE) {
+        uint32_t hi = (uint32_t)(Ai >> 32), lo = (uint32_t)Ai;
+        uint32_t t0, t1;
+
+        t0 = lo & 0x55555555;
+        t0 |= t0 >> 1;  t0 &= 0x33333333;
+        t0 |= t0 >> 2;  t0 &= 0x0f0f0f0f;
+        t0 |= t0 >> 4;  t0 &= 0x00ff00ff;
+        t0 |= t0 >> 8;  t0 &= 0x0000ffff;
+
+        t1 = hi & 0x55555555;
+        t1 |= t1 >> 1;  t1 &= 0x33333333;
+        t1 |= t1 >> 2;  t1 &= 0x0f0f0f0f;
+        t1 |= t1 >> 4;  t1 &= 0x00ff00ff;
+        t1 |= t1 >> 8;  t1 <<= 16;
+
+        lo &= 0xaaaaaaaa;
+        lo |= lo << 1;  lo &= 0xcccccccc;
+        lo |= lo << 2;  lo &= 0xf0f0f0f0;
+        lo |= lo << 4;  lo &= 0xff00ff00;
+        lo |= lo << 8;  lo >>= 16;
+
+        hi &= 0xaaaaaaaa;
+        hi |= hi << 1;  hi &= 0xcccccccc;
+        hi |= hi << 2;  hi &= 0xf0f0f0f0;
+        hi |= hi << 4;  hi &= 0xff00ff00;
+        hi |= hi << 8;  hi &= 0xffff0000;
+
+        Ai = ((uint64_t)(hi | lo) << 32) | (t1 | t0);
+    }
+
+    return Ai;
+}
+
+
+
+#else
+
 static const uint8_t rhotates[SHA3_ROWS][SHA3_ROWS] = {
     {  0,  1, 62, 28, 27 },
     { 36, 44,  6, 55, 20 },
@@ -62,14 +144,6 @@ static const uint64_t iotas[] = {
     BIT_INTERLEAVE ? 0x8000808200000000ULL : 0x8000000080008008ULL
 };
 
-#if defined(__i386) || defined(__i386__) || defined(_M_IX86) || \
-    (defined(__x86_64) && !defined(__BMI__)) || defined(_M_X64) || \
-    defined(__mips) || defined(__riscv) || defined(__s390__) || \
-    defined(__EMSCRIPTEN__)
-
- // These platforms don't support "logical and with complement" instruction.
-# define KECCAK_COMPLEMENTING_TRANSFORM
-#endif
 
 #define ROL32(a, offset) (((a) << (offset)) | ((a) >> ((32 - (offset)) & 31)))
 
@@ -255,41 +329,6 @@ static void KeccakF1600(uint64_t A[SHA3_ROWS][SHA3_ROWS])
 #endif
 }
 
-static uint64_t BitInterleave(uint64_t Ai)
-{
-    if (BIT_INTERLEAVE) {
-        uint32_t hi = (uint32_t)(Ai >> 32), lo = (uint32_t)Ai;
-        uint32_t t0, t1;
-
-        t0 = lo & 0x55555555;
-        t0 |= t0 >> 1;  t0 &= 0x33333333;
-        t0 |= t0 >> 2;  t0 &= 0x0f0f0f0f;
-        t0 |= t0 >> 4;  t0 &= 0x00ff00ff;
-        t0 |= t0 >> 8;  t0 &= 0x0000ffff;
-
-        t1 = hi & 0x55555555;
-        t1 |= t1 >> 1;  t1 &= 0x33333333;
-        t1 |= t1 >> 2;  t1 &= 0x0f0f0f0f;
-        t1 |= t1 >> 4;  t1 &= 0x00ff00ff;
-        t1 |= t1 >> 8;  t1 <<= 16;
-
-        lo &= 0xaaaaaaaa;
-        lo |= lo << 1;  lo &= 0xcccccccc;
-        lo |= lo << 2;  lo &= 0xf0f0f0f0;
-        lo |= lo << 4;  lo &= 0xff00ff00;
-        lo |= lo << 8;  lo >>= 16;
-
-        hi &= 0xaaaaaaaa;
-        hi |= hi << 1;  hi &= 0xcccccccc;
-        hi |= hi << 2;  hi &= 0xf0f0f0f0;
-        hi |= hi << 4;  hi &= 0xff00ff00;
-        hi |= hi << 8;  hi &= 0xffff0000;
-
-        Ai = ((uint64_t)(hi | lo) << 32) | (t1 | t0);
-    }
-
-    return Ai;
-}
 
 static uint64_t BitDeinterleave(uint64_t Ai)
 {
@@ -327,38 +366,7 @@ static uint64_t BitDeinterleave(uint64_t Ai)
     return Ai;
 }
 
- // SHA3_Absorb can be called multiple times; at each invocation the
- // largest multiple of |r| out of |len| bytes are processed. The
- // remaining amount of bytes is returned. This is done to spare caller
- // trouble of calculating the largest multiple of |r|. |r| can be viewed
- // as blocksize. It is commonly (1600 - 256*n)/8, e.g. 168, 136, 104,
- // 72, but can also be (1600 - 448)/8 = 144. All this means that message
- // padding and intermediate sub-block buffering, byte- or bitwise, is
- // caller's responsibility.
-size_t SHA3_Absorb(uint64_t A[SHA3_ROWS][SHA3_ROWS], const uint8_t *inp, size_t len,
-                   size_t r)
-{
-    uint64_t *A_flat = (uint64_t *)A;
-    size_t i, w = r / 8;
 
-    assert(r < (25 * sizeof(A[0][0])) && (r % 8) == 0);
-
-    while (len >= r) {
-        for (i = 0; i < w; i++) {
-            uint64_t Ai = (uint64_t)inp[0]       | (uint64_t)inp[1] << 8  |
-                          (uint64_t)inp[2] << 16 | (uint64_t)inp[3] << 24 |
-                          (uint64_t)inp[4] << 32 | (uint64_t)inp[5] << 40 |
-                          (uint64_t)inp[6] << 48 | (uint64_t)inp[7] << 56;
-            inp += 8;
-
-            A_flat[i] ^= BitInterleave(Ai);
-        }
-        KeccakF1600(A);
-        len -= r;
-    }
-
-    return len;
-}
 
  // SHA3_Squeeze is called once at the end to generate |out| hash value
  // of |len| bytes.
@@ -397,7 +405,7 @@ void SHA3_Squeeze(uint64_t A[SHA3_ROWS][SHA3_ROWS], uint8_t *out, size_t len, si
         }
     }
 }
-#else
+
 
 #if (defined(KECCAKf1600_LAZY_ROTATION) && defined(__linux__))
 size_t SHA3_Absorb_lazy(uint64_t A[SHA3_ROWS][SHA3_ROWS], const uint8_t *inp, size_t len,
@@ -411,9 +419,9 @@ size_t SHA3_Absorb(uint64_t A[SHA3_ROWS][SHA3_ROWS], const uint8_t *inp, size_t 
     return SHA3_Absorb_lazy(A, inp, len, r);
 }
 
-void SHA3_Squeeze(uint64_t A[SHA3_ROWS][SHA3_ROWS], uint8_t *out, size_t len, size_t r) {
-    SHA3_Squeeze_lazy(A, out, len, r);
-}
+// void SHA3_Squeeze(uint64_t A[SHA3_ROWS][SHA3_ROWS], uint8_t *out, size_t len, size_t r) {
+//    SHA3_Squeeze_lazy(A, out, len, r);
+// }
 #else 
 
 size_t SHA3_Absorb_hw(uint64_t A[SHA3_ROWS][SHA3_ROWS], const uint8_t *inp, size_t len,
