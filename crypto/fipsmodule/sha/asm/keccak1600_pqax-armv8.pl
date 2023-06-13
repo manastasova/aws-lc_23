@@ -86,16 +86,16 @@ round_constants:
 ___
 								{{{
  # Alias symbol A (the bit-state matrix) with registers
-$A[0][4] = "x21"; $A[1][4] =  "x22"; $A[2][4] = "x23"; $A[3][4] = "x24"; $A[4][4] = "x25";
-$A[0][3] = "x16"; $A[1][3] =  "x17"; $A[2][3] = "x18"; $A[3][3] = "x19"; $A[4][3] = "x20";
+$A[0][4] = "x21"; $A[1][4] =  "x22"; $A[2][4] = "x23"; $A[3][4] = "x24"; $A[4][4] = "x27";
+$A[0][3] = "x16"; $A[1][3] =  "x17"; $A[2][3] = "x25"; $A[3][3] = "x19"; $A[4][3] = "x20";
 $A[0][2] = "x11"; $A[1][2] =  "x12"; $A[2][2] = "x13"; $A[3][2] = "x14"; $A[4][2] = "x15";
 $A[0][1] = "x6"; $A[1][1] =   "x7"; $A[2][1] =  "x8"; $A[3][1] =  "x9"; $A[4][1] =  "x10";
 $A[0][0] = "x1"; $A[1][0] =   "x2"; $A[2][0] =  "x3"; $A[3][0] =  "x4"; $A[4][0] =  "x5";
  
  # Alias symbol A_ (the permuted bit-state matrix) with registers
  # A_[y, 2*x+3*y] = rot(A[x, y])
-$A_[0][4] = "x21"; $A_[1][4] = "x22"; $A_[2][4] = "x23"; $A_[3][4] = "x24"; $A_[4][4] = "x25";
-$A_[0][3] = "x16"; $A_[1][3] =  "x17"; $A_[2][3] = "x18"; $A_[3][3] = "x19"; $A_[4][3] = "x20";
+$A_[0][4] = "x21"; $A_[1][4] = "x22"; $A_[2][4] = "x23"; $A_[3][4] = "x24"; $A_[4][4] = "x27";
+$A_[0][3] = "x16"; $A_[1][3] =  "x17"; $A_[2][3] = "x25"; $A_[3][3] = "x19"; $A_[4][3] = "x20";
 $A_[0][2] = "x11"; $A_[1][2] =  "x12"; $A_[2][2] = "x13"; $A_[3][2] = "x14"; $A_[4][2] = "x15";
 $A_[0][1] = "x28"; $A_[1][1] =  "x8"; $A_[2][1] = "x9"; $A_[3][1] = "x10"; $A_[4][1] = "x6";
 $A_[0][0] = "x30"; $A_[1][0] =  "x3"; $A_[2][0] = "x4"; $A_[3][0] = "x5"; $A_[4][0] = "x1";
@@ -109,16 +109,15 @@ my @E = map("x$_", (29, 0, 26, 27, 28));
 $tmp0 = "x0";
 $tmp1 = "x29";
 
-$len  = "x27";
+$len  = "x0";
 $bsz  = "x28";
-$rem  = "x30";
+$rem  = "x29";
 
-$inp      = "x30";
+$inp      = "x29";
 $inp_adr  = "x26";
-$bitstate_adr  = "x30";
+$bitstate_adr  = "x29";
 
 $code.=<<___;
-input_addr     .req x0
 const_addr     .req x26
 cur_const      .req x26
 count          .req w27
@@ -128,6 +127,8 @@ count          .req w27
 #define STACK_OFFSET_INPUT (0*8)
 #define STACK_OFFSET_CONST (1*8)
 #define STACK_OFFSET_COUNT (2*8)
+#define STACK_OFFSET_x27_A44 (4*8)
+#define STACK_OFFSET_x27_C2_E3 (5*8)
 
 #define OFFSET_RESERVED_BYTES (4*8)
 #define STACK_OFFSET_BITSTATE_ADR (OFFSET_RESERVED_BYTES + 0*8)
@@ -138,18 +139,17 @@ count          .req w27
 #define STACK_OFFSET_ARGS (OFFSET_RESERVED_BYTES + 0*8)
 
 .macro free_stack_and_restore_gprs_absorb
-	ldp	x19, x20, [x29, #16]
+	ldp	x19, x20, [sp, #16+64]
 	add	sp, sp, #64
-	ldp	x21, x22, [x29, #32]
-	ldp	x23, x24, [x29, #48]
-	ldp	x25, x26, [x29, #64]
-	ldp	x27, x28, [x29, #80]
+	ldp	x21, x22, [sp, #32]
+	ldp	x23, x24, [sp, #48]
+	ldp	x25, x26, [sp, #64]
+	ldp	x27, x28, [sp, #80]
 	ldp	x29, x30, [sp], #128
 .endm
 
 .macro alloc_stack_and_save_gprs_absorb
 	stp	x29, x30, [sp, #-128]!
-	add	x29, sp, #0
 	stp	x19, x20, [sp, #16]
 	stp	x21, x22, [sp, #32]
 	stp	x23, x24, [sp, #48]
@@ -181,10 +181,10 @@ count          .req w27
 .macro offload_and_move_args
 	stp	x0, x1, [sp, #32]			// offload arguments
 	stp	x2, x3, [sp, #48]
-	mov	$C[0], x0			// uint64_t A[5][5]
-	mov	$C[1], x1			// const void *inp
-	mov	$C[2], x2			// size_t len
-	mov	$C[3], x3			// size_t bsz
+	mov	$bitstate_adr, x0			// uint64_t A[5][5]
+	mov	$inp_adr, x1			// const void *inp
+	mov	$len, x2			// size_t len
+	mov	$bsz, x3			// size_t bsz
 .endm
 
 .macro save reg, offset
@@ -207,7 +207,9 @@ count          .req w27
 	stp	x23, x24, [sp, #48]
 	stp	x25, x26, [sp, #64]
 	stp	x27, x28, [sp, #80]
-	sub	sp, sp, #48
+	sub	sp, sp, #48+32
+    stp	x19, x20, [sp, #48]
+    stp	x21, x22, [sp, #64]
 	str	x0, [sp, #32]			//offload argument
 	ldp	$A[0][0], $A[0][1], [x0, #16*0]
 	ldp	$A[0][2], $A[0][3], [x0, #16*1]
@@ -222,13 +224,6 @@ count          .req w27
 	ldp	$A[4][0], $A[4][1], [x0, #16*10]
 	ldp	$A[4][2], $A[4][3], [x0, #16*11]
 	ldr	$A[4][4], [x0, #16*12]
-
-    # # stp x19, x20, [sp, #(STACK_B$A_[4][1]GPRS + 16*0)]
-    # # stp x21, x22, [sp, #(STACK_B$A_[4][1]GPRS + 16*1)]
-    # # stp x23, x24, [sp, #(STACK_B$A_[4][1]GPRS + 16*2)]
-    # # stp x25, x26, [sp, #(STACK_B$A_[4][1]GPRS + 16*3)]
-    # # stp x27, x28, [sp, #(STACK_B$A_[4][1]GPRS + 16*4)]
-    # # stp x29, x30, [sp, #(STACK_B$A_[4][1]GPRS + 16*5)]
 .endm
 
 .macro store_bitstate
@@ -247,22 +242,24 @@ count          .req w27
 	str	$A[4][4], [$bitstate_adr, #16*12]
 	.endm
 .macro free_stack_and_restore_gprs
-ldr	x30, [sp, #32]
-	stp	$A[0][0], $A[0][1], [x30, #16*0]
-	stp	$A[0][2], $A[0][3], [x30, #16*1]
-	stp	$A[0][4], $A[1][0], [x30, #16*2]
-	stp	$A[1][1], $A[1][2], [x30, #16*3]
-	stp	$A[1][3], $A[1][4], [x30, #16*4]
-	stp	$A[2][0], $A[2][1], [x30, #16*5]
-	stp	$A[2][2], $A[2][3], [x30, #16*6]
-	stp	$A[2][4], $A[3][0], [x30, #16*7]
-	stp	$A[3][1], $A[3][2], [x30, #16*8]
-	stp	$A[3][3], $A[3][4], [x30, #16*9]
-	stp	$A[4][0], $A[4][1], [x30, #16*10]
-	stp	$A[4][2], $A[4][3], [x30, #16*11]
-	str	$A[4][4], [x30, #16*12]
+ldr	x0, [sp, #32]
+	stp	$A[0][0], $A[0][1], [x0, #16*0]
+	stp	$A[0][2], $A[0][3], [x0, #16*1]
+	stp	$A[0][4], $A[1][0], [x0, #16*2]
+	stp	$A[1][1], $A[1][2], [x0, #16*3]
+	stp	$A[1][3], $A[1][4], [x0, #16*4]
+	stp	$A[2][0], $A[2][1], [x0, #16*5]
+	stp	$A[2][2], $A[2][3], [x0, #16*6]
+	stp	$A[2][4], $A[3][0], [x0, #16*7]
+	stp	$A[3][1], $A[3][2], [x0, #16*8]
+	stp	$A[3][3], $A[3][4], [x0, #16*9]
+	stp	$A[4][0], $A[4][1], [x0, #16*10]
+	stp	$A[4][2], $A[4][3], [x0, #16*11]
+	str	$A[4][4], [x0, #16*12]
 	ldp	x19, x20, [x29, #16]
-	add	sp, sp, #48
+    ldp	x19, x20, [sp, #48]
+    ldp	x21, x22, [sp, #64]
+	add	sp, sp, #48+32
 	ldp	x21, x22, [x29, #32]
 	ldp	x23, x24, [x29, #48]
 	ldp	x25, x26, [x29, #64]
@@ -272,11 +269,15 @@ ldr	x30, [sp, #32]
 
 
 .macro keccak_f1600_round_initial
+
+    eor $C[4], $A[3][4], $A[4][4]
+
+str x27, [sp, #STACK_OFFSET_x27_A44]  // store A[4][4] from bit state
+
     eor $C[0], $A[3][0], $A[4][0]
     eor $C[1], $A[3][1], $A[4][1]
     eor $C[2], $A[3][2], $A[4][2]
     eor $C[3], $A[3][3], $A[4][3]
-    eor $C[4], $A[3][4], $A[4][4]
     eor $C[0], $A[2][0], $C[0]
     eor $C[1], $A[2][1], $C[1]
     eor $C[2], $A[2][2], $C[2]
@@ -320,6 +321,9 @@ ldr	x30, [sp, #32]
     eor $A_[4][2], $A[2][4], $E[4]
     eor $A_[2][4], $A[4][0], $E[0]
     eor $A_[3][0], $A[0][4], $E[4]
+
+ldr x27, [sp, STACK_OFFSET_x27_A44]
+
     eor $A_[0][4], $A[4][4], $E[4]
     eor $A_[4][4], $A[4][1], $E[1]
     eor $A_[3][1], $A[1][0], $E[0]
@@ -371,11 +375,11 @@ ldr	x30, [sp, #32]
     eor $A[4][2], $tmp1, $A_[4][2], ROR #27
     bic $tmp1, $A_[4][1], $A_[4][0], ROR #57
     eor $A[4][3], $tmp0, $A_[4][3], ROR #21
-
-    mov count, #1
-
     bic $tmp0, $A_[0][2], $A_[0][1], ROR #63
     eor $A[4][4], $tmp1, $A_[4][4], ROR #53
+
+str x27, [sp, STACK_OFFSET_x27_A44]
+
     bic $tmp1, $A_[0][3], $A_[0][2], ROR #42
     eor $A[0][0], $A_[0][0], $tmp0, ROR #21
     bic $tmp0, $A_[0][4], $A_[0][3], ROR #57
@@ -385,6 +389,8 @@ ldr	x30, [sp, #32]
     bic $tmp0, $A_[0][1], $A_[0][0], ROR #44
     eor $A[0][3], $tmp1, $A_[0][3], ROR #43
     eor $A[0][4], $tmp0, $A_[0][4], ROR #30
+
+    mov count, #1
 
     eor $A[0][0], $A[0][0], cur_const
     //save count, STACK_OFFSET_COUNT
@@ -410,10 +416,18 @@ ldr	x30, [sp, #32]
     eor $C[1], $C[1], $A[4][1], ROR #31
     eor $C[3], $C[3], $A[1][3], ROR #36
     eor $C[2], $C[2], $A[1][2], ROR #5
+
+str x27, [sp, STACK_OFFSET_x27_C2_E3]
+
     eor $C[0], $C[0], $A[4][0], ROR #25
+
+ldr x27, [sp, STACK_OFFSET_x27_A44]
+
     eor $C[4], $C[4], $A[4][4], ROR #15
     eor $C[1], $C[1], $A[1][1], ROR #27
     eor $C[3], $C[3], $A[4][3], ROR #2
+
+ldr x27, [sp, STACK_OFFSET_x27_C2_E3]
 
     eor $E[1], $C[0], $C[2], ROR #61
     ror $C[2], $C[2], 62
@@ -445,15 +459,17 @@ ldr	x30, [sp, #32]
     eor $A_[4][2], $E[4], $A[2][4], ROR #58
     eor $A_[2][4], $E[0], $A[4][0], ROR #25
     eor $A_[3][0], $E[4], $A[0][4], ROR #20
+
+ldr x27, [sp, #STACK_OFFSET_x27_A44]
+
     eor $A_[0][4], $E[4], $A[4][4], ROR #9
     eor $A_[4][4], $E[1], $A[4][1], ROR #23
     eor $A_[3][1], $E[0], $A[1][0], ROR #61
     eor $A_[0][1], $E[1], $A[1][1], ROR #19
 
-    load_constant_ptr_stack
+    
     //restore count, STACK_OFFSET_COUNT
-	ldr count, [sp, #STACK_OFFSET_COUNT]
-
+	
     bic $tmp0, $A_[1][2], $A_[1][1], ROR #47
     bic $tmp1, $A_[1][3], $A_[1][2], ROR #42
     eor $A[1][0], $tmp0, $A_[1][0], ROR #39
@@ -482,9 +498,6 @@ ldr	x30, [sp, #32]
     bic $tmp1, $A_[3][0], $A_[3][4], ROR #35
     eor $A[3][2], $tmp0, $A_[3][2], ROR #46
     bic $tmp0, $A_[3][1], $A_[3][0], ROR #9
-
-    ldr cur_const, [const_addr, count, UXTW #3]
-
     eor $A[3][3], $tmp1, $A_[3][3], ROR #12
     bic $tmp1, $A_[4][2], $A_[4][1], ROR #48
     eor $A[3][4], $tmp0, $A_[3][4], ROR #44
@@ -497,10 +510,18 @@ ldr	x30, [sp, #32]
     bic $tmp1, $A_[4][1], $A_[4][0], ROR #57
     eor $A[4][3], $tmp0, $A_[4][3], ROR #21
     bic $tmp0, $A_[0][2], $A_[0][1], ROR #63
+    eor $A[4][4], $tmp1, $A_[4][4], ROR #53
+
+str x27, [sp, #STACK_OFFSET_x27_A44]
+
+    ldr count, [sp, #STACK_OFFSET_COUNT]
+
+    load_constant_ptr_stack
+    ldr cur_const, [const_addr, count, UXTW #3]
     add count, count, #1
     //save count, STACK_OFFSET_COUNT
 	str count , [sp , #STACK_OFFSET_COUNT]
-    eor $A[4][4], $tmp1, $A_[4][4], ROR #53
+
     bic $tmp1, $A_[0][3], $A_[0][2], ROR #42
     eor $A[0][0], $A_[0][0], $tmp0, ROR #21
     bic $tmp0, $A_[0][4], $A_[0][3], ROR #57
@@ -516,6 +537,7 @@ ldr	x30, [sp, #32]
 .endm
 
 .macro final_rotate_store
+ldr x27, [sp, #STACK_OFFSET_x27_A44] // load A[2][3]
     ror $A[1][0], $A[1][0], #(64-3)
     ror $A[0][4], $A[0][4], #(64-44)
     ror $A[2][0], $A[2][0], #(64-25)
@@ -551,20 +573,20 @@ ldr	x30, [sp, #32]
 .align	4
 keccak_f1600_x1_scalar_asm_lazy_rotation:
 	AARCH64_SIGN_LINK_REGISTER
-	sub sp, sp, #6*8
-	stp $C[0], $C[4], [sp, #4*8]
+	sub sp, sp, #12*8
+	stp $C[0], $C[4], [sp, #6*8]
 
 	keccak_f1600_round_initial
     
-loop:
- 	keccak_f1600_round_noninitial
+ loop:
+  	keccak_f1600_round_noninitial
     cmp count, #(KECCAK_F1600_ROUNDS-1)
     ble loop
 
     final_rotate_store
 
-	ldp $C[0], $C[4], [sp, #4*8]
-	add sp, sp, #6*8
+	ldp $C[0], $C[4], [sp, #6*8]
+	add sp, sp, #12*8
 	AARCH64_VALIDATE_LINK_REGISTER
 	ret
 .size	keccak_f1600_x1_scalar_asm_lazy_rotation, .-keccak_f1600_x1_scalar_asm_lazy_rotation
