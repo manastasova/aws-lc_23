@@ -105,10 +105,6 @@ static uint64_t BitInterleave(uint64_t Ai)
     return Ai;
 }
 
-
-
-#else
-
 static const uint8_t rhotates[SHA3_ROWS][SHA3_ROWS] = {
     {  0,  1, 62, 28, 27 },
     { 36, 44,  6, 55, 20 },
@@ -405,7 +401,7 @@ void SHA3_Squeeze(uint64_t A[SHA3_ROWS][SHA3_ROWS], uint8_t *out, size_t len, si
         }
     }
 }
-
+#else
 
 #if (defined(KECCAKf1600_LAZY_ROTATION) && defined(__linux__))
 size_t SHA3_Absorb_lazy(uint64_t A[SHA3_ROWS][SHA3_ROWS], const uint8_t *inp, size_t len,
@@ -419,9 +415,9 @@ size_t SHA3_Absorb(uint64_t A[SHA3_ROWS][SHA3_ROWS], const uint8_t *inp, size_t 
     return SHA3_Absorb_lazy(A, inp, len, r);
 }
 
-// void SHA3_Squeeze(uint64_t A[SHA3_ROWS][SHA3_ROWS], uint8_t *out, size_t len, size_t r) {
-//    SHA3_Squeeze_lazy(A, out, len, r);
-// }
+void SHA3_Squeeze(uint64_t A[SHA3_ROWS][SHA3_ROWS], uint8_t *out, size_t len, size_t r) {
+   SHA3_Squeeze_lazy(A, out, len, r);
+}
 #else 
 
 size_t SHA3_Absorb_hw(uint64_t A[SHA3_ROWS][SHA3_ROWS], const uint8_t *inp, size_t len,
