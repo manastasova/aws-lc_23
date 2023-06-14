@@ -12,6 +12,7 @@
  * OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
  * CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE. */
 
+#include <limits.h>
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
@@ -1391,10 +1392,6 @@ TEST(SSLTest, CipherProperties) {
     ASSERT_TRUE(cipher);
     EXPECT_STREQ(t.standard_name, SSL_CIPHER_standard_name(cipher));
 
-    bssl::UniquePtr<char> rfc_name(SSL_CIPHER_get_rfc_name(cipher));
-    ASSERT_TRUE(rfc_name);
-    EXPECT_STREQ(t.standard_name, rfc_name.get());
-
     EXPECT_EQ(t.cipher_nid, SSL_CIPHER_get_cipher_nid(cipher));
     EXPECT_EQ(t.digest_nid, SSL_CIPHER_get_digest_nid(cipher));
     EXPECT_EQ(t.kx_nid, SSL_CIPHER_get_kx_nid(cipher));
@@ -1553,15 +1550,6 @@ TEST(SSLTest, Padding) {
           << "ClientHello was not padded to expected length";
     }
   }
-}
-
-static bssl::UniquePtr<X509> CertFromPEM(const char *pem) {
-  bssl::UniquePtr<BIO> bio(BIO_new_mem_buf(pem, strlen(pem)));
-  if (!bio) {
-    return nullptr;
-  }
-  return bssl::UniquePtr<X509>(
-      PEM_read_bio_X509(bio.get(), nullptr, nullptr, nullptr));
 }
 
 static bssl::UniquePtr<EVP_PKEY> KeyFromPEM(const char *pem) {
@@ -3837,8 +3825,10 @@ static bool GetServerTicketTime(long *out, const SSL_SESSION *session) {
   const uint8_t *iv = ticket + 16;
   bssl::ScopedEVP_CIPHER_CTX ctx;
   int len1, len2;
-  if (!EVP_DecryptInit_ex(ctx.get(), EVP_aes_128_cbc(), nullptr, kZeros, iv) ||
-      !EVP_DecryptUpdate(ctx.get(), plaintext.get(), &len1, ciphertext, len) ||
+  if (len > INT_MAX ||
+      !EVP_DecryptInit_ex(ctx.get(), EVP_aes_128_cbc(), nullptr, kZeros, iv) ||
+      !EVP_DecryptUpdate(ctx.get(), plaintext.get(), &len1, ciphertext,
+                         static_cast<int>(len)) ||
       !EVP_DecryptFinal_ex(ctx.get(), plaintext.get() + len1, &len2)) {
     return false;
   }
@@ -8563,8 +8553,8 @@ TEST(SSLTest, BIO) {
     // |BIO_should_write|.
     int ret;
     for (int i = 0; i < 1024; i++) {
-      std::vector<uint8_t> buffer(1024);
-      ret = BIO_write(client_bio.get(), buffer.data(), buffer.size());
+      const uint8_t kZeros[1024] = {0};
+      ret = BIO_write(client_bio.get(), kZeros, sizeof(kZeros));
       if (ret <= 0) {
         break;
       }

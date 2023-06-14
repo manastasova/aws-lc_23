@@ -130,7 +130,6 @@ struct v3_ext_method {
 DEFINE_STACK_OF(X509V3_EXT_METHOD)
 
 // ext_flags values
-#define X509V3_EXT_DYNAMIC 0x1
 #define X509V3_EXT_CTX_DEP 0x2
 #define X509V3_EXT_MULTILINE 0x4
 
@@ -664,9 +663,7 @@ OPENSSL_EXPORT ASN1_INTEGER *s2i_ASN1_INTEGER(const X509V3_EXT_METHOD *meth,
 OPENSSL_EXPORT char *i2s_ASN1_ENUMERATED(const X509V3_EXT_METHOD *meth,
                                          const ASN1_ENUMERATED *aint);
 OPENSSL_EXPORT int X509V3_EXT_add(X509V3_EXT_METHOD *ext);
-OPENSSL_EXPORT int X509V3_EXT_add_list(X509V3_EXT_METHOD *extlist);
 OPENSSL_EXPORT int X509V3_EXT_add_alias(int nid_to, int nid_from);
-OPENSSL_EXPORT void X509V3_EXT_cleanup(void);
 
 OPENSSL_EXPORT const X509V3_EXT_METHOD *X509V3_EXT_get(
     const X509_EXTENSION *ext);
