@@ -106,49 +106,37 @@ $A_[0][0] = "x30"; $A_[1][0] =  "x3"; $A_[2][0] = "x4"; $A_[3][0] = "x5"; $A_[4]
 my @C = map("x$_", (30, 26, 27, 28, 29));
 my @E = map("x$_", (29, 0, 26, 27, 28));
 
-$tmp0 = "x0";
-$tmp1 = "x29";
+$tmp0          =   "x0";
+$tmp1          =  "x29";
 
-$len  = "x0";
-$bsz  = "x28";
-$rem  = "x29";
+$len           =   "x0";
+$bsz           =  "x28";
+$rem           =  "x29";
 
-$inp      = "x29";
-$inp_adr  = "x26";
-$bitstate_adr  = "x29";
+$inp           =  "x29";
+$inp_adr       =  "x26";
+$bitstate_adr  =  "x29";
+$const_addr    =  "x26";
+$cur_const     =  "x26";
+$count         =  "w27";
 
 $code.=<<___;
-const_addr     .req x26
-cur_const      .req x26
-count          .req w27
 
-#define STACK_SIZE (16*6 + 3*8 + 8) // GPRs (16*6), count (8), const (8), input (8), padding (8)
-#define STACK_BASE_GPRS (3*8+8)
-#define STACK_OFFSET_INPUT (0*8)
-#define STACK_OFFSET_CONST (1*8)
-#define STACK_OFFSET_COUNT (2*8)
-#define STACK_OFFSET_x27_A44 (4*8)
-#define STACK_OFFSET_x27_C2_E3 (5*8)
-
+ # Define the stack arrangement for the |SHA3_Absorb_lazy| function
 #define OFFSET_RESERVED_BYTES (4*8)
 #define STACK_OFFSET_BITSTATE_ADR (OFFSET_RESERVED_BYTES + 0*8)
 #define STACK_OFFSET_INPUT_ADR (OFFSET_RESERVED_BYTES + 1*8)
 #define STACK_OFFSET_LENGTH (OFFSET_RESERVED_BYTES + 2*8)
 #define STACK_OFFSET_BLOCK_SIZE (OFFSET_RESERVED_BYTES + 3*8)
 
-#define STACK_OFFSET_ARGS (OFFSET_RESERVED_BYTES + 0*8)
+ # Define the stack arrangement for the |keccak_f1600_x1_scalar_asm_lazy_rotation| function
+#define STACK_OFFSET_CONST (1*8)
+#define STACK_OFFSET_COUNT (2*8)
+#define STACK_OFFSET_x27_A44 (4*8)
+#define STACK_OFFSET_x27_C2_E3 (5*8)
 
-.macro free_stack_and_restore_gprs_absorb
-	ldp	x19, x20, [sp, #16+64]
-	add	sp, sp, #64
-	ldp	x21, x22, [sp, #32]
-	ldp	x23, x24, [sp, #48]
-	ldp	x25, x26, [sp, #64]
-	ldp	x27, x28, [sp, #80]
-	ldp	x29, x30, [sp], #128
-.endm
-
-.macro alloc_stack_and_save_gprs_absorb
+ # Define the macros
+.macro alloc_stack_save_GPRs_absorb
 	stp	x29, x30, [sp, #-128]!
 	stp	x19, x20, [sp, #16]
 	stp	x21, x22, [sp, #32]
@@ -158,8 +146,23 @@ count          .req w27
 	sub	sp, sp, #64
 .endm
 
-.macro free_stack
-    add sp, sp, #(STACK_SIZE)
+.macro free_stack_restore_GPRs_absorb
+	ldp	x19, x20, [sp, #16+64]
+	add	sp, sp, #64
+	ldp	x21, x22, [sp, #32]
+	ldp	x23, x24, [sp, #48]
+	ldp	x25, x26, [sp, #64]
+	ldp	x27, x28, [sp, #80]
+	ldp	x29, x30, [sp], #128
+.endm
+
+.macro offload_and_move_args
+	stp	x0, x1, [sp, #STACK_OFFSET_BITSTATE_ADR]			// offload arguments
+	stp	x2, x3, [sp, #STACK_OFFSET_LENGTH]
+	mov	$bitstate_adr, x0			// uint64_t A[5][5]
+	mov	$inp_adr, x1			// const void *inp
+	mov	$len, x2			// size_t len
+	mov	$bsz, x3			// size_t bsz
 .endm
 
 .macro load_bitstate
@@ -178,52 +181,8 @@ count          .req w27
 	ldr	$A[4][4], [$bitstate_adr, #16*12]
 .endm
 
-.macro offload_and_move_args
-	stp	x0, x1, [sp, #32]			// offload arguments
-	stp	x2, x3, [sp, #48]
-	mov	$bitstate_adr, x0			// uint64_t A[5][5]
-	mov	$inp_adr, x1			// const void *inp
-	mov	$len, x2			// size_t len
-	mov	$bsz, x3			// size_t bsz
-.endm
-
-.macro save reg, offset
-    str $reg , [sp , #$offset]
-.endm
-
-.macro restore reg, offset
-    ldr $reg, [sp, #$offset]
-.endm
-
 .macro load_constant_ptr
-	adr const_addr, round_constants
-.endm
-
-.macro alloc_stack_and_save_gprs
-	stp	x29, x30, [sp, #-128]!
-	add	x29, sp, #0
-	stp	x19, x20, [sp, #16]
-	stp	x21, x22, [sp, #32]
-	stp	x23, x24, [sp, #48]
-	stp	x25, x26, [sp, #64]
-	stp	x27, x28, [sp, #80]
-	sub	sp, sp, #48+32
-    stp	x19, x20, [sp, #48]
-    stp	x21, x22, [sp, #64]
-	str	x0, [sp, #32]			//offload argument
-	ldp	$A[0][0], $A[0][1], [x0, #16*0]
-	ldp	$A[0][2], $A[0][3], [x0, #16*1]
-	ldp	$A[0][4], $A[1][0], [x0, #16*2]
-	ldp	$A[1][1], $A[1][2], [x0, #16*3]
-	ldp	$A[1][3], $A[1][4], [x0, #16*4]
-	ldp	$A[2][0], $A[2][1], [x0, #16*5]
-	ldp	$A[2][2], $A[2][3], [x0, #16*6]
-	ldp	$A[2][4], $A[3][0], [x0, #16*7]
-	ldp	$A[3][1], $A[3][2], [x0, #16*8]
-	ldp	$A[3][3], $A[3][4], [x0, #16*9]
-	ldp	$A[4][0], $A[4][1], [x0, #16*10]
-	ldp	$A[4][2], $A[4][3], [x0, #16*11]
-	ldr	$A[4][4], [x0, #16*12]
+	adr $const_addr, round_constants
 .endm
 
 .macro store_bitstate
@@ -240,8 +199,36 @@ count          .req w27
 	stp	$A[4][0], $A[4][1], [$bitstate_adr, #16*10]
 	stp	$A[4][2], $A[4][3], [$bitstate_adr, #16*11]
 	str	$A[4][4], [$bitstate_adr, #16*12]
-	.endm
-.macro free_stack_and_restore_gprs
+.endm
+
+.macro alloc_stack_save_GPRs_KeccakF1600
+	stp	x29, x30, [sp, #-128]!
+	add	x29, sp, #0
+	stp	x19, x20, [sp, #16]
+	stp	x21, x22, [sp, #32]
+	stp	x23, x24, [sp, #48]
+	stp	x25, x26, [sp, #64]
+	stp	x27, x28, [sp, #80]
+	sub	sp, sp, #48+32
+    stp	x19, x20, [sp, #48]
+    stp	x21, x22, [sp, #64]
+    str	x0, [sp, #32]
+	ldp	$A[0][0], $A[0][1], [x0, #16*0]
+	ldp	$A[0][2], $A[0][3], [x0, #16*1]
+	ldp	$A[0][4], $A[1][0], [x0, #16*2]
+	ldp	$A[1][1], $A[1][2], [x0, #16*3]
+	ldp	$A[1][3], $A[1][4], [x0, #16*4]
+	ldp	$A[2][0], $A[2][1], [x0, #16*5]
+	ldp	$A[2][2], $A[2][3], [x0, #16*6]
+	ldp	$A[2][4], $A[3][0], [x0, #16*7]
+	ldp	$A[3][1], $A[3][2], [x0, #16*8]
+	ldp	$A[3][3], $A[3][4], [x0, #16*9]
+	ldp	$A[4][0], $A[4][1], [x0, #16*10]
+	ldp	$A[4][2], $A[4][3], [x0, #16*11]
+	ldr	$A[4][4], [x0, #16*12]
+.endm
+
+.macro free_stack_restore_GPRs_KeccakF1600
 ldr	x0, [sp, #32]
 	stp	$A[0][0], $A[0][1], [x0, #16*0]
 	stp	$A[0][2], $A[0][3], [x0, #16*1]
@@ -361,8 +348,8 @@ ldr x27, [sp, STACK_OFFSET_x27_A44]
     eor $A[3][2], $tmp0, $A_[3][2], ROR #46
     bic $tmp0, $A_[3][1], $A_[3][0], ROR #9
 
-	str const_addr, [sp, #(STACK_OFFSET_CONST)]
-    ldr cur_const, [const_addr]
+	str $const_addr, [sp, #(STACK_OFFSET_CONST)]
+    ldr $cur_const, [$const_addr]
 
 	eor $A[3][3], $tmp1, $A_[3][3], ROR #12
     bic $tmp1, $A_[4][2], $A_[4][1], ROR #48
@@ -390,11 +377,10 @@ str x27, [sp, STACK_OFFSET_x27_A44]
     eor $A[0][3], $tmp1, $A_[0][3], ROR #43
     eor $A[0][4], $tmp0, $A_[0][4], ROR #30
 
-    mov count, #1
+    mov $count, #1
 
-    eor $A[0][0], $A[0][0], cur_const
-    //save count, STACK_OFFSET_COUNT
-	str count, [sp, #STACK_OFFSET_COUNT]
+    eor $A[0][0], $A[0][0], $cur_const
+	str $count, [sp, #STACK_OFFSET_COUNT]
 	
 .endm
 
@@ -466,9 +452,6 @@ ldr x27, [sp, #STACK_OFFSET_x27_A44]
     eor $A_[4][4], $E[1], $A[4][1], ROR #23
     eor $A_[3][1], $E[0], $A[1][0], ROR #61
     eor $A_[0][1], $E[1], $A[1][1], ROR #19
-
-    
-    //restore count, STACK_OFFSET_COUNT
 	
     bic $tmp0, $A_[1][2], $A_[1][1], ROR #47
     bic $tmp1, $A_[1][3], $A_[1][2], ROR #42
@@ -514,13 +497,12 @@ ldr x27, [sp, #STACK_OFFSET_x27_A44]
 
 str x27, [sp, #STACK_OFFSET_x27_A44]
 
-    ldr count, [sp, #STACK_OFFSET_COUNT]
+    ldr $count, [sp, #STACK_OFFSET_COUNT]
 
     load_constant_ptr_stack
-    ldr cur_const, [const_addr, count, UXTW #3]
-    add count, count, #1
-    //save count, STACK_OFFSET_COUNT
-	str count , [sp , #STACK_OFFSET_COUNT]
+    ldr $cur_const, [$const_addr, $count, UXTW #3]
+    add $count, $count, #1
+	str $count , [sp , #STACK_OFFSET_COUNT]
 
     bic $tmp1, $A_[0][3], $A_[0][2], ROR #42
     eor $A[0][0], $A_[0][0], $tmp0, ROR #21
@@ -532,7 +514,7 @@ str x27, [sp, #STACK_OFFSET_x27_A44]
     eor $A[0][3], $tmp1, $A_[0][3], ROR #43
     eor $A[0][4], $tmp0, $A_[0][4], ROR #30
 
-    eor $A[0][0], $A[0][0], cur_const
+    eor $A[0][0], $A[0][0], $cur_const
 
 .endm
 
@@ -566,7 +548,7 @@ ldr x27, [sp, #STACK_OFFSET_x27_A44] // load A[2][3]
 #define KECCAK_F1600_ROUNDS 24
 
 .macro load_constant_ptr_stack
-    ldr const_addr, [sp, #(STACK_OFFSET_CONST)]
+    ldr $const_addr, [sp, #(STACK_OFFSET_CONST)]
 .endm
 
 .type	keccak_f1600_x1_scalar_asm_lazy_rotation, %function
@@ -580,7 +562,7 @@ keccak_f1600_x1_scalar_asm_lazy_rotation:
     
  loop:
   	keccak_f1600_round_noninitial
-    cmp count, #(KECCAK_F1600_ROUNDS-1)
+    cmp $count, #(KECCAK_F1600_ROUNDS-1)
     ble loop
 
     final_rotate_store
@@ -595,11 +577,11 @@ keccak_f1600_x1_scalar_asm_lazy_rotation:
 .align	5
 KeccakF1600:
 	AARCH64_SIGN_LINK_REGISTER
-	alloc_stack_and_save_gprs
+	alloc_stack_save_GPRs_KeccakF1600
 	
 	bl keccak_f1600_x1_scalar_asm_lazy_rotation
 	
-	free_stack_and_restore_gprs
+	free_stack_restore_GPRs_KeccakF1600
 	AARCH64_VALIDATE_LINK_REGISTER
 	ret
 .size	KeccakF1600, .-KeccakF1600
@@ -609,11 +591,10 @@ KeccakF1600:
 .align	5
 SHA3_Absorb_lazy:
 	AARCH64_SIGN_LINK_REGISTER
-	alloc_stack_and_save_gprs_absorb
+	alloc_stack_save_GPRs_absorb
 	offload_and_move_args
 	load_bitstate
 	b	.Loop_absorb
-
 .align	4
 .Loop_absorb:
 	subs	$rem, $len, $bsz		// rem = len - bsz
@@ -649,16 +630,14 @@ $code.=<<___;
 
 	bl keccak_f1600_x1_scalar_asm_lazy_rotation
 
-	ldp	$bitstate_adr, $inp_adr, [sp, #STACK_OFFSET_BITSTATE_ADR]			// restore arguments
+	ldr	$inp_adr, [sp, #STACK_OFFSET_INPUT_ADR]			// restore arguments
 	ldp	$len, $bsz, [sp, #STACK_OFFSET_LENGTH]
 	b	.Loop_absorb
 .align	4
 .Labsorbed:
 	ldr	$bitstate_adr, [sp, #STACK_OFFSET_BITSTATE_ADR]
 	store_bitstate
-	ldp	$len, $bsz, [sp, #STACK_OFFSET_LENGTH]
-	mov	x0, $len			// return value
-	free_stack_and_restore_gprs_absorb
+	free_stack_restore_GPRs_absorb
 	AARCH64_VALIDATE_LINK_REGISTER
 	ret
 .size	SHA3_Absorb_lazy, .-SHA3_Absorb_lazy
@@ -674,7 +653,7 @@ SHA3_Squeeze_lazy:
 	stp	x29, x30, [sp, #-48]!
 	add	x29, sp, #0
 	cmp	x2, #0
-	beq	.Lsqueeze_abort
+    beq	.Lsqueeze_abort
 	stp	x19, x20, [sp, #16]
 	stp	x21, x22, [sp, #32]
 	mov	$A_flat, x0			// put $A[4][2]de arguments
@@ -739,7 +718,6 @@ ___
 $code.=<<___;
 .asciz	"Keccak-1600 absorb and squeeze for ARMv8, CRYPTOGAMS by <appro\@openssl.org>"
 ___
-
 
 foreach(split("\n", $code)) {
 	s/\`([^\`]*)\`/eval($1)/ge;
