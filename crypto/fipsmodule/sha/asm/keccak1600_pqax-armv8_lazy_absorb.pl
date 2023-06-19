@@ -659,6 +659,25 @@ keccak_f1600_x1_scalar_asm_lazy_absorb_non_first:
 	ret
 .size	keccak_f1600_x1_scalar_asm_lazy_absorb_non_first, .-keccak_f1600_x1_scalar_asm_lazy_absorb_non_first
 
+.type	keccak_f1600_x1_scalar_asm_lazy_squeeze, %function
+.align	4
+keccak_f1600_x1_scalar_asm_lazy_squeeze:
+	AARCH64_SIGN_LINK_REGISTER
+	stp $C[0], $C[4], [sp, #4*8]
+
+    keccak_f1600_round_initial
+    
+ loop3:
+  	keccak_f1600_round_noninitial
+    cmp w27, #(KECCAK_F1600_ROUNDS-1)
+    ble loop3
+
+    final_rotate
+
+	ldp $C[0], $C[4], [sp, #4*8]
+	AARCH64_VALIDATE_LINK_REGISTER
+	ret
+.size	keccak_f1600_x1_scalar_asm_lazy_squeeze, .-keccak_f1600_x1_scalar_asm_lazy_squeeze
 
 .type	KeccakF1600, %function
 .align	5
@@ -666,8 +685,10 @@ KeccakF1600:
 	AARCH64_SIGN_LINK_REGISTER
 	alloc_stack_save_GPRs_KeccakF1600
 	
-	//bl keccak_f1600_x1_scalar_asm_lazy_absorb_first
-	
+    sub sp, sp, #6*8
+	bl keccak_f1600_x1_scalar_asm_lazy_squeeze
+	add sp, sp, #6*8
+
 	free_stack_restore_GPRs_KeccakF1600
 	AARCH64_VALIDATE_LINK_REGISTER
 	ret
