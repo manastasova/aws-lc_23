@@ -136,6 +136,33 @@ TEST(SHA3Test, NISTTestVectors) {
   });
 }
 
+TEST(SHA3Test, NISTTestVectors_LongMsg) {
+  FileTestGTest("crypto/fipsmodule/sha/testvectors/SHA3_224LongMsg.txt", [](FileTest *t) {
+    SHA3TestVector test_vec;
+    EXPECT_TRUE(test_vec.ReadFromFileTest(t));
+    const EVP_MD* algorithm = EVP_sha3_224();
+    test_vec.NISTTestVectors(algorithm);
+  });
+  FileTestGTest("crypto/fipsmodule/sha/testvectors/SHA3_256LongMsg.txt", [](FileTest *t) {
+    SHA3TestVector test_vec;
+    EXPECT_TRUE(test_vec.ReadFromFileTest(t));
+    const EVP_MD* algorithm = EVP_sha3_256();
+    test_vec.NISTTestVectors(algorithm);
+  });
+  FileTestGTest("crypto/fipsmodule/sha/testvectors/SHA3_384LongMsg.txt", [](FileTest *t) {
+    SHA3TestVector test_vec;
+    EXPECT_TRUE(test_vec.ReadFromFileTest(t));
+    const EVP_MD* algorithm = EVP_sha3_384();
+    test_vec.NISTTestVectors(algorithm);
+  });
+  FileTestGTest("crypto/fipsmodule/sha/testvectors/SHA3_512LongMsg.txt", [](FileTest *t) {
+    SHA3TestVector test_vec;
+    EXPECT_TRUE(test_vec.ReadFromFileTest(t));
+    const EVP_MD* algorithm = EVP_sha3_512();
+    test_vec.NISTTestVectors(algorithm);
+  });
+}
+
 TEST(SHA3Test, NISTTestVectors_SingleShot) {
   FileTestGTest("crypto/fipsmodule/sha/testvectors/SHA3_224ShortMsg.txt", [](FileTest *t) {
     SHA3TestVector test_vec;
@@ -156,6 +183,33 @@ TEST(SHA3Test, NISTTestVectors_SingleShot) {
     test_vec.NISTTestVectors_SingleShot(algorithm);
   });
   FileTestGTest("crypto/fipsmodule/sha/testvectors/SHA3_512ShortMsg.txt", [](FileTest *t) {
+    SHA3TestVector test_vec;
+    EXPECT_TRUE(test_vec.ReadFromFileTest(t));
+    const EVP_MD* algorithm = EVP_sha3_512();
+    test_vec.NISTTestVectors_SingleShot(algorithm);
+  });
+}
+
+TEST(SHA3Test, NISTTestVectors_SingleShot_LongMsg) {
+  FileTestGTest("crypto/fipsmodule/sha/testvectors/SHA3_224LongMsg.txt", [](FileTest *t) {
+    SHA3TestVector test_vec;
+    EXPECT_TRUE(test_vec.ReadFromFileTest(t));
+    const EVP_MD* algorithm = EVP_sha3_224();
+    test_vec.NISTTestVectors_SingleShot(algorithm);
+  });
+  FileTestGTest("crypto/fipsmodule/sha/testvectors/SHA3_256LongMsg.txt", [](FileTest *t) {
+    SHA3TestVector test_vec;
+    EXPECT_TRUE(test_vec.ReadFromFileTest(t));
+    const EVP_MD* algorithm = EVP_sha3_256();
+    test_vec.NISTTestVectors_SingleShot(algorithm);
+  });
+  FileTestGTest("crypto/fipsmodule/sha/testvectors/SHA3_384LongMsg.txt", [](FileTest *t) {
+    SHA3TestVector test_vec;
+    EXPECT_TRUE(test_vec.ReadFromFileTest(t));
+    const EVP_MD* algorithm = EVP_sha3_384();
+    test_vec.NISTTestVectors_SingleShot(algorithm);
+  });
+  FileTestGTest("crypto/fipsmodule/sha/testvectors/SHA3_512LongMsg.txt", [](FileTest *t) {
     SHA3TestVector test_vec;
     EXPECT_TRUE(test_vec.ReadFromFileTest(t));
     const EVP_MD* algorithm = EVP_sha3_512();
