@@ -53,10 +53,10 @@ round_constants:
 #define STACK_OFFSET_BLOCK_SIZE (OFFSET_RESERVED_BYTES + 3*8)
 
  # Define the stack arrangement for the |keccak_f1600_x1_scalar_asm_lazy_rotation| function
-#define STACK_OFFSET_CONST (1*8)
-#define STACK_OFFSET_COUNT (2*8)
-#define STACK_OFFSET_x27_A44 (4*8)
-#define STACK_OFFSET_x27_C2_E3 (5*8)
+#define STACK_OFFSET_CONST (0*8)
+#define STACK_OFFSET_COUNT (1*8)
+#define STACK_OFFSET_x27_A44 (2*8)
+#define STACK_OFFSET_x27_C2_E3 (3*8)
 
  # Define the macros
 .macro	alloc_stack_save_GPRs_absorb
@@ -478,8 +478,8 @@ round_constants:
 .align	4
 keccak_f1600_x1_scalar_asm_lazy_rotation:
 	AARCH64_SIGN_LINK_REGISTER
-	sub	sp, sp, #12*8
-	stp	x30, x29, [sp, #6*8]
+	sub	sp, sp, #6*8
+	stp	x30, x29, [sp, #4*8]
 
 	keccak_f1600_round_initial
 
@@ -490,8 +490,8 @@ loop:
 
 	final_rotate_store
 
-	ldp	x30, x29, [sp, #6*8]
-	add	sp, sp, #12*8
+	ldp	x30, x29, [sp, #4*8]
+	add	sp, sp, #6*8
 	AARCH64_VALIDATE_LINK_REGISTER
 	ret
 
