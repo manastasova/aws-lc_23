@@ -176,6 +176,51 @@ int validate_keccak_f1600_x4_hybrid_asm_v5p(void)
     return 1;                                                           
 }
 
+int validate_keccak_f1600_x4_hybrid_asm_v5p_new(void)                                                     
+{                                                                       
+    debug_test_start(stringify(validate_keccak_f1600_x4_hybrid_asm_v5p_new));                            
+                                                                        
+    ALIGN(64)                                                           
+    uint64_t state[4*KECCAK_F1600_X1_STATE_SIZE_UINT64] = { 0 };      
+    ALIGN(64)                                                           
+    uint64_t ref_state[4*KECCAK_F1600_X1_STATE_SIZE_UINT64] = { 0 };  
+    ALIGN(64)                                                           
+    uint64_t ref_state_[4*KECCAK_F1600_X1_STATE_SIZE_UINT64] = { 0 }; 
+                                                                        
+    fill_random_u8( (uint8_t*) ref_state, KECCAK_F1600_X1_STATE_SIZE_BYTES ); 
+    for( int i=1; i < 4; i++ )                                        
+    memcpy( (uint8_t*) &ref_state[i*KECCAK_F1600_X1_STATE_SIZE_UINT64],   
+            (uint8_t*) &ref_state[0*KECCAK_F1600_X1_STATE_SIZE_UINT64], 
+            KECCAK_F1600_X1_STATE_SIZE_BYTES );                         
+                                                                        
+    zip_f1600_states( 4, state, ref_state );                          
+                                                                        
+    keccak_f1600_x4_hybrid_asm_v5p_new( state );                                                  
+                                                                        
+    for( int i=0; i<4; i++ )                                          
+    {                                                                   
+        keccak_f1600_x1_scalar_C( ref_state +                           
+                               i * KECCAK_F1600_X1_STATE_SIZE_UINT64 ); 
+    }                                                                   
+                                                                        
+    zip_f1600_states( 4, ref_state_, ref_state );                     
+                                                                        
+    if( compare_buf_u8( (uint8_t*) state, (uint8_t*) ref_state_,        
+                        4 * KECCAK_F1600_X1_STATE_SIZE_BYTES ) != 0 ) 
+    {                                                                   
+        debug_print_buf_u8( (uint8_t*) ref_state_,                      
+                            4 * KECCAK_F1600_X1_STATE_SIZE_BYTES,     
+                            "Reference" );                              
+        debug_print_buf_u8( (uint8_t*) state,                           
+                            4 * KECCAK_F1600_X1_STATE_SIZE_BYTES,     
+                            "Actual" );                                 
+        debug_test_fail();                                              
+    }                                                                   
+                                                                        
+    debug_test_ok();                                                    
+    return 1;                                                           
+}
+
 #define MAKE_VALIDATE_F1600_X_GENERIC_SKIP(testname,funcname,NUM)       \
 int testname (void)                                                     \
 {                                                                       \

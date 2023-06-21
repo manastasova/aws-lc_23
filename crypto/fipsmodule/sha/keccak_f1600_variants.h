@@ -42,11 +42,12 @@
 #define KECCAK_F1600_X2_STATE_SIZE_UINT64 (KECCAK_F1600_X2_STATE_SIZE_BYTES/8)
 
 /* Third party implementations */
-void keccak_f1600_x1_scalar_C     ( uint64_t state[KECCAK_F1600_X1_STATE_SIZE_UINT64] );
+void keccak_f1600_x1_scalar_C     ( uint64_t state[KECCAK_F1600_X1_STATE_SIZE_UINT64]);
 #include <arm_neon.h>
 typedef uint64x2_t v128;
 
-/* PQAX implementations */
-void keccak_f1600_x4_hybrid_asm_v5p ( uint64_t state[4*KECCAK_F1600_X1_STATE_SIZE_UINT64] );
+/* PQAX implementations and optimizations */
+void keccak_f1600_x4_hybrid_asm_v5p(uint64_t state[4*KECCAK_F1600_X1_STATE_SIZE_UINT64]);
+void keccak_f1600_x4_hybrid_asm_v5p_new(uint64_t state[4*KECCAK_F1600_X1_STATE_SIZE_UINT64]);
 
 #endif

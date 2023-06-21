@@ -58,6 +58,7 @@ void debug_test_fail(void );
 
 #define KECCAK_F1600_TEST_VALIDATE
 int validate_keccak_f1600_x4_hybrid_asm_v5p(void);
+int validate_keccak_f1600_x4_hybrid_asm_v5p_new(void);
 
 
 #endif /* KECCAK_F1600_X2_TEST_H */

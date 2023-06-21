@@ -257,4 +257,5 @@ TEST(SHAKE256Test, NISTTestVectors) {
 
 TEST(KECCAKf1600Test, x4_hybrid) {
   EXPECT_TRUE(validate_keccak_f1600_x4_hybrid_asm_v5p());
+  EXPECT_TRUE(validate_keccak_f1600_x4_hybrid_asm_v5p_new());
 }
