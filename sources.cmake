@@ -88,7 +88,6 @@ set(
   crypto/fipsmodule/sha/testvectors/SHA3_384ShortMsg.txt
   crypto/fipsmodule/sha/testvectors/SHA3_512LongMsg.txt
   crypto/fipsmodule/sha/testvectors/SHA3_512ShortMsg.txt
-  crypto/fipsmodule/sha/testvectors/SHA3_512ShortMsg.txt
   crypto/hmac_extra/hmac_tests.txt
   crypto/hpke/hpke_test_vectors.txt
   crypto/kyber/kat/kyber512r3.txt
