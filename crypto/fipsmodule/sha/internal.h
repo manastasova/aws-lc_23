@@ -154,6 +154,7 @@ OPENSSL_EXPORT void SHA3_Squeeze(uint64_t A[SHA3_ROWS][SHA3_ROWS],
 // validate_keccak_f1600_x4_hybrid_asm_v5p tests the x4 parallel implementation 
 // of Keccakf1600 and returns 1.
 OPENSSL_EXPORT int validate_keccak_f1600_x4_hybrid_asm_v5p(void);
+OPENSSL_EXPORT int benchmark_keccak_f1600_x4_hybrid_asm_v5p(void);
 
 #if defined(__cplusplus)
 }  // extern "C"

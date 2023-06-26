@@ -1,6 +1,5 @@
 /*
- * Copyright (c) 2021-2022 Arm Limited
- * Copyright (c) 2022 Matthias Kannwischer
+ * Copyright (c) 2021 Arm Limited
  * SPDX-License-Identifier: MIT
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,29 +22,40 @@
  *
  */
 
-//
-// Author: Hanno Becker <hanno.becker@arm.com>
-// Author: Matthias Kannwischer <matthias@kannwischer.eu>
-//
-
-#ifndef KECCAK_F1600_MANUAL_H
-#define KECCAK_F1600_MANUAL_H
+#if !defined(TESTS_HAL_H)
+#define TESTS_HAL_H
 
 #include <stdint.h>
 
-#define KECCAK_F1600_X1_STATE_SIZE_BITS   1600
-#define KECCAK_F1600_X1_STATE_SIZE_BYTES  (KECCAK_F1600_X1_STATE_SIZE_BITS/8)
-#define KECCAK_F1600_X1_STATE_SIZE_UINT64 (KECCAK_F1600_X1_STATE_SIZE_BYTES/8)
+/* Initialize random number generation */
+extern void rand_init( unsigned long seed );
 
-#define KECCAK_F1600_X2_STATE_SIZE_BITS   (2*1600)
-#define KECCAK_F1600_X2_STATE_SIZE_BYTES  (KECCAK_F1600_X2_STATE_SIZE_BITS/8)
-#define KECCAK_F1600_X2_STATE_SIZE_UINT64 (KECCAK_F1600_X2_STATE_SIZE_BYTES/8)
+/* Request random data. */
+extern uint8_t get_random_byte(void);
 
-/* Third party implementations */
-void keccak_f1600_x1_scalar_C     ( uint64_t state[KECCAK_F1600_X1_STATE_SIZE_UINT64] );
-#include <arm_neon.h>
-typedef uint64x2_t v128;
+/* Debugging stubs
+ *
+ * Those stubs can either be defined as macros (which is especially
+ * useful when debugging shall be disabled and we don't want to waste
+ * code space) or as externally defined functions.
+ * In case no debugging is desired, just put
+ * ```
+ * #define debug_test_start(str) do {} while(0)
+ * #define debug_printf( ... )   do {} while(0)
+ * #define debug_test_ok()       do {} while(0)
+ * #define debug_test_fail()     do {} while(0)
+ * ```
+ * in hal_env.h.
+ */
+#if !defined(TESTS_HAL_DEBUG_MACRO)
+extern void debug_test_start( const char *testname );
+extern void debug_printf(const char * restrict format, ... );
+extern void debug_test_ok(void);
+extern void debug_test_fail(void);
+#endif /* TESTS_HAL_DEBUG_MACRO */
 
-/* PQAX implementations */
-void keccak_f1600_x4_hybrid_asm_v5p ( uint64_t state[4*KECCAK_F1600_X1_STATE_SIZE_UINT64] );
-#endif
+void enable_cyclecounter(void);
+void disable_cyclecounter(void);
+uint64_t get_cyclecounter(void);
+
+#endif /* TESTS_HAL_H */

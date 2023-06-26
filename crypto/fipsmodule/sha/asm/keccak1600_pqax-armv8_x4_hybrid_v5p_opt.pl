@@ -441,79 +441,81 @@ $code.=<<___;
     str vAsuq, [input_addr, #(32*24)]
 .endm
 
- # Define the stack arrangement for the |SHA3_Absorb_x4_neon_scalar| function
-#define OFFSET_RESERVED_BYTES (4*8)
-#define STACK_OFFSET_BITSTATE_ADR (OFFSET_RESERVED_BYTES + 0*8)
-#define STACK_OFFSET_INPUT_ADR (OFFSET_RESERVED_BYTES + 1*8)
-#define STACK_OFFSET_LENGTH (OFFSET_RESERVED_BYTES + 2*8)
-#define STACK_OFFSET_BLOCK_SIZE (OFFSET_RESERVED_BYTES + 3*8)
+ # Define the stack arrangement for the |Absorb/Squeeze| Outer functions
+#define OUT_STACK_SIZE             (4*8 + 12*8 + 4*16 + 10*8 + 4*8) // Reserved + GPRs + VREGS + TMP GPRs + Reserved
+#define OUT_STACK_TMP_GPRs         (4*8)
+#define OUT_STACK_TMP_BITSTATE_ADR (OUT_STACK_TMP_GPRs + 0*8)
+#define OUT_STACK_TMP_INPUT_ADR    (OUT_STACK_TMP_GPRs + 1*8)
+#define OUT_STACK_TMP_LENGTH       (OUT_STACK_TMP_GPRs + 2*8)
+#define OUT_STACK_TMP_BLOCK_SIZE   (OUT_STACK_TMP_GPRs + 3*8)
+#define OUT_STACK_VREGs            (4*8 + 10*8)
+#define OUT_STACK_GPRs             (4*8 + 10*8 + 4*16)
 
- # Define the stack arrangement for the |keccak_f1600_x4_neon_scalar_asm| function
-#define STACK_SIZE             (4*16 + 12*8 + 6*8 + 3*16 + 16) // 2 words for the stack storage of the A44, etc
-#define STACK_BASE_VREGS       (0)
-#define STACK_BASE_GPRS        (4*16)
-#define STACK_BASE_TMP_GPRS    (4*16 + 12*8)
-#define STACK_BASE_TMP_VREGS   (4*16 + 12*8 + 6*8)
-#define STACK_OFFSET_INPUT     (0*8)
-#define STACK_OFFSET_CONST     (1*8)
-#define STACK_OFFSET_COUNT     (2*8)
-#define STACK_OFFSET_COUNT_OUT (3*8)
-#define STACK_OFFSET_CUR_INPUT (4*8)
 
-#define STACK_OFFSET_x27_A44 (STACK_SIZE - 2*8)
-#define STACK_OFFSET_x27_C2_E3 (STACK_SIZE - 1*8)
+ # Define the stack arrangement for the |keccak_f1600_x4_neon_scalar_asm| Innter function
+#define IN_STACK_SIZE          (10*8 + 3*16)
+#define IN_STACK_TMP_VREGS     (0)
+#define IN_STACK_TMP_GPRS      (3*16)
+
+// 0*8 is free ??
+#define IN_STACK_OFFSET_INPUT  (IN_STACK_TMP_GPRS + 1*8) // Maybe will delete later since it is in outer stack
+#define IN_STACK_OFFSET_CONST     (IN_STACK_TMP_GPRS + 2*8)
+#define IN_STACK_OFFSET_COUNT     (IN_STACK_TMP_GPRS + 3*8)
+#define IN_STACK_OFFSET_COUNT_OUT (IN_STACK_TMP_GPRS + 4*8)
+#define IN_STACK_OFFSET_CUR_INPUT (IN_STACK_TMP_GPRS + 5*8)
+#define IN_STACK_OFFSET_x27_A44 (IN_STACK_TMP_GPRS + 6*8)
+#define IN_STACK_OFFSET_x27_C2_E3 (IN_STACK_TMP_GPRS + 7*8)
+// 8*8 and 9*8 are used for storing C0, C4
 
 #define vAgi_offset 0
 #define vAga_offset 1
 #define vAge_offset 2
 
 .macro save reg, offset
-    str \\reg, [sp, #(STACK_BASE_TMP_GPRS + \\{offset})]
+    str \\reg, [sp, #\\{offset})]
 .endm
 
 .macro restore reg, offset
-    ldr \\reg, [sp, #(STACK_BASE_TMP_GPRS + \\{offset})]
-.endm
-
-
-.macro save_gprs
-    stp x19, x20, [sp, #(STACK_BASE_GPRS + 16*0)]
-    stp x21, x22, [sp, #(STACK_BASE_GPRS + 16*1)]
-    stp x23, x24, [sp, #(STACK_BASE_GPRS + 16*2)]
-    stp x25, x26, [sp, #(STACK_BASE_GPRS + 16*3)]
-    stp x27, x28, [sp, #(STACK_BASE_GPRS + 16*4)]
-    stp x29, x30, [sp, #(STACK_BASE_GPRS + 16*5)]
+    ldr \\reg, [sp, #(\\{offset})]
 .endm
 
 .macro restore_gprs
-    ldp x19, x20, [sp, #(STACK_BASE_GPRS + 16*0)]
-    ldp x21, x22, [sp, #(STACK_BASE_GPRS + 16*1)]
-    ldp x23, x24, [sp, #(STACK_BASE_GPRS + 16*2)]
-    ldp x25, x26, [sp, #(STACK_BASE_GPRS + 16*3)]
-    ldp x27, x28, [sp, #(STACK_BASE_GPRS + 16*4)]
-    ldp x29, x30, [sp, #(STACK_BASE_GPRS + 16*5)]
+    ldp x19, x20, [sp, #(OUT_STACK_TMP_GPRs + 16*0)]
+    ldp x21, x22, [sp, #(OUT_STACK_TMP_GPRs + 16*1)]
+    ldp x23, x24, [sp, #(OUT_STACK_TMP_GPRs + 16*2)]
+    ldp x25, x26, [sp, #(OUT_STACK_TMP_GPRs + 16*3)]
+    ldp x27, x28, [sp, #(OUT_STACK_TMP_GPRs + 16*4)]
+    ldp x29, x30, [sp, #(OUT_STACK_TMP_GPRs + 16*5)]
 .endm
 
 .macro save_vregs
-    stp d8,  d9,  [sp,#(STACK_BASE_VREGS+0*16)]
-    stp d10, d11, [sp,#(STACK_BASE_VREGS+1*16)]
-    stp d12, d13, [sp,#(STACK_BASE_VREGS+2*16)]
-    stp d14, d15, [sp,#(STACK_BASE_VREGS+3*16)]
+    stp d8,  d9,  [sp,#(IN_STACK_TMP_VREGS+0*16)]
+    stp d10, d11, [sp,#(IN_STACK_TMP_VREGS+1*16)]
+    stp d12, d13, [sp,#(IN_STACK_TMP_VREGS+2*16)]
+    stp d14, d15, [sp,#(IN_STACK_TMP_VREGS+3*16)]
 .endm
 
 .macro restore_vregs
-    ldp d14, d15, [sp,#(STACK_BASE_VREGS+3*16)]
-    ldp d12, d13, [sp,#(STACK_BASE_VREGS+2*16)]
-    ldp d10, d11, [sp,#(STACK_BASE_VREGS+1*16)]
-    ldp d8,  d9,  [sp,#(STACK_BASE_VREGS+0*16)]
+    ldp d14, d15, [sp,#(IN_STACK_TMP_VREGS+3*16)]
+    ldp d12, d13, [sp,#(IN_STACK_TMP_VREGS+2*16)]
+    ldp d10, d11, [sp,#(IN_STACK_TMP_VREGS+1*16)]
+    ldp d8,  d9,  [sp,#(IN_STACK_TMP_VREGS+0*16)]
 .endm
 
-.macro alloc_stack
-    sub sp, sp, #(STACK_SIZE)
+.macro out_alloc_stack
+    sub sp, sp, #(OUT_STACK_SIZE)
 .endm
 
-.macro free_stack
-    add sp, sp, #(STACK_SIZE)
+.macro out_free_stack
+    add sp, sp, #(OUT_STACK_SIZE)
+.endm
+
+.macro in_alloc_stack
+    sub sp, sp, #(IN_STACK_SIZE)
+.endm
+
+.macro in_free_stack
+    add sp, sp, #(IN_STACK_SIZE)
 .endm
 
 .macro eor5 dst, src0, src1, src2, src3, src4
@@ -535,15 +537,15 @@ $code.=<<___;
     ror \\dst, \\src, #(64-\\imm)
 .endm
 
+   
  # Define the macros
-.macro alloc_stack_save_GPRs_absorb
-	stp	x29, x30, [sp, #-128]!
-	stp	x19, x20, [sp, #16]
-	stp	x21, x22, [sp, #32]
-	stp	x23, x24, [sp, #48]
-	stp	x25, x26, [sp, #64]
-	stp	x27, x28, [sp, #80]
-	sub	sp, sp, #64
+.macro save_GPRs
+	stp	x29, x30, [sp, #OUT_STACK_GPRs] // Maybe switch later to have GPRs in increasing index fashion
+	stp	x19, x20, [sp, #OUT_STACK_GPRs + 2*8]
+	stp	x21, x22, [sp, #OUT_STACK_GPRs + 4*8]
+	stp	x23, x24, [sp, #OUT_STACK_GPRs + 6*8]
+	stp	x25, x26, [sp, #OUT_STACK_GPRs + 8*8]
+	stp	x27, x28, [sp, #OUT_STACK_GPRs + 10*8]
 .endm
 
 .macro free_stack_restore_GPRs_absorb
@@ -557,15 +559,15 @@ $code.=<<___;
 .endm
 
 .macro offload_and_move_args
-	stp	x0, x1, [sp, #STACK_OFFSET_BITSTATE_ADR]			// offload arguments
-	stp	x2, x3, [sp, #STACK_OFFSET_LENGTH]
-	mov	$bitstate_adr, x0			// uint64_t A[5][5]
-	mov	$inp_adr, x1			// const void *inp
+	stp	x0, x1, [sp, #OUT_STACK_TMP_BITSTATE_ADR]			// offload arguments
+	stp	x2, x3, [sp, #OUT_STACK_TMP_LENGTH]
+	mov	$bitstate_adr, x0			// uint64_t A[5][5]     // TODO: Should somehow change ?? 
+	mov	$inp_adr, x1			// const void *inp          // TODO:Should somehow change ?? 
 	mov	$len, x2			// size_t len
 	mov	$bsz, x3			// size_t bsz
 .endm
 
-.macro load_bitstate
+.macro load_bitstate_GPRs
 	ldp	$A[0][0], $A[0][1], [$bitstate_adr, #16*0]
 	ldp	$A[0][2], $A[0][3], [$bitstate_adr, #16*1]
 	ldp	$A[0][4], $A[1][0], [$bitstate_adr, #16*2]
@@ -656,7 +658,7 @@ ldr	x0, [sp, #32]
 
 #define SEP ;
 
-.macro hybrid_round_initial
+.macro hybrid_keccak_f1600_round_initial
 
     eor $C[4], $A[3][4], $A[4][4]
 str x27, [sp, #STACK_OFFSET_x27_A44]  // store A[4][4] from bit state
@@ -914,7 +916,7 @@ str x27, [sp, #STACK_OFFSET_x27_A44]
 
 .endm
 
-.macro keccak_f1600_round_noninitial
+.macro hybrid_keccak_f1600_round_noninitial
 // First iteration
     eor $C[2], $A[4][2], $A[0][2], ROR #52
     eor $C[0], $A[0][0], $A[1][0], ROR #61
@@ -1179,7 +1181,7 @@ str x27, [sp, #STACK_OFFSET_x27_A44]
 
 .endm
 
-.macro final_rotate_store
+.macro hybrid_keccak_f1600_final_rotate_store
 // First iteration
     eor $C[2], $A[4][2], $A[0][2], ROR #52
     eor $C[0], $A[0][0], $A[1][0], ROR #61
@@ -1479,20 +1481,20 @@ ldr x27, [sp, #STACK_OFFSET_x27_A44] // load A[2][3]
 .align	4
 keccak_f1600_x4_neon_scalar_asm:
 	AARCH64_SIGN_LINK_REGISTER
-	sub sp, sp, #12*8
-	stp $C[0], $C[4], [sp, #6*8]
+	in_alloc_stack
+	stp $C[0], $C[4], [sp, #8*8]
 
-	hybrid_round_initial
+	hybrid_keccak_f1600_round_initial
     
  loop:
-  	keccak_f1600_round_noninitial
+  	hybrid_keccak_f1600_round_noninitial
     cmp $count, #(KECCAK_F1600_ROUNDS-3)
     ble loop
 
-    final_rotate_store 
+    hybrid_keccak_f1600_final_rotate_store 
 
-	ldp $C[0], $C[4], [sp, #6*8]
-	add sp, sp, #12*8
+	ldp $C[0], $C[4], [sp, #8*8]
+	in_free_stack
 	AARCH64_VALIDATE_LINK_REGISTER
 	ret
 .size	keccak_f1600_x4_neon_scalar_asm, .-keccak_f1600_x4_neon_scalar_asm
@@ -1515,16 +1517,19 @@ KeccakF1600:
 .align	5
 SHA3_Absorb_x4_neon_scalar:
 	AARCH64_SIGN_LINK_REGISTER
-	alloc_stack_save_GPRs_absorb
+	//alloc_stack_save_GPRs_absorb
+    out_alloc_stack
+    save_GPRs
 	offload_and_move_args
-	load_bitstate
+	load_bitstate_GPRs // Load 1st Bitstate into scalar registers
 	b	.Loop_absorb
 .align	4
 .Loop_absorb:
 	subs	$rem, $len, $bsz		// rem = len - bsz
 	blo	.Labsorbed
-	str	$rem, [sp, #STACK_OFFSET_LENGTH]			// save rem
+	str	$rem, [sp, #OUT_STACK_TMP_LENGTH]			// save rem
 ___
+# Only process 1st Scalar input
 for (my $i=0; $i<24; $i+=2) {
 my $j = $i+1;
 $code.=<<___;
@@ -1552,6 +1557,58 @@ $code.=<<___;
 .Lprocess_block:
 	str	$inp_adr, [sp, #STACK_OFFSET_INPUT_ADR]			// save input address
 
+
+
+# store the len in the correct place for scalar 1
+# load len from the corerct place for vectors -- later should have only 1 len since vecotors go together
+# load input address for vectors  - 2nd keccak
+
+___
+ # ADD VECTOR absorb bitstate with input
+for($i=0; $i<24; $i+=2) {		# load vA[5][5]
+my $j=$i+1;
+$code.=<<___;
+	// ldp	d$i,d$j,[x0,#8*$i]
+    vmov d$i, #0
+    vmov d$j, #0
+___
+}
+$code.=<<___;
+	ldr	d24,[x0,#8*$i]
+	b	.Loop_absorb_ce
+.align	4
+.Loop_absorb_ce:
+	subs	$len,$len,$bsz		// len - bsz
+	blo	.Labsorbed_ce
+___
+for (my $i=0; $i<24; $i+=2) {
+my $j = $i+1;
+$code.=<<___;
+	ldr	d31,[$inp],#8		// *inp++
+#ifdef	__AARCH64EB__
+	rev64	v31.16b,v31.16b
+#endif
+	eor	$vA[$i/5][$i%5],$vA[$i/5][$i%5],v31.16b
+	cmp	$bsz,#8*($i+2)
+	blo	.Lprocess_block_ce
+	ldr	d31,[$inp],#8		// *inp++
+#ifdef	__AARCH64EB__
+	rev64	v31.16b,v31.16b
+#endif
+	eor	$vA[$j/5][$j%5],$vA[$j/5][$j%5],v31.16b
+	beq	.Lprocess_block_ce
+___
+}
+$code.=<<___;
+	ldr	d31,[$inp],#8		// *inp++
+#ifdef	__AARCH64EB__
+	rev64	v31.16b,v31.16b
+#endif
+	eor	$vA[4][4],$vA[4][4],v31.16b
+.Lprocess_block_ce:
+
+
+// END /* ADD VECTOR absorb bitstate with input */
 	bl keccak_f1600_x4_neon_scalar_asm
 
 	ldr	$inp_adr, [sp, #STACK_OFFSET_INPUT_ADR]			// restore arguments
@@ -1637,7 +1694,61 @@ SHA3_Squeeze_x4_neon_scalar:
 	ret
 .size	SHA3_Squeeze_x4_neon_scalar, .-SHA3_Squeeze_x4_neon_scalar
 ___
-}								}}}
+}								
+$code.=<<___;
+
+// keccak_f1600_x4_hybrid_asm_v5p_opt implements and tests the Keccakf1600 function
+.global keccak_f1600_x4_hybrid_asm_v5p_opt
+.global _keccak_f1600_x4_hybrid_asm_v5p_opt
+.text
+.align 4
+
+keccak_f1600_x4_hybrid_asm_v5p_opt:
+_keccak_f1600_x4_hybrid_asm_v5p_opt:
+    alloc_stack
+    save_gprs
+    save_vregs
+    str input_addr, [sp, #(STACK_BASE_TMP_GPRS + STACK_OFFSET_INPUT)]
+
+    adr const_addr, round_constants_vec
+    str const_addr, [sp, #(STACK_BASE_TMP_GPRS + STACK_OFFSET_CONST)]
+
+    load_input_vector
+
+    add input_addr, input_addr, #16
+
+    mov out_count, #0
+outer_loop:
+    str out_count, [sp, #(STACK_BASE_TMP_GPRS + STACK_OFFSET_COUNT_OUT)]
+
+    load_input_scalar
+    str input_addr, [sp, #(STACK_BASE_TMP_GPRS + STACK_OFFSET_CUR_INPUT)]
+
+    hybrid_round_initial
+1:
+    hybrid_round_noninitial
+    cmp count, #(KECCAK_F1600_ROUNDS-3)
+    blt 1b
+    hybrid_round_final
+
+    ldr input_addr, [sp, #(STACK_BASE_TMP_GPRS + STACK_OFFSET_CUR_INPUT)]
+    store_input_scalar
+    add input_addr, input_addr, #8
+
+    ldr out_count, [sp, #(STACK_BASE_TMP_GPRS + STACK_OFFSET_COUNT_OUT)]
+    add out_count, out_count, #1
+    cmp out_count, #2
+    blt outer_loop
+
+    ldr input_addr, [sp, #(STACK_BASE_TMP_GPRS + STACK_OFFSET_INPUT)]
+    store_input_vector
+
+    restore_vregs
+    restore_gprs
+    free_stack
+    ret
+___
+                                                    }}}
 								
 $code.=<<___;
 .asciz	"Keccak-1600 absorb and squeeze for ARMv8, CRYPTOGAMS by <appro\@openssl.org>"

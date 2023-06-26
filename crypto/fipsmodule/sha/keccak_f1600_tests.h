@@ -35,16 +35,16 @@
 #define TEST_ITERATIONS 100
 #define TEST_AVG_CNT    100
 
-#define KECCAK_F1600_TEST_HAVE_SHA3_EXTENSION
+// #define KECCAK_F1600_TEST_HAVE_SHA3_EXTENSION
+#define ALIGN(x) __attribute__((aligned(x)))
+#define stringify(x) stringify_(x)
+#define stringify_(x) #x
 
 // Function Prototypes
 void zip_f1600_states_real(int num, uint64_t *dst, uint64_t const  *src);
 void zip_f1600_states( int num, uint64_t *dst, uint64_t const  *src );
 int cmp_uint64_t(const void *a, const void *b);
 
-void debug_printf(const char * format, ... );
-
-void debug_test_start( const char *testname );
 /* Fill a buffer with random data. */
 void fill_random_u8 ( uint8_t  *buf, unsigned len );
 /* Compare buffers
@@ -53,11 +53,8 @@ void fill_random_u8 ( uint8_t  *buf, unsigned len );
 int compare_buf_u8 ( uint8_t  const *src_a, uint8_t  const *src_b, unsigned len );
 /* Buffer printing helper */
 void debug_print_buf_u8 ( uint8_t  const *buf, unsigned entries, const char *prefix );
-void debug_test_ok(void);
-void debug_test_fail(void );
 
 #define KECCAK_F1600_TEST_VALIDATE
+int benchmark_keccak_f1600_x4_hybrid_asm_v5p(void);
 int validate_keccak_f1600_x4_hybrid_asm_v5p(void);
-
-
 #endif /* KECCAK_F1600_X2_TEST_H */
