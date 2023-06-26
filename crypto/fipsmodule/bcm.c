@@ -134,6 +134,8 @@
 #include "self_check/fips.c"
 #include "self_check/self_check.c"
 #include "service_indicator/service_indicator.c"
+#include "sha/hal.h"
+#include "sha/hal.c"
 #include "sha/keccak_f1600_variants.h"
 #include "sha/keccak_f1600_tests.h"
 #include "sha/keccak_f1600_tests.c"

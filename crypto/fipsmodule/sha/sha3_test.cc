@@ -12,7 +12,7 @@
 #include <openssl/digest.h>
 
 #include "keccak_f1600_tests.h"
-
+#include "keccak_f1600_variants.h"
 
 // SHA3TestVector corresponds to one test case of the NIST published file
 // SHA3_256ShortMsg.txt.
@@ -256,6 +256,7 @@ TEST(SHAKE256Test, NISTTestVectors) {
 }
 
 TEST(KECCAKf1600Test, x4_hybrid) {
+  EXPECT_TRUE(benchmark_keccak_f1600_x4_hybrid_asm_v5p());
   EXPECT_TRUE(validate_keccak_f1600_x4_hybrid_asm_v5p());
   EXPECT_TRUE(validate_keccak_f1600_x4_hybrid_asm_v5p_new());
 }
