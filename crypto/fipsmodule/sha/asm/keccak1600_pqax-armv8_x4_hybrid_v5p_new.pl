@@ -1314,13 +1314,13 @@ ror $A[4][4], $A[4][4], #(64-55)                                             SEP
 
 #define KECCAK_F1600_ROUNDS 24
 
-.global keccak_f1600_x4_hybrid_asm_v5p_new
-.global _keccak_f1600_x4_hybrid_asm_v5p_new
+.global keccak_f1600_x4_hybrid_asm_v5p_opt
+.global _keccak_f1600_x4_hybrid_asm_v5p_opt
 .text
 .align 4
 
-keccak_f1600_x4_hybrid_asm_v5p_new:
-_keccak_f1600_x4_hybrid_asm_v5p_new:
+keccak_f1600_x4_hybrid_asm_v5p_opt:
+_keccak_f1600_x4_hybrid_asm_v5p_opt:
     alloc_stack
     save_gprs
     save_vregs

@@ -56,8 +56,9 @@ void debug_print_buf_u8 ( uint8_t  const *buf, unsigned entries, const char *pre
 
 #define KECCAK_F1600_TEST_VALIDATE
 int benchmark_keccak_f1600_x4_hybrid_asm_v5p(void);
+int benchmark_keccak_f1600_x4_hybrid_asm_v5p_opt(void);
 int validate_keccak_f1600_x4_hybrid_asm_v5p(void);
-int validate_keccak_f1600_x4_hybrid_asm_v5p_new(void);
+int validate_keccak_f1600_x4_hybrid_asm_v5p_opt(void);
 
 
 #endif /* KECCAK_F1600_X2_TEST_H */

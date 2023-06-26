@@ -145,6 +145,49 @@ int benchmark_keccak_f1600_x4_hybrid_asm_v5p (void)
     return( 1 );                                                   
 }
 
+int benchmark_keccak_f1600_x4_hybrid_asm_v5p_opt (void)                                                   
+{                 
+    enable_cyclecounter();                                                    
+    ALIGN(64)                                                         
+    uint64_t state [4*KECCAK_F1600_X1_STATE_SIZE_UINT64] = { 0 };   
+                                                                      
+    fill_random_u8( (uint8_t*) state,                                 
+                    4*KECCAK_F1600_X1_STATE_SIZE_BYTES );           
+                                                                      
+    uint64_t cycles[TEST_ITERATIONS+1];                               
+    uint64_t cycles_orig[TEST_ITERATIONS+1];                          
+                                                                      
+    for(unsigned cnt=0; cnt < TEST_WARMUP; cnt++)                     
+        keccak_f1600_x4_hybrid_asm_v5p_opt( state );                                            
+                                                                      
+    unsigned cnt;                                                     
+    for(cnt=0; cnt < TEST_ITERATIONS; cnt++)                        
+    {                                                                 
+        cycles[cnt] = get_cyclecounter();                             
+        for( unsigned cnt2=0; cnt2 < TEST_AVG_CNT; cnt2++ )           
+            keccak_f1600_x4_hybrid_asm_v5p_opt( state );                                        
+    }                                                                 
+    cycles[TEST_ITERATIONS] = get_cyclecounter();                     
+                                                                      
+    for( cnt=0; cnt < TEST_ITERATIONS; cnt++)                 
+        cycles[cnt] = (cycles[cnt+1] - cycles[cnt]) / TEST_AVG_CNT;                  
+                                                                      
+    // Report median                                              
+    memcpy( cycles_orig, cycles, sizeof( cycles ) );                  
+    qsort( cycles, TEST_ITERATIONS, sizeof(uint64_t), cmp_uint64_t ); 
+    debug_printf( "[0|5|25|50|75|95|100] = " \
+                  "[(%4lld) | %4lld | %4lld |* %4lld *| %4lld | %4lld | (%4lld)] (%u-th AVGs of " stringify(keccak_f1600_x4_hybrid_asm_v5p_opt) ")\n", \
+                  cycles[0],                                          
+                  cycles[TEST_ITERATIONS*5/100],                      
+                  cycles[TEST_ITERATIONS*25/100],                     
+                  cycles[TEST_ITERATIONS*50/100],                     
+                  cycles[TEST_ITERATIONS*75/100],                     
+                  cycles[TEST_ITERATIONS*95/100],                     
+                  cycles[TEST_ITERATIONS-1], TEST_AVG_CNT );          
+    disable_cyclecounter(); 
+    return( 1 );                                                   
+}
+
 int validate_keccak_f1600_x4_hybrid_asm_v5p(void)                                                     
 {                                                        
     debug_test_start(stringify(validate_keccak_f1600_x4_hybrid_asm_v5p));                            
@@ -190,9 +233,9 @@ int validate_keccak_f1600_x4_hybrid_asm_v5p(void)
     return 1;                                                           
 }
 
-int validate_keccak_f1600_x4_hybrid_asm_v5p_new(void)                                                     
+int validate_keccak_f1600_x4_hybrid_asm_v5p_opt(void)                                                     
 {                                                                       
-    debug_test_start(stringify(validate_keccak_f1600_x4_hybrid_asm_v5p_new));                            
+    debug_test_start(stringify(validate_keccak_f1600_x4_hybrid_asm_v5p_opt));                            
                                                                         
     ALIGN(64)                                                           
     uint64_t state[4*KECCAK_F1600_X1_STATE_SIZE_UINT64] = { 0 };      
@@ -209,7 +252,7 @@ int validate_keccak_f1600_x4_hybrid_asm_v5p_new(void)
                                                                         
     zip_f1600_states( 4, state, ref_state );                          
                                                                         
-    keccak_f1600_x4_hybrid_asm_v5p_new( state );                                                  
+    keccak_f1600_x4_hybrid_asm_v5p_opt( state );                                                  
                                                                         
     for( int i=0; i<4; i++ )                                          
     {                                                                   
