@@ -11,9 +11,10 @@
 
  // Uncomment to use keccak1600_pqax-armv8 implementation of Keccakf1600
  // keccak1600_pqax-armv8 design is based on lazy rotation implementation
+#define KECCAKf1600_LAZY_ROTATION_ORG
 //#define KECCAKf1600_LAZY_ROTATION
 //#define KECCAKf1600_x4_NEON_SCALAR
-#define KECCAKf1600_LAZY_ABSORB
+//#define KECCAKf1600_LAZY_ABSORB
 
 #if defined(__x86_64__) || defined(__aarch64__) || \
     defined(__mips64) || defined(__ia64) || \
@@ -426,6 +427,21 @@ size_t SHA3_Absorb_lazy_absorb(uint64_t A[SHA3_ROWS][SHA3_ROWS], const uint8_t *
 size_t SHA3_Absorb(uint64_t A[SHA3_ROWS][SHA3_ROWS], const uint8_t *inp, size_t len,
                    size_t r) {
     return SHA3_Absorb_lazy_absorb(A, inp, len, r);
+}
+
+#elif (defined(KECCAKf1600_LAZY_ROTATION_ORG))
+size_t SHA3_Squeeze_lazy_org(uint64_t A[SHA3_ROWS][SHA3_ROWS], const uint8_t *out, size_t len,
+                        size_t r);
+
+size_t SHA3_Absorb_lazy_org(uint64_t A[SHA3_ROWS][SHA3_ROWS], const uint8_t *inp, size_t len,
+                       size_t r);
+                        
+void SHA3_Squeeze(uint64_t A[SHA3_ROWS][SHA3_ROWS], uint8_t *out, size_t len, size_t r) {
+   SHA3_Squeeze_lazy_org(A, out, len, r);
+}
+size_t SHA3_Absorb(uint64_t A[SHA3_ROWS][SHA3_ROWS], const uint8_t *inp, size_t len,
+                   size_t r) {
+    return SHA3_Absorb_lazy_org(A, inp, len, r);
 }
 #else
 

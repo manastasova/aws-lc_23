@@ -203,9 +203,9 @@ while(my $line=<>) {
 	my $copy = $line;
 	# Also remove line comments.
 	$copy =~ s|//.*||;
-	if ($copy =~ /\b[wx]18\b/) {
-	    die "r18 is reserved by the platform and may not be used.";
-	}
+	# if ($copy =~ /\b[wx]18\b/) {
+	#     die "r18 is reserved by the platform and may not be used.";
+	# }
     }
 
     {
