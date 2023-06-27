@@ -429,7 +429,7 @@ size_t SHA3_Absorb(uint64_t A[SHA3_ROWS][SHA3_ROWS], const uint8_t *inp, size_t 
     return SHA3_Absorb_lazy_absorb(A, inp, len, r);
 }
 
-#elif (defined(KECCAKf1600_LAZY_ROTATION_ORG))
+#elif defined(KECCAKf1600_LAZY_ROTATION_ORG)
 size_t SHA3_Squeeze_lazy_org(uint64_t A[SHA3_ROWS][SHA3_ROWS], const uint8_t *out, size_t len,
                         size_t r);
 
