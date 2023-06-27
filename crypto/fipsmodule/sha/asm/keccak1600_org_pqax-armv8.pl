@@ -121,8 +121,6 @@ $code.=<<___;
 // Define the stack arrangement for |keccak_f1600_x1_scalar_asm_lazy_org_rotation| function
 #define STACK_OFFSET_CONST                  (2*8)
 #define STACK_OFFSET_COUNT                  (3*8)
-#define STACK_OFFSET_x27_A44                (4*8)
-#define STACK_OFFSET_x27_C2_E3              (5*8)
 
 #define KECCAK_F1600_ROUNDS 24
 
@@ -137,8 +135,6 @@ $code.=<<___;
 
 .macro keccak_f1600_round_initial
     eor $C[4], $A[3][4], $A[4][4]
-    // Store A[4][4] from bit state
-    str x27, [sp, #STACK_OFFSET_x27_A44]  
     eor $C[0], $A[3][0], $A[4][0]
     eor $C[1], $A[3][1], $A[4][1]
     eor $C[2], $A[3][2], $A[4][2]
@@ -186,8 +182,6 @@ $code.=<<___;
     eor $A_[4][2], $A[2][4], $E[4]
     eor $A_[2][4], $A[4][0], $E[0]
     eor $A_[3][0], $A[0][4], $E[4]
-    // Load A[4][4] from bit state
-    ldr x27, [sp, STACK_OFFSET_x27_A44]
     eor $A_[0][4], $A[4][4], $E[4]
     eor $A_[4][4], $A[4][1], $E[1]
     eor $A_[3][1], $A[1][0], $E[0]
@@ -241,10 +235,11 @@ $code.=<<___;
     eor $A[4][3], $tmp0, $A_[4][3], ROR #21
     bic $tmp0, $A_[0][2], $A_[0][1], ROR #63
     eor $A[4][4], $tmp1, $A_[4][4], ROR #53
-    // Store A[4][4] from bit state
-    str x27, [sp, STACK_OFFSET_x27_A44]
     bic $tmp1, $A_[0][3], $A_[0][2], ROR #42
     eor $A[0][0], $A_[0][0], $tmp0, ROR #21
+
+    mov $count, #1
+
     bic $tmp0, $A_[0][4], $A_[0][3], ROR #57
     eor $A[0][1], $tmp1, $A_[0][1], ROR #41
     bic $tmp1, $A_[0][0], $A_[0][4], ROR #50
@@ -252,8 +247,6 @@ $code.=<<___;
     bic $tmp0, $A_[0][1], $A_[0][0], ROR #44
     eor $A[0][3], $tmp1, $A_[0][3], ROR #43
     eor $A[0][4], $tmp0, $A_[0][4], ROR #30
-
-    mov $count, #1
 
     eor $A[0][0], $A[0][0], $cur_const
     str $count, [sp, #STACK_OFFSET_COUNT]
@@ -276,16 +269,10 @@ $code.=<<___;
     eor $C[1], $C[1], $A[4][1], ROR #31
     eor $C[2], $C[2], $A[1][2], ROR #5
     eor $C[3], $C[3], $A[1][3], ROR #36
-    // Store C[2]
-    str x27, [sp, STACK_OFFSET_x27_C2_E3]
     eor $C[0], $C[0], $A[4][0], ROR #25
-    // Load A[4][4] from bit state
-    ldr x27, [sp, STACK_OFFSET_x27_A44]
     eor $C[4], $C[4], $A[4][4], ROR #15
     eor $C[1], $C[1], $A[1][1], ROR #27
     eor $C[3], $C[3], $A[4][3], ROR #2
-    // Load C[2]
-    ldr x27, [sp, STACK_OFFSET_x27_C2_E3]
     eor $E[1], $C[0], $C[2], ROR #61
     ror $C[2], $C[2], 62
     eor $E[3], $C[2], $C[4], ROR #57
@@ -316,12 +303,14 @@ $code.=<<___;
     eor $A_[4][2], $E[4], $A[2][4], ROR #58
     eor $A_[2][4], $E[0], $A[4][0], ROR #25
     eor $A_[3][0], $E[4], $A[0][4], ROR #20
-    // Load A[4][4] from bit state
-    ldr x27, [sp, #STACK_OFFSET_x27_A44]
     eor $A_[0][4], $E[4], $A[4][4], ROR #9
     eor $A_[4][4], $E[1], $A[4][1], ROR #23
     eor $A_[3][1], $E[0], $A[1][0], ROR #61
     eor $A_[0][1], $E[1], $A[1][1], ROR #19
+
+    load_constant_ptr_stack
+    ldr $count, [sp, #STACK_OFFSET_COUNT]
+
     bic $tmp0, $A_[1][2], $A_[1][1], ROR #47
     bic $tmp1, $A_[1][3], $A_[1][2], ROR #42
     eor $A[1][0], $tmp0, $A_[1][0], ROR #39
@@ -350,6 +339,9 @@ $code.=<<___;
     bic $tmp1, $A_[3][0], $A_[3][4], ROR #35
     eor $A[3][2], $tmp0, $A_[3][2], ROR #46
     bic $tmp0, $A_[3][1], $A_[3][0], ROR #9
+
+    ldr $cur_const, [$const_addr, $count, UXTW #3]
+    
     eor $A[3][3], $tmp1, $A_[3][3], ROR #12
     bic $tmp1, $A_[4][2], $A_[4][1], ROR #48
     eor $A[3][4], $tmp0, $A_[3][4], ROR #44
@@ -362,16 +354,9 @@ $code.=<<___;
     bic $tmp1, $A_[4][1], $A_[4][0], ROR #57
     eor $A[4][3], $tmp0, $A_[4][3], ROR #21
     bic $tmp0, $A_[0][2], $A_[0][1], ROR #63
-    eor $A[4][4], $tmp1, $A_[4][4], ROR #53
-    // Store A[4][4] from bit state
-    str x27, [sp, #STACK_OFFSET_x27_A44]
-
-    ldr $count, [sp, #STACK_OFFSET_COUNT]
-    load_constant_ptr_stack
-    ldr $cur_const, [$const_addr, $count, UXTW #3]
     add $count, $count, #1
     str $count , [sp , #STACK_OFFSET_COUNT]
-
+    eor $A[4][4], $tmp1, $A_[4][4], ROR #53
     bic $tmp1, $A_[0][3], $A_[0][2], ROR #42
     eor $A[0][0], $A_[0][0], $tmp0, ROR #21
     bic $tmp0, $A_[0][4], $A_[0][3], ROR #57
@@ -386,8 +371,6 @@ $code.=<<___;
 .endm
 
 .macro final_rotate_store
-    // Load A[4][4] from bit state
-    ldr x27, [sp, #STACK_OFFSET_x27_A44]
     ror $A[1][0], $A[1][0], #(64-3)
     ror $A[0][4], $A[0][4], #(64-44)
     ror $A[2][0], $A[2][0], #(64-25)
