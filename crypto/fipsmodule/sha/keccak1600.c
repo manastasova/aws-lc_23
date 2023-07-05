@@ -14,7 +14,8 @@
  // Publication: https://eprint.iacr.org/2022/1243.pdf
  // Implementation repo: https://gitlab.com/arm-research/security/pqax
  // Integrated file: https://gitlab.com/arm-research/security/pqax/-/blob/master/asm/manual/keccak_f1600/keccak_f1600_x1_scalar_asm_v5.s
-#define KECCAKf1600_LAZY_ROTATION
+// #define KECCAKf1600_LAZY_ROTATION
+#define KECCAKf1600_LAZY_SLOTHY
 
 #if defined(__x86_64__) || defined(__aarch64__) || \
     defined(__mips64) || defined(__ia64) || \
@@ -416,6 +417,21 @@ size_t SHA3_Absorb(uint64_t A[SHA3_ROWS][SHA3_ROWS], const uint8_t *inp, size_t 
 
 void SHA3_Squeeze(uint64_t A[SHA3_ROWS][SHA3_ROWS], uint8_t *out, size_t len, size_t r) {
    SHA3_Squeeze_lazy(A, out, len, r);
+}
+#elif defined(KECCAKf1600_LAZY_SLOTHY)
+size_t SHA3_Absorb_lazy_SLOTHY(uint64_t A[SHA3_ROWS][SHA3_ROWS], const uint8_t *inp, size_t len,
+                       size_t r);
+
+size_t SHA3_Squeeze_lazy_SLOTHY(uint64_t A[SHA3_ROWS][SHA3_ROWS], const uint8_t *out, size_t len,
+                        size_t r);
+
+size_t SHA3_Absorb(uint64_t A[SHA3_ROWS][SHA3_ROWS], const uint8_t *inp, size_t len,
+                   size_t r) {
+    return SHA3_Absorb_lazy_SLOTHY(A, inp, len, r);
+}
+
+void SHA3_Squeeze(uint64_t A[SHA3_ROWS][SHA3_ROWS], uint8_t *out, size_t len, size_t r) {
+   SHA3_Squeeze_lazy_SLOTHY(A, out, len, r);
 }
 #else
 
