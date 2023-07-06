@@ -18,10 +18,21 @@
 #define FIPS202_NAMESPACE(s) FIPS202_PREFIX(s)
 #endif
 
+ //  EXPERIMENTAL PARALLEL KECCAK
+#ifndef EXPERIMENTAL_AWS_LC_HYBRID_KECCAK
+#define EXPERIMENTAL_AWS_LC_HYBRID_KECCAK
+#endif
+
+
 typedef struct {
   uint64_t s[25];
   unsigned int pos;
 } keccak_state;
+
+typedef struct {
+  uint64_t s[4*25];
+  unsigned int pos;
+} keccak_state_x4_hybrid;
 
 #define shake128_init FIPS202_NAMESPACE(shake128_init)
 void shake128_init(keccak_state *state);

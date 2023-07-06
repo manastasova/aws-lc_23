@@ -11,8 +11,11 @@
 
  // Uncomment to use keccak1600_pqax-armv8 implementation of Keccakf1600
  // keccak1600_pqax-armv8 design is based on lazy rotation implementation
-#define KECCAKf1600_LAZY_ROTATION
+ #define KECCAKf1600_LAZY_ROTATION
 // #define KECCAKf1600_LAZY_ABSORB
+#ifndef EXPERIMENTAL_AWS_LC_HYBRID_KECCAK
+#define EXPERIMENTAL_AWS_LC_HYBRID_KECCAK
+#endif
 
 #if defined(__x86_64__) || defined(__aarch64__) || \
     defined(__mips64) || defined(__ia64) || \
@@ -26,7 +29,7 @@
 # define BIT_INTERLEAVE (sizeof(void *) < 8)
 #endif
 
-#if !defined(KECCAK1600_ASM)
+#if (!defined(KECCAK1600_ASM) || defined(EXPERIMENTAL_AWS_LC_HYBRID_KECCAK))
 
 static const uint8_t rhotates[SHA3_ROWS][SHA3_ROWS] = {
     {  0,  1, 62, 28, 27 },
@@ -227,7 +230,7 @@ static void Round(uint64_t R[SHA3_ROWS][SHA3_ROWS], uint64_t A[SHA3_ROWS][SHA3_R
 #endif
 }
 
-static void KeccakF1600(uint64_t A[SHA3_ROWS][SHA3_ROWS])
+void KeccakF1600(uint64_t A[SHA3_ROWS][SHA3_ROWS])
 {
     uint64_t T[SHA3_ROWS][SHA3_ROWS];
     size_t i;
@@ -342,7 +345,7 @@ size_t SHA3_Absorb(uint64_t A[SHA3_ROWS][SHA3_ROWS], const uint8_t *inp, size_t 
     uint64_t *A_flat = (uint64_t *)A;
     size_t i, w = r / 8;
 
-    assert(r < (25 * sizeof(A[0][0])) && (r % 8) == 0);
+    assert(r < (5 * 5 * sizeof(A[0][0])) && (r % 8) == 0);
 
     while (len >= r) {
         for (i = 0; i < w; i++) {
@@ -354,7 +357,12 @@ size_t SHA3_Absorb(uint64_t A[SHA3_ROWS][SHA3_ROWS], const uint8_t *inp, size_t 
 
             A_flat[i] ^= BitInterleave(Ai);
         }
+        // EXPERIMENTAL
+        #ifndef EXPERIMENTAL_AWS_LC_HYBRID_KECCAK
         KeccakF1600(A);
+        #else
+        keccak_f1600_x4_hybrid_asm_v5p_opt((uint64_t *)A);
+        #endif
         len -= r;
     }
 
@@ -368,7 +376,7 @@ void SHA3_Squeeze(uint64_t A[SHA3_ROWS][SHA3_ROWS], uint8_t *out, size_t len, si
     uint64_t *A_flat = (uint64_t *)A;
     size_t i, w = r / 8;
 
-    assert(r < (25 * sizeof(A[0][0])) && (r % 8) == 0);
+    assert(r < (SHA3_ROWS * SHA3_ROWS * sizeof(A[0][0])) && (r % 8) == 0);
 
     while (len != 0) {
         for (i = 0; i < w && len != 0; i++) {
@@ -394,7 +402,11 @@ void SHA3_Squeeze(uint64_t A[SHA3_ROWS][SHA3_ROWS], uint8_t *out, size_t len, si
             len -= 8;
         }
         if (len != 0) {
+            #ifndef EXPERIMENTAL_AWS_LC_HYBRID_KECCAK
             KeccakF1600(A);
+            #else
+            keccak_f1600_x4_hybrid_asm_v5p_opt((uint64_t *)A);
+            #endif
         }
     }
 }

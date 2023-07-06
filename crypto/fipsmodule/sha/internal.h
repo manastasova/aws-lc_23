@@ -19,9 +19,21 @@
 extern "C" {
 #endif
 
+ //  EXPERIMENTAL PARALLEL KECCAK
+#ifndef EXPERIMENTAL_AWS_LC_HYBRID_KECCAK
+#define EXPERIMENTAL_AWS_LC_HYBRID_KECCAK
+#endif
+
+#if !defined(EXPERIMENTAL_AWS_LC_HYBRID_KECCAK)
+#define KECCAK_PARALLEL_FACTOR 1
+#else
+#define KECCAK_PARALLEL_FACTOR 4
+#define KECCAK_PARALLEL_SHA3_ROWS 2
+#endif
+
 // SHA3 constants, from NIST FIPS202.
 // https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.202.pdf
-#define SHA3_ROWS 5
+#define SHA3_ROWS (KECCAK_PARALLEL_SHA3_ROWS * 5)
 #define KECCAK1600_WIDTH 1600
 
 #define SHA3_224_CAPACITY_BYTES 56
@@ -61,7 +73,7 @@ struct keccak_st {
   size_t block_size;                               // cached ctx->digest->block_size
   size_t md_size;                                  // output length, variable in XOF (SHAKE)
   size_t buf_load;                                 // used bytes in below buffer
-  uint8_t buf[SHA3_MAX_BLOCKSIZE];                 // should have at least the max data block size bytes
+  uint8_t buf[KECCAK_PARALLEL_FACTOR * SHA3_MAX_BLOCKSIZE];                 // should have at least the max data block size bytes
   uint8_t pad;
 };
 
@@ -150,6 +162,8 @@ OPENSSL_EXPORT size_t SHA3_Absorb(uint64_t A[SHA3_ROWS][SHA3_ROWS],
 // SHA3_Squeeze generate |out| hash value of |len| bytes.
 OPENSSL_EXPORT void SHA3_Squeeze(uint64_t A[SHA3_ROWS][SHA3_ROWS], 
                                  uint8_t *out, size_t len, size_t r);
+
+OPENSSL_EXPORT void KeccakF1600(uint64_t A[SHA3_ROWS][SHA3_ROWS]);
 
 // validate_keccak_f1600_x4_hybrid_asm_v5p{_new} tests the x4 parallel implementation 
 // of Keccakf1600 and returns 1.

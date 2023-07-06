@@ -5,7 +5,9 @@
 
 #include <stddef.h>
 #include <stdint.h>
+#include <string.h>
 #include "fips202.h"
+#include "../../fipsmodule/sha/internal.h"
 
 #define NROUNDS 24
 #define ROL(a, offset) ((a << offset) ^ (a >> (64-offset)))
