@@ -1653,10 +1653,19 @@ OPENSSL_EXPORT STACK_OF(X509) *SSL_get_peer_cert_chain(const SSL *ssl);
 //
 // This is the same as |SSL_get_peer_cert_chain| except that this function
 // always returns the full chain, i.e. the first element of the return value
-// (if any) will be the leaf certificate. In constrast,
+// (if any) will be the leaf certificate. In contrast,
 // |SSL_get_peer_cert_chain| returns only the intermediate certificates if the
 // |ssl| is a server.
 OPENSSL_EXPORT STACK_OF(X509) *SSL_get_peer_full_cert_chain(const SSL *ssl);
+
+// SSL_get0_verified_chain returns the verified certificate chain of the peer
+// including the peer's end entity certificate. It must be called after a
+// session has been successfully established. If peer verification was not
+// successful (as indicated by |SSL_get_verify_result| not returning |X509_V_OK|)
+// the result will be null. If a verification callback was set with
+// |SSL_CTX_set_cert_verify_callback| or |SSL_set_custom_verify|
+// this function's behavior is undefined.
+OPENSSL_EXPORT STACK_OF(X509) *SSL_get0_verified_chain(const SSL *ssl);
 
 // SSL_get0_peer_certificates returns the peer's certificate chain, or NULL if
 // unavailable or the peer did not use certificates. This is the unverified list
@@ -1735,6 +1744,92 @@ OPENSSL_EXPORT int SSL_get_secure_renegotiation_support(const SSL *ssl);
 OPENSSL_EXPORT int SSL_export_keying_material(
     SSL *ssl, uint8_t *out, size_t out_len, const char *label, size_t label_len,
     const uint8_t *context, size_t context_len, int use_context);
+
+
+// Custom extensions.
+//
+// The custom extension functions allow TLS extensions to be added to
+// ClientHello and ServerHello messages.
+
+// SSL_custom_ext_add_cb is a callback function that is called when the
+// ClientHello (for clients) or ServerHello (for servers) is constructed. In
+// the case of a server, this callback will only be called for a given
+// extension if the ClientHello contained that extension – it's not possible to
+// inject extensions into a ServerHello that the client didn't request.
+//
+// When called, |extension_value| will contain the extension number that is
+// being considered for addition (so that a single callback can handle multiple
+// extensions). If the callback wishes to include the extension, it must set
+// |*out| to point to |*out_len| bytes of extension contents and return one. In
+// this case, the corresponding |SSL_custom_ext_free_cb| callback will later be
+// called with the value of |*out| once that data has been copied.
+//
+// If the callback does not wish to add an extension it must return zero.
+//
+// Alternatively, the callback can abort the connection by setting
+// |*out_alert_value| to a TLS alert number and returning -1.
+typedef int (*SSL_custom_ext_add_cb)(SSL *ssl, unsigned extension_value,
+                                     const uint8_t **out, size_t *out_len,
+                                     int *out_alert_value, void *add_arg);
+
+// SSL_custom_ext_free_cb is a callback function that is called by AWS-LC iff
+// an |SSL_custom_ext_add_cb| callback previously returned one. In that case,
+// this callback is called and passed the |out| pointer that was returned by
+// the add callback. This is to free any dynamically allocated data created by
+// the add callback.
+typedef void (*SSL_custom_ext_free_cb)(SSL *ssl, unsigned extension_value,
+                                       const uint8_t *out, void *add_arg);
+
+// SSL_custom_ext_parse_cb is a callback function that is called by AWS-LC to
+// parse an extension from the peer: that is from the ServerHello for a client
+// and from the ClientHello for a server.
+//
+// When called, |extension_value| will contain the extension number and the
+// contents of the extension are |contents_len| bytes at |contents|.
+//
+// The callback must return one to continue the handshake. Otherwise, if it
+// returns zero, a fatal alert with value |*out_alert_value| is sent and the
+// handshake is aborted.
+typedef int (*SSL_custom_ext_parse_cb)(SSL *ssl, unsigned extension_value,
+                                       const uint8_t *contents,
+                                       size_t contents_len,
+                                       int *out_alert_value, void *parse_arg);
+
+// SSL_extension_supported returns one iff AWS-LC internally handles
+// extensions of type |extension_value|. This can be used to avoid registering
+// custom extension handlers for extensions that a future version of AWS-LC
+// may handle internally.
+OPENSSL_EXPORT int SSL_extension_supported(unsigned extension_value);
+
+// SSL_CTX_add_client_custom_ext registers callback functions for handling
+// custom TLS extensions for client connections.
+//
+// If |add_cb| is NULL then an empty extension will be added in each
+// ClientHello. Otherwise, see the comment for |SSL_custom_ext_add_cb| about
+// this callback.
+//
+// The |free_cb| may be NULL if |add_cb| doesn't dynamically allocate data that
+// needs to be freed.
+//
+// It returns one on success or zero on error. It's always an error to register
+// callbacks for the same extension twice, or to register callbacks for an
+// extension that AWS-LC handles internally. See |SSL_extension_supported| to
+// discover, at runtime, which extensions AWS-LC handles internally.
+OPENSSL_EXPORT int SSL_CTX_add_client_custom_ext(
+    SSL_CTX *ctx, unsigned extension_value, SSL_custom_ext_add_cb add_cb,
+    SSL_custom_ext_free_cb free_cb, void *add_arg,
+    SSL_custom_ext_parse_cb parse_cb, void *parse_arg);
+
+// SSL_CTX_add_server_custom_ext is the same as
+// |SSL_CTX_add_client_custom_ext|, but for server connections.
+//
+// Unlike on the client side, if |add_cb| is NULL no extension will be added.
+// The |add_cb|, if any, will only be called if the ClientHello contained a
+// matching extension.
+OPENSSL_EXPORT int SSL_CTX_add_server_custom_ext(
+    SSL_CTX *ctx, unsigned extension_value, SSL_custom_ext_add_cb add_cb,
+    SSL_custom_ext_free_cb free_cb, void *add_arg,
+    SSL_custom_ext_parse_cb parse_cb, void *parse_arg);
 
 
 // Sessions.
@@ -3776,7 +3871,8 @@ enum ssl_early_data_reason_t BORINGSSL_ENUM_INT {
   // The application settings did not match the session.
   ssl_early_data_alps_mismatch = 14,
   // The value of the largest entry.
-  ssl_early_data_reason_max_value = ssl_early_data_alps_mismatch,
+  ssl_early_data_unsupported_with_custom_extension = 15,
+  ssl_early_data_reason_max_value = ssl_early_data_unsupported_with_custom_extension,
 };
 
 // SSL_get_early_data_reason returns details why 0-RTT was accepted or rejected
@@ -4508,9 +4604,10 @@ OPENSSL_EXPORT int SSL_was_key_usage_invalid(const SSL *ssl);
 #define SSL_ST_RENEGOTIATE (0x04 | SSL_ST_INIT)
 #define SSL_ST_BEFORE (0x05 | SSL_ST_INIT)
 
-// TLS_ST_* are aliases for |SSL_ST_*| for OpenSSL 1.1.0 compatibility.
-#define TLS_ST_OK SSL_ST_OK
-#define TLS_ST_BEFORE SSL_ST_BEFORE
+// OSSL_HANDSHAKE_STATE enumerates possible TLS states returned from
+// |SSL_get_state| and |SSL_state|. TLS_ST_* are aliases for |SSL_ST_*| for
+// OpenSSL 1.1.0 compatibility.
+typedef enum {TLS_ST_OK = SSL_ST_OK, TLS_ST_BEFORE = SSL_ST_INIT} OSSL_HANDSHAKE_STATE;
 
 // SSL_CB_* are possible values for the |type| parameter in the info
 // callback and the bitmasks that make them up.

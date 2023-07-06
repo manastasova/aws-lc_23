@@ -4353,6 +4353,11 @@ TEST_P(SSLVersionTest, AutoChain) {
       ChainsEqual(SSL_get_peer_full_cert_chain(client_.get()), {cert_.get()}));
   EXPECT_TRUE(
       ChainsEqual(SSL_get_peer_full_cert_chain(server_.get()), {cert_.get()}));
+  // This test overrides the verification logic  with VerifySucceed to always
+  // succeed without actually verifying anything and setting the verified chain
+  // on success
+  EXPECT_EQ(SSL_get0_verified_chain(server_.get()), nullptr);
+  EXPECT_EQ(SSL_get0_verified_chain(client_.get()), nullptr);
 
   // If auto-chaining is enabled, then the intermediate is sent.
   SSL_CTX_clear_mode(client_ctx_.get(), SSL_MODE_NO_AUTO_CHAIN);
@@ -4653,6 +4658,17 @@ TEST_P(SSLVersionTest, GetServerName) {
                SSL_get_servername(server_.get(), TLSEXT_NAMETYPE_host_name));
 }
 
+TEST_P(SSLVersionTest, GetState) {
+  ClientConfig config;
+  ASSERT_TRUE(Connect(config));
+  int server_state = SSL_get_state(server_.get());
+  EXPECT_EQ(server_state, TLS_ST_OK);
+  EXPECT_EQ(server_state, SSL_ST_OK);
+  int client_state = SSL_state(client_.get());
+  EXPECT_EQ(client_state, TLS_ST_OK);
+  EXPECT_EQ(client_state, SSL_ST_OK);
+}
+
 // Test that session cache mode bits are honored in the client session callback.
 TEST_P(SSLVersionTest, ClientSessionCacheMode) {
   SSL_CTX_set_session_cache_mode(client_ctx_.get(), SSL_SESS_CACHE_OFF);
@@ -4767,6 +4783,7 @@ TEST(SSLTest, GetCertificate) {
 
   X509 *cert2 = SSL_CTX_get0_certificate(ctx.get());
   ASSERT_TRUE(cert2);
+
   X509 *cert3 = SSL_get_certificate(ssl.get());
   ASSERT_TRUE(cert3);
 
@@ -4778,6 +4795,77 @@ TEST(SSLTest, GetCertificate) {
   long der_len = i2d_X509(cert.get(), &der);
   ASSERT_LT(0, der_len);
   bssl::UniquePtr<uint8_t> free_der(der);
+
+  uint8_t *der2 = nullptr;
+  long der2_len = i2d_X509(cert2, &der2);
+  ASSERT_LT(0, der2_len);
+  bssl::UniquePtr<uint8_t> free_der2(der2);
+
+  uint8_t *der3 = nullptr;
+  long der3_len = i2d_X509(cert3, &der3);
+  ASSERT_LT(0, der3_len);
+  bssl::UniquePtr<uint8_t> free_der3(der3);
+
+  // They must also encode identically.
+  EXPECT_EQ(Bytes(der, der_len), Bytes(der2, der2_len));
+  EXPECT_EQ(Bytes(der, der_len), Bytes(der3, der3_len));
+}
+
+TEST(SSLTest, GetCertificateExData) {
+  bssl::UniquePtr<SSL_CTX> ctx(SSL_CTX_new(TLS_method()));
+  ASSERT_TRUE(ctx);
+  bssl::UniquePtr<X509> cert = GetTestCertificate();
+  ASSERT_TRUE(cert);
+
+  int ex_data_index =
+      X509_get_ex_new_index(0, nullptr, nullptr, nullptr, nullptr);
+  const char ex_data[] = "AWS-LC external data";
+  ASSERT_TRUE(X509_set_ex_data(cert.get(), ex_data_index, (void *)ex_data));
+  ASSERT_TRUE(X509_get_ex_data(cert.get(), ex_data_index));
+
+  ASSERT_TRUE(SSL_CTX_use_certificate(ctx.get(), cert.get()));
+  bssl::UniquePtr<SSL> ssl(SSL_new(ctx.get()));
+  ASSERT_TRUE(ssl);
+
+  X509 *cert2 = SSL_CTX_get0_certificate(ctx.get());
+  ASSERT_TRUE(cert2);
+  const char *ex_data2 = (const char *)X509_get_ex_data(cert2, ex_data_index);
+  EXPECT_TRUE(ex_data2);
+
+  X509 *cert3 = SSL_get_certificate(ssl.get());
+  ASSERT_TRUE(cert3);
+  const char *ex_data3 = (const char *)X509_get_ex_data(cert3, ex_data_index);
+  EXPECT_TRUE(ex_data3);
+
+  // The external data extracted must be identical.
+  EXPECT_EQ(ex_data2, ex_data);
+  EXPECT_EQ(ex_data3, ex_data);
+}
+
+TEST(SSLTest, GetCertificateASN1) {
+  bssl::UniquePtr<SSL_CTX> ctx(SSL_CTX_new(TLS_method()));
+  ASSERT_TRUE(ctx);
+  bssl::UniquePtr<X509> cert = GetTestCertificate();
+  ASSERT_TRUE(cert);
+
+  // Convert cert to ASN1 to pass in.
+  uint8_t *der = nullptr;
+  size_t der_len = i2d_X509(cert.get(), &der);
+  bssl::UniquePtr<uint8_t> free_der(der);
+
+  ASSERT_TRUE(SSL_CTX_use_certificate_ASN1(ctx.get(), der_len, der));
+  bssl::UniquePtr<SSL> ssl(SSL_new(ctx.get()));
+  ASSERT_TRUE(ssl);
+
+  X509 *cert2 = SSL_CTX_get0_certificate(ctx.get());
+  ASSERT_TRUE(cert2);
+
+  X509 *cert3 = SSL_get_certificate(ssl.get());
+  ASSERT_TRUE(cert3);
+
+  // The old and new certificates must be identical.
+  EXPECT_EQ(0, X509_cmp(cert.get(), cert2));
+  EXPECT_EQ(0, X509_cmp(cert.get(), cert3));
 
   uint8_t *der2 = nullptr;
   long der2_len = i2d_X509(cert2, &der2);
@@ -6510,6 +6598,9 @@ TEST_P(SSLVersionTest, SessionPropertiesThreads) {
     EXPECT_TRUE(SSL_get_peer_cert_chain(ssl));
     bssl::UniquePtr<X509> peer(SSL_get_peer_certificate(ssl));
     EXPECT_TRUE(peer);
+    STACK_OF(X509) *verified_chain= SSL_get0_verified_chain(ssl);
+    // This test sets a custom verifier callback which doesn't actually do any verification
+    EXPECT_FALSE(verified_chain);
     EXPECT_TRUE(SSL_get_current_cipher(ssl));
     EXPECT_TRUE(SSL_get_curve_id(ssl));
   };
@@ -6527,6 +6618,116 @@ TEST_P(SSLVersionTest, SessionPropertiesThreads) {
   EXPECT_EQ(SSL_CTX_sess_hits(client_ctx_.get()), 2);
 }
 #endif  // OPENSSL_THREADS
+
+TEST_P(SSLVersionTest, SimpleVerifiedChain) {
+  ASSERT_TRUE(UseCertAndKey(server_ctx_.get()));
+  ASSERT_TRUE(X509_STORE_add_cert(SSL_CTX_get_cert_store(client_ctx_.get()),
+                                  cert_.get()));
+  SSL_CTX_set_verify(client_ctx_.get(),
+                     SSL_VERIFY_PEER | SSL_VERIFY_FAIL_IF_NO_PEER_CERT,
+                     nullptr);
+  X509_VERIFY_PARAM_set_flags(SSL_CTX_get0_param(client_ctx_.get()),
+                              X509_V_FLAG_NO_CHECK_TIME);
+
+
+  UniquePtr<SSL> client_ssl, server_ssl;
+  ClientConfig config;
+  ASSERT_TRUE(ConnectClientAndServer(&client_ssl, &server_ssl, client_ctx_.get(),
+                                     server_ctx_.get(), config));
+
+  STACK_OF(X509) *client_chain = SSL_get_peer_full_cert_chain(client_ssl.get());
+  STACK_OF(X509) *verified_client_chain = SSL_get0_verified_chain(client_ssl.get());
+  EXPECT_TRUE(verified_client_chain);
+
+  STACK_OF(X509) *verified_server_chain = SSL_get0_verified_chain(server_ssl.get());
+  // The client didn't send a certificate so the server shouldn't have anything
+  EXPECT_FALSE(verified_server_chain);
+
+  // UseCertAndKey sets a single cert that is directly trusted, it is the only
+  // one sent, and only one needed for verification
+  EXPECT_EQ(sk_X509_num(client_chain), 1UL);
+  EXPECT_EQ(X509_cmp(sk_X509_value(client_chain, 0), cert_.get()), 0);
+
+  EXPECT_EQ(sk_X509_num(verified_client_chain), 1UL);
+  EXPECT_EQ(X509_cmp(sk_X509_value(verified_client_chain, 0), cert_.get()), 0);
+}
+
+TEST_P(SSLVersionTest, VerifiedChain) {
+  ASSERT_TRUE(X509_STORE_add_cert(SSL_CTX_get_cert_store(client_ctx_.get()),
+                                  cert_.get()));
+  SSL_CTX_set_verify(client_ctx_.get(),
+                     SSL_VERIFY_PEER | SSL_VERIFY_FAIL_IF_NO_PEER_CERT,
+                     nullptr);
+  X509_VERIFY_PARAM_set_flags(SSL_CTX_get0_param(client_ctx_.get()),
+                              X509_V_FLAG_NO_CHECK_TIME);
+
+  // UseCertAndKey sets the leaf cert the server will use and ensures the client
+  // trusts the server's cert
+  ASSERT_TRUE(UseCertAndKey(server_ctx_.get()));
+
+  // Add two extra certs to the chain
+  bssl::UniquePtr<STACK_OF(X509)> chain(sk_X509_new_null());
+  bssl::UniquePtr<X509> cert1 = GetECDSATestCertificate();
+  ASSERT_TRUE(sk_X509_push(chain.get(), cert1.get()));
+  X509_up_ref(cert1.get());
+
+  bssl::UniquePtr<X509> cert2 = GetTestCertificate();
+  ASSERT_TRUE(sk_X509_push(chain.get(), cert2.get()));
+  X509_up_ref(cert2.get());
+
+  SSL_CTX_set1_chain(server_ctx_.get(), chain.get());
+
+  UniquePtr<SSL> client_ssl, server_ssl;
+  ClientConfig config;
+  ASSERT_TRUE(ConnectClientAndServer(&client_ssl, &server_ssl, client_ctx_.get(),
+                                     server_ctx_.get(), config));
+
+  // The client didn't send a certificate so the server shouldn't have anything
+  STACK_OF(X509) *verified_client_chain = SSL_get0_verified_chain(server_ssl.get());
+  EXPECT_FALSE(verified_client_chain);
+  STACK_OF(X509) *client_chain = SSL_get_peer_full_cert_chain(server_ssl.get());
+  EXPECT_FALSE(client_chain);
+
+  // The server sent a chain that the client can verify, the client directly
+  // trusts the server's certificate
+  STACK_OF(X509) *verified_server_chain = SSL_get0_verified_chain(client_ssl.get());
+  EXPECT_EQ(sk_X509_num(verified_server_chain), 1UL);
+  EXPECT_EQ(X509_cmp(sk_X509_value(verified_server_chain, 0), cert_.get()), 0);
+
+  // The server sent two extra certs that are unneeded for verification,
+  // but it is included in the unverified chain
+  STACK_OF(X509) *server_chain = SSL_get_peer_full_cert_chain(client_ssl.get());
+  EXPECT_EQ(sk_X509_num(server_chain), 3UL);
+  EXPECT_EQ(X509_cmp(sk_X509_value(server_chain, 0), cert_.get()), 0);
+  EXPECT_EQ(X509_cmp(sk_X509_value(server_chain, 1), cert1.get()), 0);
+  EXPECT_EQ(X509_cmp(sk_X509_value(server_chain, 2), cert2.get()), 0);
+}
+
+TEST_P(SSLVersionTest, FailedHandshakeVerifiedChain) {
+  SSL_CTX_set_verify(client_ctx_.get(),
+                     SSL_VERIFY_PEER | SSL_VERIFY_FAIL_IF_NO_PEER_CERT,
+                     nullptr);
+  X509_VERIFY_PARAM_set_flags(SSL_CTX_get0_param(client_ctx_.get()),
+                              X509_V_FLAG_NO_CHECK_TIME);
+
+  ASSERT_TRUE(UseCertAndKey(server_ctx_.get()));
+  UniquePtr<SSL> client_ssl, server_ssl;
+
+  ASSERT_TRUE(CreateClientAndServer(&client_ssl, &server_ssl, client_ctx_.get(), server_ctx_.get()));
+  ASSERT_FALSE(CompleteHandshakes(client_ssl.get(), server_ssl.get()));
+  EXPECT_NE(SSL_get_verify_result(client_ssl.get()), X509_V_OK);
+
+  STACK_OF(X509) *client_chain = SSL_get_peer_full_cert_chain(client_ssl.get());
+  ASSERT_TRUE(client_chain);
+  EXPECT_EQ(sk_X509_num(client_chain), 1UL);
+  EXPECT_EQ(X509_cmp(sk_X509_value(client_chain, 0), cert_.get()), 0);
+
+
+  // For a failed handshake SSL_get0_verified_chain will return null
+  STACK_OF(X509) *verified_client_chain = SSL_get0_verified_chain(client_ssl.get());
+  EXPECT_FALSE(verified_client_chain);
+}
+
 
 TEST_P(SSLVersionTest, SessionMissCache) {
   if (version() == TLS1_3_VERSION) {

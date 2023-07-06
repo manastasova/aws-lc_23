@@ -234,7 +234,7 @@ static bool ssl_cert_set_chain(CERT *cert, STACK_OF(X509) *chain) {
   return true;
 }
 
-static void ssl_crypto_x509_cert_flush_cached_leaf(CERT *cert) {
+static void ssl_crypto_x509_cert_flush_leaf(CERT *cert) {
   X509_free(cert->x509_leaf);
   cert->x509_leaf = nullptr;
 }
@@ -260,7 +260,7 @@ static bool ssl_crypto_x509_check_client_CA_list(
 }
 
 static void ssl_crypto_x509_cert_clear(CERT *cert) {
-  ssl_crypto_x509_cert_flush_cached_leaf(cert);
+  ssl_crypto_x509_cert_flush_leaf(cert);
   ssl_crypto_x509_cert_flush_cached_chain(cert);
 
   X509_free(cert->x509_stash);
@@ -322,6 +322,10 @@ static bool ssl_crypto_x509_session_cache_objects(SSL_SESSION *sess) {
 
   X509_free(sess->x509_peer);
   sess->x509_peer = leaf.release();
+
+  sk_X509_pop_free(sess->x509_verified_chain, X509_free);
+  sess->x509_verified_chain = nullptr;
+
   return true;
 }
 
@@ -341,6 +345,13 @@ static bool ssl_crypto_x509_session_dup(SSL_SESSION *new_session,
       return false;
     }
   }
+  if (session->x509_verified_chain != nullptr) {
+    new_session->x509_verified_chain =
+        X509_chain_up_ref(session->x509_verified_chain);
+    if (new_session->x509_verified_chain == nullptr) {
+      return false;
+    }
+  }
 
   return true;
 }
@@ -352,6 +363,8 @@ static void ssl_crypto_x509_session_clear(SSL_SESSION *session) {
   session->x509_chain = nullptr;
   sk_X509_pop_free(session->x509_chain_without_leaf, X509_free);
   session->x509_chain_without_leaf = nullptr;
+  sk_X509_pop_free(session->x509_verified_chain, X509_free);
+  session->x509_verified_chain = nullptr;
 }
 
 static bool ssl_crypto_x509_session_verify_cert_chain(SSL_SESSION *session,
@@ -414,6 +427,9 @@ static bool ssl_crypto_x509_session_verify_cert_chain(SSL_SESSION *session,
     *out_alert = SSL_alert_from_verify_result(session->verify_result);
     return false;
   }
+
+  sk_X509_pop_free(session->x509_verified_chain, X509_free);
+  session->x509_verified_chain = X509_STORE_CTX_get1_chain(ctx.get());
 
   ERR_clear_error();
   return true;
@@ -510,7 +526,7 @@ const SSL_X509_METHOD ssl_crypto_x509_method = {
   ssl_crypto_x509_cert_free,
   ssl_crypto_x509_cert_dup,
   ssl_crypto_x509_cert_flush_cached_chain,
-  ssl_crypto_x509_cert_flush_cached_leaf,
+  ssl_crypto_x509_cert_flush_leaf,
   ssl_crypto_x509_session_cache_objects,
   ssl_crypto_x509_session_dup,
   ssl_crypto_x509_session_clear,
@@ -565,6 +581,16 @@ STACK_OF(X509) *SSL_get_peer_full_cert_chain(const SSL *ssl) {
   }
 
   return session->x509_chain;
+}
+
+STACK_OF(X509) *SSL_get0_verified_chain(const SSL *ssl) {
+  check_ssl_x509_method(ssl);
+  SSL_SESSION *session = SSL_get_session(ssl);
+  if (session == NULL || SSL_get_verify_result(ssl) != X509_V_OK) {
+    return NULL;
+  }
+  
+  return session->x509_verified_chain;
 }
 
 int SSL_CTX_set_purpose(SSL_CTX *ctx, int purpose) {
@@ -732,6 +758,12 @@ static int ssl_use_certificate(CERT *cert, X509 *x) {
     return 0;
   }
 
+  // We set the |x509_leaf| here to prevent any external data set from being
+  // lost. The rest of the chain still uses |CRYPTO_BUFFER|s.
+  X509_free(cert->x509_leaf);
+  X509_up_ref(x);
+  cert->x509_leaf = x;
+
   UniquePtr<CRYPTO_BUFFER> buffer = x509_to_buffer(x);
   if (!buffer) {
     return 0;
@@ -754,7 +786,8 @@ int SSL_CTX_use_certificate(SSL_CTX *ctx, X509 *x) {
 }
 
 // ssl_cert_cache_leaf_cert sets |cert->x509_leaf|, if currently NULL, from the
-// first element of |cert->chain|.
+// first element of |cert->chain|. This is the case when certs are set with
+// |SSL_CTX_use_certificate_ASN1| or |SSL_use_certificate_ASN1| in AWS-LC.
 static int ssl_cert_cache_leaf_cert(CERT *cert) {
   assert(cert->x509_method);
 

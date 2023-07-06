@@ -140,8 +140,12 @@ else()
   endif()
 
   if(DEFINED ASSEMBLY_SOURCE)
-    message("Copying platform assembly files from ${ASSEMBLY_SOURCE} to ${CMAKE_CURRENT_BINARY_DIR}")
-    file(COPY ${ASSEMBLY_SOURCE}/ DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+    if(EXISTS ${ASSEMBLY_SOURCE})
+      message("Copying platform assembly files from ${ASSEMBLY_SOURCE} to ${CMAKE_CURRENT_BINARY_DIR}")
+      file(COPY ${ASSEMBLY_SOURCE}/ DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+    else()
+      message(STATUS "${ASSEMBLY_SOURCE} assembly files do not exist.")
+    endif()
   endif()
 
 endif()
@@ -549,7 +553,7 @@ function(build_libcrypto name module_source)
     target_link_libraries(${name} PUBLIC pthread)
   endif()
 
-  target_include_directories(${name} SYSTEM PUBLIC
+  target_include_directories(${name} PUBLIC
           $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>
           $<INSTALL_INTERFACE:include>)
 endfunction()
