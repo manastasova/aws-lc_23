@@ -203,12 +203,9 @@ while(my $line=<>) {
 	my $copy = $line;
 	# Also remove line comments.
 	$copy =~ s|//.*||;
-    # Add exception for using register x18 for keccak1600_pqax-armv8.S
-        if ($copy =~ /\b[wx]18\b/) {
-            if (($output != "keccak1600_pqax-armv8.S") && ($flavour = "linux")){   
-                die "r18 is reserved by the platform and may not be used.";
-            }
-        }
+	if ($copy =~ /\b[wx]18\b/) {
+	    die "r18 is reserved by the platform and may not be used.";
+	}
     }
 
     {
