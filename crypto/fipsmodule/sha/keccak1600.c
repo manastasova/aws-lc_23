@@ -357,12 +357,54 @@ size_t SHA3_Absorb(uint64_t A[SHA3_ROWS][SHA3_ROWS], const uint8_t *inp, size_t 
 
             A_flat[i] ^= BitInterleave(Ai);
         }
-        // EXPERIMENTAL
-        #ifndef EXPERIMENTAL_AWS_LC_HYBRID_KECCAK
         KeccakF1600(A);
-        #else
+        len -= r;
+    }
+
+    return len;
+}
+
+ // SHA3_Absorb_hybrid can be called multiple times; at each invocation the
+ // largest multiple of |r| out of |len| bytes are processed. The
+ // remaining amount of bytes is returned. This is done to spare caller
+ // trouble of calculating the largest multiple of |r|. |r| can be viewed
+ // as blocksize. It is commonly (1600 - 256*n)/8, e.g. 168, 136, 104,
+ // 72, but can also be (1600 - 448)/8 = 144. All this means that message
+ // padding and intermediate sub-block buffering, byte- or bitwise, is
+ // caller's responsibility.
+size_t SHA3_Absorb_hybrid(uint64_t A[SHA3_ROWS_PARALLEL][SHA3_ROWS], const uint8_t *inp, size_t len,
+                   size_t r)
+{
+    uint64_t *A_flat = (uint64_t *)A;
+    size_t i, w = r / 8;
+
+    assert(r < (5 * 5 * sizeof(A[0][0])) && (r % 8) == 0);
+    printf("----->\n");
+        for (int k = 0; k < 4; k++) {
+            for (int j = 0; j < 34; j++) {       
+                printf("%lx ", inp[k*34+j]);
+        }
+    printf("\n\n");
+  } 
+
+    while (len >= r) {
+        for (i = 0; i < w; i++) {
+            uint64_t Ai = (uint64_t)inp[0]       | (uint64_t)inp[1] << 8  |
+                          (uint64_t)inp[2] << 16 | (uint64_t)inp[3] << 24 |
+                          (uint64_t)inp[4] << 32 | (uint64_t)inp[5] << 40 |
+                          (uint64_t)inp[6] << 48 | (uint64_t)inp[7] << 56;
+            inp += 8;
+
+            A_flat[i] ^= BitInterleave(Ai);
+        }
+        // EXPERIMENTAL
+        for (int k = 0; k < 4*5; k++) {
+            for (int j = 0; j < 5; j++) {       
+                printf("A ->>%lx ", A[k][j]);
+            }
+            printf("\n\n");
+        } 
         keccak_f1600_x4_hybrid_asm_v5p_opt((uint64_t *)A);
-        #endif
         len -= r;
     }
 
@@ -402,11 +444,49 @@ void SHA3_Squeeze(uint64_t A[SHA3_ROWS][SHA3_ROWS], uint8_t *out, size_t len, si
             len -= 8;
         }
         if (len != 0) {
-            #ifndef EXPERIMENTAL_AWS_LC_HYBRID_KECCAK
-            KeccakF1600(A);
-            #else
+            // #ifndef EXPERIMENTAL_AWS_LC_HYBRID_KECCAK
+             KeccakF1600(A);
+            // #else
+            // keccak_f1600_x4_hybrid_asm_v5p_opt((uint64_t *)A);
+            //#endif
+        }
+    }
+}
+
+ // SHA3_Squeeze is called once at the end to generate |out| hash value
+ // of |len| bytes.
+void SHA3_Squeeze_x4_hybrid(uint64_t A[SHA3_ROWS_PARALLEL][SHA3_ROWS], uint8_t *out, size_t len, size_t r)
+{
+    uint64_t *A_flat = (uint64_t *)A;
+    size_t i, w = r / 8;
+
+    assert(r < (SHA3_ROWS * SHA3_ROWS * sizeof(A[0][0])) && (r % 8) == 0);
+
+    while (len != 0) {
+        for (i = 0; i < w && len != 0; i++) {
+            uint64_t Ai = BitDeinterleave(A_flat[i]);
+
+            if (len < 8) {
+                for (i = 0; i < len; i++) {
+                    *out++ = (uint8_t)Ai;
+                    Ai >>= 8;
+                }
+                return;
+            }
+
+            out[0] = (uint8_t)(Ai);
+            out[1] = (uint8_t)(Ai >> 8);
+            out[2] = (uint8_t)(Ai >> 16);
+            out[3] = (uint8_t)(Ai >> 24);
+            out[4] = (uint8_t)(Ai >> 32);
+            out[5] = (uint8_t)(Ai >> 40);
+            out[6] = (uint8_t)(Ai >> 48);
+            out[7] = (uint8_t)(Ai >> 56);
+            out += 8;
+            len -= 8;
+        }
+        if (len != 0) {
             keccak_f1600_x4_hybrid_asm_v5p_opt((uint64_t *)A);
-            #endif
         }
     }
 }

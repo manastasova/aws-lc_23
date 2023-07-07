@@ -1,6 +1,7 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <string.h>
+#include <stdio.h>
 #include "params.h"
 #include "symmetric.h"
 
@@ -63,15 +64,20 @@ void kyber_shake128_absorb(keccak_state *state,
  *              - uint8_t j: additional byte of input
  **************************************************/
 void kyber_shake128_absorb_hybrid(keccak_state_x4_hybrid *state,
-                           const uint8_t seed[KYBER_SYMBYTES], uint8_t transposed,
-                           uint8_t y) {
-  // TODO:: Define constant for parallel factor
-  uint8_t extseed[4 * (KYBER_SYMBYTES + 2)];
+                           const uint8_t seed[KYBER_SYMBYTES], uint8_t transposed) {
 
-  for (int i = 0; i < 4; i++)
-  {
-      memcpy(extseed + i * (KYBER_SYMBYTES +2), seed, KYBER_SYMBYTES);
-      if (transposed) {
+  uint8_t extseed[KECCAK_PARALLEL_FACTOR * (KYBER_SYMBYTES + 2)];
+
+  for (int i = 0; i < KYBER_SYMBYTES; i++) {
+    for (int j = 0; j < KECCAK_PARALLEL_FACTOR; j++) {
+      extseed[j * (KYBER_SYMBYTES + 2) + i] = seed[i];
+    }
+  }
+
+  // TODO:: Can do better here  
+  for (int i = 0; i < KECCAK_PARALLEL_FACTOR; i++)
+  { 
+      if (transposed == 1) {
           extseed[i * (KYBER_SYMBYTES + 2) + KYBER_SYMBYTES + 0] = i/2;
           extseed[i * (KYBER_SYMBYTES + 2) + KYBER_SYMBYTES + 1] = i%2;
       }
@@ -79,26 +85,43 @@ void kyber_shake128_absorb_hybrid(keccak_state_x4_hybrid *state,
           extseed[i * (KYBER_SYMBYTES + 2) + KYBER_SYMBYTES + 0] = i%2;
           extseed[i * (KYBER_SYMBYTES + 2) + KYBER_SYMBYTES + 1] = i/2;
       }
-
   }
   int p = 0x1F; 
 
-// TODO:: Define constant for parallel factor
-  for (int i = 0; i < 4 * 25; i++)
+
+  for (int i = 0; i < KECCAK_PARALLEL_FACTOR * 25; i++)
   {
     state->s[i] = 0;
   }
   
+  for (int j = 0; j < KECCAK_PARALLEL_FACTOR; j++) {
+    for (int i = 0; i < KYBER_SYMBYTES+2; i++) {
+      printf("%.2x ", extseed[j * (KYBER_SYMBYTES + 2) + i]);
+    }
+    printf("\n\n");
+  }
+  
   int i = 0; 
   int rem = 0;
-  SHA3_Absorb((uint64_t (*)[SHA3_ROWS])state->s, extseed, sizeof(extseed), SHAKE128_RATE);
+  // TODO:: DOUBLE CHECK
+  rem = SHA3_Absorb_hybrid((uint64_t (*)[SHA3_ROWS])state->s, extseed, KYBER_SYMBYTES + 2, SHAKE128_RATE);
   
   for(i=0;i<rem;i++){
-    state->s[i/8] ^= (uint64_t)extseed[i + sizeof(extseed) - rem] << 8*(i%8);
+    state->s[0 * KECCAK1600_WIDTH/64 + i/8] ^= (uint64_t)extseed[0 * (KYBER_SYMBYTES + 2) + i + KYBER_SYMBYTES + 2 - rem] << 8*(i%8);
+    state->s[1 * KECCAK1600_WIDTH/64 + i/8] ^= (uint64_t)extseed[1 * (KYBER_SYMBYTES + 2) + i + KYBER_SYMBYTES + 2 - rem] << 8*(i%8);
+    state->s[2 * KECCAK1600_WIDTH/64 + i/8] ^= (uint64_t)extseed[2 * (KYBER_SYMBYTES + 2) + i + KYBER_SYMBYTES + 2 - rem] << 8*(i%8);
+    state->s[3 * KECCAK1600_WIDTH/64 + i/8] ^= (uint64_t)extseed[3 * (KYBER_SYMBYTES + 2) + i + KYBER_SYMBYTES + 2 - rem] << 8*(i%8);
   }
 
-  state->s[i/8] ^= (uint64_t)p << 8*(i%8);
-  state->s[(SHAKE128_RATE-1)/8] ^= 1ULL << 63;
+  state->s[0 * KECCAK1600_WIDTH/64 + i/8] ^= (uint64_t)p << 8*(i%8);
+  state->s[1 * KECCAK1600_WIDTH/64 + i/8] ^= (uint64_t)p << 8*(i%8);
+  state->s[2 * KECCAK1600_WIDTH/64 + i/8] ^= (uint64_t)p << 8*(i%8);
+  state->s[3 * KECCAK1600_WIDTH/64 + i/8] ^= (uint64_t)p << 8*(i%8);
+
+  state->s[0 * KECCAK1600_WIDTH/64 + (SHAKE128_RATE-1)/8] ^= 1ULL << 63;
+  state->s[1 * KECCAK1600_WIDTH/64 + (SHAKE128_RATE-1)/8] ^= 1ULL << 63;
+  state->s[2 * KECCAK1600_WIDTH/64 + (SHAKE128_RATE-1)/8] ^= 1ULL << 63;
+  state->s[3 * KECCAK1600_WIDTH/64 + (SHAKE128_RATE-1)/8] ^= 1ULL << 63;
 }
 #endif
 
@@ -107,6 +130,12 @@ void kyber_shake128_squeeze(uint8_t *out, int nblocks, keccak_state *state)
 {
    KeccakF1600((uint64_t (*)[SHA3_ROWS])state->s);
    SHA3_Squeeze((uint64_t (*)[SHA3_ROWS])state->s, out, (nblocks) * SHAKE128_RATE, SHAKE128_RATE);
+}
+
+void kyber_shake128_squeeze_x4_hybrid(uint8_t *out, int nblocks, keccak_state_x4_hybrid *state)
+{
+   keccak_f1600_x4_hybrid_asm_v5p_opt((uint64_t *)state->s);
+   SHA3_Squeeze_x4_hybrid((uint64_t (*)[SHA3_ROWS])state->s, out, (nblocks) * SHAKE128_RATE, SHAKE128_RATE);
 }
 #endif
 

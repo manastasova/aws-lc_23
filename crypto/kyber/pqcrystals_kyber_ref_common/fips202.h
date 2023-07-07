@@ -22,15 +22,16 @@
 #ifndef EXPERIMENTAL_AWS_LC_HYBRID_KECCAK
 #define EXPERIMENTAL_AWS_LC_HYBRID_KECCAK
 #endif
-
-
+#ifndef KECCAK_PARALLEL_FACTOR
+#define KECCAK_PARALLEL_FACTOR 4
+#endif
 typedef struct {
   uint64_t s[25];
   unsigned int pos;
 } keccak_state;
 
 typedef struct {
-  uint64_t s[4*25];
+  uint64_t s[KECCAK_PARALLEL_FACTOR*25];
   unsigned int pos;
 } keccak_state_x4_hybrid;
 

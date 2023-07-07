@@ -28,12 +28,14 @@ extern "C" {
 #define KECCAK_PARALLEL_FACTOR 1
 #else
 #define KECCAK_PARALLEL_FACTOR 4
-#define KECCAK_PARALLEL_SHA3_ROWS 2
 #endif
 
 // SHA3 constants, from NIST FIPS202.
 // https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.202.pdf
-#define SHA3_ROWS (KECCAK_PARALLEL_SHA3_ROWS * 5)
+
+// Add more rows for parallel KECCAK
+#define SHA3_ROWS 5
+#define SHA3_ROWS_PARALLEL (KECCAK_PARALLEL_FACTOR * 5)
 #define KECCAK1600_WIDTH 1600
 
 #define SHA3_224_CAPACITY_BYTES 56
@@ -164,6 +166,12 @@ OPENSSL_EXPORT void SHA3_Squeeze(uint64_t A[SHA3_ROWS][SHA3_ROWS],
                                  uint8_t *out, size_t len, size_t r);
 
 OPENSSL_EXPORT void KeccakF1600(uint64_t A[SHA3_ROWS][SHA3_ROWS]);
+
+OPENSSL_EXPORT void keccak_f1600_x4_hybrid_asm_v5p_opt(uint64_t state[4*25]);
+size_t SHA3_Absorb_hybrid(uint64_t A[SHA3_ROWS_PARALLEL][SHA3_ROWS], const uint8_t *inp, size_t len,
+                   size_t r);
+
+void SHA3_Squeeze_x4_hybrid(uint64_t A[SHA3_ROWS_PARALLEL][SHA3_ROWS], uint8_t *out, size_t len, size_t r);
 
 // validate_keccak_f1600_x4_hybrid_asm_v5p{_new} tests the x4 parallel implementation 
 // of Keccakf1600 and returns 1.

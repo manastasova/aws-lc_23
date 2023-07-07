@@ -55,8 +55,7 @@ void kyber_shake128_absorb(keccak_state *s, const uint8_t seed[KYBER_SYMBYTES],
 
 #define kyber_shake128_absorb_hybrid KYBER_NAMESPACE(kyber_shake128_absorb_hybrid)
 void kyber_shake128_absorb_hybrid(keccak_state_x4_hybrid *state,
-                           const uint8_t seed[KYBER_SYMBYTES], uint8_t transposed,
-                           uint8_t y);
+                           const uint8_t seed[KYBER_SYMBYTES], uint8_t transposed);
 
 #define kyber_shake256_prf KYBER_NAMESPACE(kyber_shake256_prf)
 void kyber_shake256_prf(uint8_t *out, size_t outlen,
@@ -64,6 +63,8 @@ void kyber_shake256_prf(uint8_t *out, size_t outlen,
 #ifdef EXPERIMENTAL_AWS_LC_HYBRID_KECCAK
 #define kyber_shake128_squeeze KYBER_NAMESPACE(kyber_shake128_squeeze)
 void kyber_shake128_squeeze(uint8_t *out, int nblocks, keccak_state *state);
+#define kyber_shake128_squeeze_x4_hybrid KYBER_NAMESPACE(kyber_shake128_squeeze_x4_hybrid)
+void kyber_shake128_squeeze_x4_hybrid(uint8_t *out, int nblocks, keccak_state_x4_hybrid *state);
 #endif
 #define XOF_BLOCKBYTES SHAKE128_RATE
 
@@ -83,12 +84,16 @@ void kyber_shake128_squeeze(uint8_t *out, int nblocks, keccak_state *state);
 #define kdf(OUT, IN, INBYTES) shake256(OUT, KYBER_SSBYTES, IN, INBYTES)
   
 #else
+// TODO:: Define constant for parallel factor
+#define KECCAK_PARALLEL_FACTOR 4
 #define hash_h(OUT, IN, INBYTES) SHA3_256(IN, INBYTES, OUT)
 #define hash_g(OUT, IN, INBYTES) SHA3_512(IN, INBYTES, OUT)
 //#define xof_absorb(STATE, SEED, X, Y) kyber_shake128_absorb(STATE, SEED, X, Y)
-#define xof_absorb_x4_hybrid(STATE, SEED, X, Y) kyber_shake128_absorb_hybrid(STATE, SEED, X, Y)
+#define xof_absorb_x4_hybrid(STATE, SEED, T) kyber_shake128_absorb_hybrid(STATE, SEED, T)
+#define xof_squeezeblocks_x4_hybrid(OUT, OUTBLOCKS, STATE) \
+  kyber_shake128_squeeze_x4_hybrid(OUT, OUTBLOCKS, STATE)
 #define xof_squeezeblocks(OUT, OUTBLOCKS, STATE) \
-  kyber_shake128_squeeze(OUT, OUTBLOCKS, STATE)
+  shake128_squeezeblocks(OUT, OUTBLOCKS, STATE)
 #define prf(OUT, OUTBYTES, KEY, NONCE) \
   kyber_shake256_prf(OUT, OUTBYTES, KEY, NONCE)
 #define kdf(OUT, IN, INBYTES) SHAKE256(IN, INBYTES, OUT, KYBER_SSBYTES*8)

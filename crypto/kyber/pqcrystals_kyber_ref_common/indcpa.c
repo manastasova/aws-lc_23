@@ -1,6 +1,7 @@
 #include "indcpa.h"
 #include <stddef.h>
 #include <stdint.h>
+#include <stdio.h>
 #include "ntt.h"
 #include "params.h"
 #include "poly.h"
@@ -195,11 +196,24 @@ void gen_matrix(polyvec *a, const uint8_t seed[KYBER_SYMBYTES], int transposed)
     }
   }
   #else
-        xof_absorb_x4_hybrid(&state_hybrid, seed, transposed, 0);
+        //TODO:: Check where to do the zip/unzip
+        xof_absorb_x4_hybrid(&state_hybrid, seed, transposed);
+// xof_state state1, state2,state3,state4;
+//       for (int e = 0; e < 4; e++) {
+//         for (int m = 0; m < 25; m++) {
+//           state1.s[m] = state_hybrid.s[e*25 + m];
+//           state2.s[m] = state_hybrid.s[e*25 + m];
+//           state3.s[m] = state_hybrid.s[e*25 + m];
+//           state4.s[m] = state_hybrid.s[e*25 + m];
+//           printf("%lx ", state.s[m]);
+//         }
+//       printf("\n\n");
+//       }
+      
 
       for(i=0;i<KYBER_K;i++) {
         for(j=0;j<KYBER_K;j++) {
-          xof_squeezeblocks(buf, GEN_MATRIX_NBLOCKS, (keccak_state *)&state_hybrid);
+          xof_squeezeblocks_x4_hybrid(buf, GEN_MATRIX_NBLOCKS, &state_hybrid);
           buflen = GEN_MATRIX_NBLOCKS*XOF_BLOCKBYTES;
           ctr = rej_uniform(a[i].vec[j].coeffs, KYBER_N, buf, buflen);
 
