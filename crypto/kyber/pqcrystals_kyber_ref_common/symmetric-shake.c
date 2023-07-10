@@ -39,17 +39,19 @@ void kyber_shake128_absorb(keccak_state *state,
   
   int i = 0; 
   int rem = 0;
-  SHA3_Absorb((uint64_t (*)[SHA3_ROWS])state->s, extseed, sizeof(extseed), SHAKE128_RATE);
-  
+  rem = SHA3_Absorb((uint64_t (*)[SHA3_ROWS])state->s, extseed, sizeof(extseed), SHAKE128_RATE);
+
   for(i=0;i<rem;i++){
     state->s[i/8] ^= (uint64_t)extseed[i + sizeof(extseed) - rem] << 8*(i%8);
   }
 
   state->s[i/8] ^= (uint64_t)p << 8*(i%8);
   state->s[(SHAKE128_RATE-1)/8] ^= 1ULL << 63;
+
   #endif
 }
 
+static keccak_state state_x1;
 #ifdef EXPERIMENTAL_AWS_LC_HYBRID_KECCAK
 /*************************************************
  * Name:        kyber_shake128_absorb_hybrid
@@ -66,26 +68,32 @@ void kyber_shake128_absorb(keccak_state *state,
 void kyber_shake128_absorb_hybrid(keccak_state_x4_hybrid *state,
                            const uint8_t seed[KYBER_SYMBYTES], uint8_t transposed) {
 
+kyber_shake128_absorb(&state_x1, seed, 0, 0);
+
   uint8_t extseed[KECCAK_PARALLEL_FACTOR * (KYBER_SYMBYTES + 2)];
 
-  for (int i = 0; i < KYBER_SYMBYTES; i++) {
+  
+    //for (int i = 0; i < KYBER_SYMBYTES; i++) {
     for (int j = 0; j < KECCAK_PARALLEL_FACTOR; j++) {
-      extseed[j * (KYBER_SYMBYTES + 2) + i] = seed[i];
+        for (int k = 0; k < KYBER_SYMBYTES; k++) {
+          extseed[j*KYBER_SYMBYTES+k] = seed[j*8 + k%8];
+        }
     }
-  }
-
+  
   // TODO:: Can do better here  
   for (int i = 0; i < KECCAK_PARALLEL_FACTOR; i++)
   { 
       if (transposed == 1) {
-          extseed[i * (KYBER_SYMBYTES + 2) + KYBER_SYMBYTES + 0] = i/2;
-          extseed[i * (KYBER_SYMBYTES + 2) + KYBER_SYMBYTES + 1] = i%2;
+          //last of first input
+          extseed[i*2 + KYBER_SYMBYTES * KECCAK_PARALLEL_FACTOR + 0] = i/2;
+          extseed[i*2 + KYBER_SYMBYTES * KECCAK_PARALLEL_FACTOR + 1] = i%2;
       }
       else {
-          extseed[i * (KYBER_SYMBYTES + 2) + KYBER_SYMBYTES + 0] = i%2;
-          extseed[i * (KYBER_SYMBYTES + 2) + KYBER_SYMBYTES + 1] = i/2;
+          extseed[i*2 + KYBER_SYMBYTES * KECCAK_PARALLEL_FACTOR + 0] = i%2;
+          extseed[i*2 + KYBER_SYMBYTES * KECCAK_PARALLEL_FACTOR + 1] = i/2;
       }
   }
+
   int p = 0x1F; 
 
 
@@ -94,48 +102,54 @@ void kyber_shake128_absorb_hybrid(keccak_state_x4_hybrid *state,
     state->s[i] = 0;
   }
   
-  for (int j = 0; j < KECCAK_PARALLEL_FACTOR; j++) {
-    for (int i = 0; i < KYBER_SYMBYTES+2; i++) {
-      printf("%.2x ", extseed[j * (KYBER_SYMBYTES + 2) + i]);
-    }
-    printf("\n\n");
-  }
-  
   int i = 0; 
   int rem = 0;
   // TODO:: DOUBLE CHECK
-  rem = SHA3_Absorb_hybrid((uint64_t (*)[SHA3_ROWS])state->s, extseed, KYBER_SYMBYTES + 2, SHAKE128_RATE);
-  
-  for(i=0;i<rem;i++){
-    state->s[0 * KECCAK1600_WIDTH/64 + i/8] ^= (uint64_t)extseed[0 * (KYBER_SYMBYTES + 2) + i + KYBER_SYMBYTES + 2 - rem] << 8*(i%8);
-    state->s[1 * KECCAK1600_WIDTH/64 + i/8] ^= (uint64_t)extseed[1 * (KYBER_SYMBYTES + 2) + i + KYBER_SYMBYTES + 2 - rem] << 8*(i%8);
-    state->s[2 * KECCAK1600_WIDTH/64 + i/8] ^= (uint64_t)extseed[2 * (KYBER_SYMBYTES + 2) + i + KYBER_SYMBYTES + 2 - rem] << 8*(i%8);
-    state->s[3 * KECCAK1600_WIDTH/64 + i/8] ^= (uint64_t)extseed[3 * (KYBER_SYMBYTES + 2) + i + KYBER_SYMBYTES + 2 - rem] << 8*(i%8);
-  }
+  rem = SHA3_Absorb_hybrid((uint64_t (*)[SHA3_ROWS])state->s, extseed, (KYBER_SYMBYTES + 2), SHAKE128_RATE);
 
-  state->s[0 * KECCAK1600_WIDTH/64 + i/8] ^= (uint64_t)p << 8*(i%8);
-  state->s[1 * KECCAK1600_WIDTH/64 + i/8] ^= (uint64_t)p << 8*(i%8);
-  state->s[2 * KECCAK1600_WIDTH/64 + i/8] ^= (uint64_t)p << 8*(i%8);
-  state->s[3 * KECCAK1600_WIDTH/64 + i/8] ^= (uint64_t)p << 8*(i%8);
+      for(i=0;i<4*((rem/4)*4) ;i++){
+        state->s[i/8] ^= (uint64_t)extseed[i + 34 - rem] << 8*(i%8);
+      }
 
-  state->s[0 * KECCAK1600_WIDTH/64 + (SHAKE128_RATE-1)/8] ^= 1ULL << 63;
-  state->s[1 * KECCAK1600_WIDTH/64 + (SHAKE128_RATE-1)/8] ^= 1ULL << 63;
-  state->s[2 * KECCAK1600_WIDTH/64 + (SHAKE128_RATE-1)/8] ^= 1ULL << 63;
-  state->s[3 * KECCAK1600_WIDTH/64 + (SHAKE128_RATE-1)/8] ^= 1ULL << 63;
+         state->s[(0) + i/8     ] ^= (uint64_t)extseed[i + 34 - rem + 0 ] << 8*(0);
+         state->s[(0) + i/8     ] ^= (uint64_t)extseed[i + 34 - rem + 1 ] << 8*(1);
+         state->s[(1) + i/8     ] ^= (uint64_t)extseed[i + 34 - rem + 2 ] << 8*(0);
+         state->s[(1) + i/8     ] ^= (uint64_t)extseed[i + 34 - rem + 3 ] << 8*(1);
+         state->s[(2) + i/8     ] ^= (uint64_t)extseed[i + 34 - rem + 4 ] << 8*(0);
+         state->s[(2) + i/8     ] ^= (uint64_t)extseed[i + 34 - rem + 5 ] << 8*(1);
+         state->s[(3) + i/8     ] ^= (uint64_t)extseed[i + 34 - rem + 6 ] << 8*(0);
+         state->s[(3) + i/8     ] ^= (uint64_t)extseed[i + 34 - rem + 7 ] << 8*(1);
+
+
+  state->s[(0) + i/8] ^= (uint64_t)p << 8*((i+2)%8);
+  state->s[(1) + i/8] ^= (uint64_t)p << 8*((i+2)%8);
+  state->s[(2) + i/8] ^= (uint64_t)p << 8*((i+2)%8);
+  state->s[(3) + i/8] ^= (uint64_t)p << 8*((i+2)%8);
+
+  state->s[(SHAKE128_RATE-1)*4/8 - 3] ^= 1ULL << 63;
+  state->s[(SHAKE128_RATE-1)*4/8 - 2] ^= 1ULL << 63;
+  state->s[(SHAKE128_RATE-1)*4/8 - 1] ^= 1ULL << 63;
+  state->s[(SHAKE128_RATE-1)*4/8 - 0] ^= 1ULL << 63;
 }
 #endif
 
 #ifdef EXPERIMENTAL_AWS_LC_HYBRID_KECCAK
 void kyber_shake128_squeeze(uint8_t *out, int nblocks, keccak_state *state)
 {
-   KeccakF1600((uint64_t (*)[SHA3_ROWS])state->s);
+  
+   KeccakF1600((uint64_t (*)[SHA3_ROWS])state->s);   
    SHA3_Squeeze((uint64_t (*)[SHA3_ROWS])state->s, out, (nblocks) * SHAKE128_RATE, SHAKE128_RATE);
 }
 
 void kyber_shake128_squeeze_x4_hybrid(uint8_t *out, int nblocks, keccak_state_x4_hybrid *state)
 {
+  // TODO:: Remove
+  uint8_t buf_x1[3 * SHAKE128_RATE*8] = {0};
+  kyber_shake128_squeeze(buf_x1, nblocks, &state_x1);
+
    keccak_f1600_x4_hybrid_asm_v5p_opt((uint64_t *)state->s);
-   SHA3_Squeeze_x4_hybrid((uint64_t (*)[SHA3_ROWS])state->s, out, (nblocks) * SHAKE128_RATE, SHAKE128_RATE);
+   SHA3_Squeeze_x4_hybrid((uint64_t (*)[SHA3_ROWS])state->s, out, (nblocks) * SHAKE128_RATE * 8 , SHAKE128_RATE);
+
 }
 #endif
 

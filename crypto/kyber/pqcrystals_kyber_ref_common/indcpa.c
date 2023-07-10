@@ -166,11 +166,15 @@ void gen_matrix(polyvec *a, const uint8_t seed[KYBER_SYMBYTES], int transposed)
 {
   unsigned int ctr, i, j, k;
   unsigned int buflen, off;
-  uint8_t buf[GEN_MATRIX_NBLOCKS*XOF_BLOCKBYTES+2];
+  
   #ifndef EXPERIMENTAL_AWS_LC_HYBRID_KECCAK
+  uint8_t buf[GEN_MATRIX_NBLOCKS*XOF_BLOCKBYTES+2];
   xof_state state;
+  
   #else
   xof_state_x4_hybrid state_hybrid;
+  uint8_t buf[4*(GEN_MATRIX_NBLOCKS*XOF_BLOCKBYTES+2)];
+  //uint8_t buf_ordered[4*(GEN_MATRIX_NBLOCKS*XOF_BLOCKBYTES+2)];
   #endif
 
   #ifndef EXPERIMENTAL_AWS_LC_HYBRID_KECCAK 
@@ -193,27 +197,21 @@ void gen_matrix(polyvec *a, const uint8_t seed[KYBER_SYMBYTES], int transposed)
         buflen = off + XOF_BLOCKBYTES;
         ctr += rej_uniform(a[i].vec[j].coeffs + ctr, KYBER_N - ctr, buf, buflen);
       }
+
+
+
     }
   }
   #else
         //TODO:: Check where to do the zip/unzip
+
+        // In total should be and entire SHAKE128
         xof_absorb_x4_hybrid(&state_hybrid, seed, transposed);
-// xof_state state1, state2,state3,state4;
-//       for (int e = 0; e < 4; e++) {
-//         for (int m = 0; m < 25; m++) {
-//           state1.s[m] = state_hybrid.s[e*25 + m];
-//           state2.s[m] = state_hybrid.s[e*25 + m];
-//           state3.s[m] = state_hybrid.s[e*25 + m];
-//           state4.s[m] = state_hybrid.s[e*25 + m];
-//           printf("%lx ", state.s[m]);
-//         }
-//       printf("\n\n");
-//       }
-      
+        xof_squeezeblocks_x4_hybrid(buf, GEN_MATRIX_NBLOCKS, &state_hybrid);
 
       for(i=0;i<KYBER_K;i++) {
         for(j=0;j<KYBER_K;j++) {
-          xof_squeezeblocks_x4_hybrid(buf, GEN_MATRIX_NBLOCKS, &state_hybrid);
+          
           buflen = GEN_MATRIX_NBLOCKS*XOF_BLOCKBYTES;
           ctr = rej_uniform(a[i].vec[j].coeffs, KYBER_N, buf, buflen);
 
