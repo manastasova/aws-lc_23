@@ -420,15 +420,22 @@ void SHA3_Squeeze(uint64_t A[SHA3_ROWS][SHA3_ROWS], uint8_t *out, size_t len, si
 
     assert(r < (SHA3_ROWS * SHA3_ROWS * sizeof(A[0][0])) && (r % 8) == 0);
 
+    //  printf("\n\n x1 Keccak\n");
+    //     for (int jj = 0 ; jj < 25; jj++)
+    //       {
+    //         printf("%.16lx", A_flat[jj]);
+    //       }
+    //     printf("\n");
+
     while (len != 0) {
         for (i = 0; i < w && len != 0; i++) {
             uint64_t Ai = BitDeinterleave(A_flat[i]);
 
             if (len < 8) {
-                for (i = 0; i < len; i++) {
-                    *out++ = (uint8_t)Ai;
-                    Ai >>= 8;
-                }
+                // for (i = 0; i < len; i++) {
+                //     *out++ = (uint8_t)Ai;
+                //     Ai >>= 8;
+                // }
                 return;
             }
 
@@ -458,14 +465,14 @@ void SHA3_Squeeze(uint64_t A[SHA3_ROWS][SHA3_ROWS], uint8_t *out, size_t len, si
 void SHA3_Squeeze_x4_hybrid(uint64_t A[SHA3_ROWS_PARALLEL][SHA3_ROWS], uint8_t *out, size_t len, size_t r)
 {
     uint64_t *A_flat = (uint64_t *)A;
-    size_t i, w = r / 8;
+    size_t i, w = r / 8; // for shake128 w = 21 (words) per block size
     size_t len_cpy = len;
 
     assert(r < (SHA3_ROWS * SHA3_ROWS * sizeof(A[0][0])) && (r % 8) == 0);
 
     while (len != 0) {
         for (i = 0; i < w && len != 0; i++) {
-            uint64_t Ai = BitDeinterleave(A_flat[i*4 + 0]);
+            uint64_t Ai = BitDeinterleave(A_flat[i*4]);
 
             if (len < 8) {
                 for (i = 0; i < len; i++) {
@@ -478,17 +485,16 @@ void SHA3_Squeeze_x4_hybrid(uint64_t A[SHA3_ROWS_PARALLEL][SHA3_ROWS], uint8_t *
             for (int k = 0; k < 4; k++)
             {
             
-                out[k*len_cpy/8 + 0] = (uint8_t)(Ai);
-                out[k*len_cpy/8 + 1] = (uint8_t)(Ai >> 8);
-                out[k*len_cpy/8 + 2] = (uint8_t)(Ai >> 16);
-                out[k*len_cpy/8 + 3] = (uint8_t)(Ai >> 24);
-                out[k*len_cpy/8 + 4] = (uint8_t)(Ai >> 32);
-                out[k*len_cpy/8 + 5] = (uint8_t)(Ai >> 40);
-                out[k*len_cpy/8 + 6] = (uint8_t)(Ai >> 48);
-                out[k*len_cpy/8 + 7] = (uint8_t)(Ai >> 56);
+                out[0 + k*len_cpy] = (uint8_t)(Ai);
+                out[1 + k*len_cpy] = (uint8_t)(Ai >> 8);
+                out[2 + k*len_cpy] = (uint8_t)(Ai >> 16);
+                out[3 + k*len_cpy] = (uint8_t)(Ai >> 24);
+                out[4 + k*len_cpy] = (uint8_t)(Ai >> 32);
+                out[5 + k*len_cpy] = (uint8_t)(Ai >> 40);
+                out[6 + k*len_cpy] = (uint8_t)(Ai >> 48);
+                out[7 + k*len_cpy] = (uint8_t)(Ai >> 56);
                 Ai = BitDeinterleave(A_flat[i*4 + k + 1]);
             }
-            
             out += 8;
             len -= 8;
         }

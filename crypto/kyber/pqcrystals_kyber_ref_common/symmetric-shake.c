@@ -136,19 +136,16 @@ kyber_shake128_absorb(&state_x1, seed, 0, 0);
 #ifdef EXPERIMENTAL_AWS_LC_HYBRID_KECCAK
 void kyber_shake128_squeeze(uint8_t *out, int nblocks, keccak_state *state)
 {
-  
+        
    KeccakF1600((uint64_t (*)[SHA3_ROWS])state->s);   
-   SHA3_Squeeze((uint64_t (*)[SHA3_ROWS])state->s, out, (nblocks) * SHAKE128_RATE, SHAKE128_RATE);
+   SHA3_Squeeze((uint64_t (*)[SHA3_ROWS])state->s, out, (nblocks) * SHAKE128_RATE , SHAKE128_RATE);
 }
 
 void kyber_shake128_squeeze_x4_hybrid(uint8_t *out, int nblocks, keccak_state_x4_hybrid *state)
 {
-  // TODO:: Remove
-  uint8_t buf_x1[3 * SHAKE128_RATE*8] = {0};
-  kyber_shake128_squeeze(buf_x1, nblocks, &state_x1);
 
    keccak_f1600_x4_hybrid_asm_v5p_opt((uint64_t *)state->s);
-   SHA3_Squeeze_x4_hybrid((uint64_t (*)[SHA3_ROWS])state->s, out, (nblocks) * SHAKE128_RATE * 8 , SHAKE128_RATE);
+   SHA3_Squeeze_x4_hybrid((uint64_t (*)[SHA3_ROWS])state->s, out, (nblocks) * SHAKE128_RATE  , SHAKE128_RATE);
 
 }
 #endif

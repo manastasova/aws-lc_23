@@ -166,18 +166,11 @@ void gen_matrix(polyvec *a, const uint8_t seed[KYBER_SYMBYTES], int transposed)
 {
   unsigned int ctr, i, j, k;
   unsigned int buflen, off;
-  
-  #ifndef EXPERIMENTAL_AWS_LC_HYBRID_KECCAK
-  uint8_t buf[GEN_MATRIX_NBLOCKS*XOF_BLOCKBYTES+2];
-  xof_state state;
-  
-  #else
-  xof_state_x4_hybrid state_hybrid;
-  uint8_t buf[4*(GEN_MATRIX_NBLOCKS*XOF_BLOCKBYTES+2)];
-  //uint8_t buf_ordered[4*(GEN_MATRIX_NBLOCKS*XOF_BLOCKBYTES+2)];
-  #endif
 
   #ifndef EXPERIMENTAL_AWS_LC_HYBRID_KECCAK 
+  uint8_t buf[GEN_MATRIX_NBLOCKS*XOF_BLOCKBYTES+2];
+  xof_state state;
+
   for(i=0;i<KYBER_K;i++) {
     for(j=0;j<KYBER_K;j++) {
       if(transposed)
@@ -186,6 +179,7 @@ void gen_matrix(polyvec *a, const uint8_t seed[KYBER_SYMBYTES], int transposed)
         xof_absorb(&state, seed, j, i);
 
       xof_squeezeblocks(buf, GEN_MATRIX_NBLOCKS, &state);
+
       buflen = GEN_MATRIX_NBLOCKS*XOF_BLOCKBYTES;
       ctr = rej_uniform(a[i].vec[j].coeffs, KYBER_N, buf, buflen);
 
@@ -197,31 +191,28 @@ void gen_matrix(polyvec *a, const uint8_t seed[KYBER_SYMBYTES], int transposed)
         buflen = off + XOF_BLOCKBYTES;
         ctr += rej_uniform(a[i].vec[j].coeffs + ctr, KYBER_N - ctr, buf, buflen);
       }
-
-
-
     }
   }
   #else
-        //TODO:: Check where to do the zip/unzip
+  xof_state_x4_hybrid state_hybrid;
+  uint8_t buf[4*(GEN_MATRIX_NBLOCKS*XOF_BLOCKBYTES+2)];
 
-        // In total should be and entire SHAKE128
         xof_absorb_x4_hybrid(&state_hybrid, seed, transposed);
         xof_squeezeblocks_x4_hybrid(buf, GEN_MATRIX_NBLOCKS, &state_hybrid);
 
       for(i=0;i<KYBER_K;i++) {
         for(j=0;j<KYBER_K;j++) {
-          
           buflen = GEN_MATRIX_NBLOCKS*XOF_BLOCKBYTES;
-          ctr = rej_uniform(a[i].vec[j].coeffs, KYBER_N, buf, buflen);
+        
+          ctr = rej_uniform(a[i].vec[j].coeffs, KYBER_N, buf + ((i*2+j)*buflen) , buflen);
 
           while(ctr < KYBER_N) {
             off = buflen % 3;
             for(k = 0; k < off; k++)
-              buf[k] = buf[buflen - off + k];
-            xof_squeezeblocks(buf + off, 1, (keccak_state *)&state_hybrid);
+              (buf + ((i*2+j)*buflen))[k] = (buf + ((i*2+j)*buflen))[buflen - off + k];
+            xof_squeezeblocks_x4_hybrid(buf + off, 1, &state_hybrid);
             buflen = off + XOF_BLOCKBYTES;
-            ctr += rej_uniform(a[i].vec[j].coeffs + ctr, KYBER_N - ctr, buf, buflen);
+            ctr += rej_uniform(a[i].vec[j].coeffs + ctr, KYBER_N - ctr, buf + ((i*2+j)*buflen), buflen);
           }
        }
       }
