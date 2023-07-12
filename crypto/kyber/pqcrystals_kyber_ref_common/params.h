@@ -3,6 +3,11 @@
 
 #include <openssl/base.h>
 
+// EXPERIMENTAL
+#define EXPERIMENTAL_AWS_LC_HYBRID_KECCAK
+// TODO:: Define constant for parallel factor
+#define KECCAK_PARALLEL_FACTOR 4
+
 // #define KYBER_90S	/* Uncomment this if you want the 90S variant */
 
 /* Don't change parameters below this line */

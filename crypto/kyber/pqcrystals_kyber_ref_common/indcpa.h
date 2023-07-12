@@ -5,8 +5,15 @@
 #include "params.h"
 #include "polyvec.h"
 
+#ifndef EXPERIMENTAL_AWS_LC_HYBRID_KECCAK
 #define gen_matrix KYBER_NAMESPACE(gen_matrix)
 void gen_matrix(polyvec *a, const uint8_t seed[KYBER_SYMBYTES], int transposed);
+#else
+// EXPERIMENTAL_AWS_LC_HYBRID_KECCAK gen_matrix_hybrid using parallel Keccak
+#define gen_matrix_hybrid KYBER_NAMESPACE(gen_matrix)
+void gen_matrix_hybrid(polyvec *a, const uint8_t seed[KYBER_SYMBYTES], int transposed);
+#endif
+
 #define indcpa_keypair KYBER_NAMESPACE(indcpa_keypair)
 void indcpa_keypair(uint8_t pk[KYBER_INDCPA_PUBLICKEYBYTES],
                     uint8_t sk[KYBER_INDCPA_SECRETKEYBYTES]);

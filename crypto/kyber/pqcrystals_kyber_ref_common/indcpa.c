@@ -1,7 +1,6 @@
 #include "indcpa.h"
 #include <stddef.h>
 #include <stdint.h>
-#include <stdio.h>
 #include "ntt.h"
 #include "params.h"
 #include "poly.h"
@@ -145,9 +144,8 @@ static unsigned int rej_uniform(int16_t *r,
   return ctr;
 }
 
-#define gen_a(A,B)  gen_matrix(A,B,0)
-#define gen_at(A,B) gen_matrix(A,B,1)
-
+#define GEN_MATRIX_NBLOCKS ((12*KYBER_N/8*(1 << 12)/KYBER_Q + XOF_BLOCKBYTES)/XOF_BLOCKBYTES)
+#ifndef EXPERIMENTAL_AWS_LC_HYBRID_KECCAK
 /*************************************************
 * Name:        gen_matrix
 *
@@ -160,14 +158,14 @@ static unsigned int rej_uniform(int16_t *r,
 *              - const uint8_t *seed: pointer to input seed
 *              - int transposed: boolean deciding whether A or A^T is generated
 **************************************************/
-#define GEN_MATRIX_NBLOCKS ((12*KYBER_N/8*(1 << 12)/KYBER_Q + XOF_BLOCKBYTES)/XOF_BLOCKBYTES)
+#define gen_a(A,B)  gen_matrix(A,B,0)
+#define gen_at(A,B) gen_matrix(A,B,1)
 // Not static for benchmarking
 void gen_matrix(polyvec *a, const uint8_t seed[KYBER_SYMBYTES], int transposed)
 {
   unsigned int ctr, i, j, k;
   unsigned int buflen, off;
 
-  #ifndef EXPERIMENTAL_AWS_LC_HYBRID_KECCAK 
   uint8_t buf[GEN_MATRIX_NBLOCKS*XOF_BLOCKBYTES+2];
   xof_state state;
 
@@ -193,7 +191,28 @@ void gen_matrix(polyvec *a, const uint8_t seed[KYBER_SYMBYTES], int transposed)
       }
     }
   }
-  #else
+}
+
+#else
+/*************************************************
+* Name:        gen_matrix_hybrid
+*
+* Description: Deterministically generate matrix A (or the transpose of A)
+*              from a seed. Entries of the matrix are polynomials that look
+*              uniformly random. Performs rejection sampling on output of
+*              a hybrid XOF
+*
+* Arguments:   - polyvec *a: pointer to ouptput matrix A
+*              - const uint8_t *seed: pointer to input seed
+*              - int transposed: boolean deciding whether A or A^T is generated
+**************************************************/
+#define gen_a_hybrid(A,B)  gen_matrix_hybrid(A,B,0)
+#define gen_at_hybrid(A,B) gen_matrix_hybrid(A,B,1)
+// Not static for benchmarking
+void gen_matrix_hybrid(polyvec *a, const uint8_t seed[KYBER_SYMBYTES], int transposed)
+{
+  unsigned int ctr, i, j, k;
+  unsigned int buflen, off;
   xof_state_x4_hybrid state_hybrid;
   uint8_t buf[4*(GEN_MATRIX_NBLOCKS*XOF_BLOCKBYTES+2)];
 
@@ -204,8 +223,8 @@ void gen_matrix(polyvec *a, const uint8_t seed[KYBER_SYMBYTES], int transposed)
         for(j=0;j<KYBER_K;j++) {
           buflen = GEN_MATRIX_NBLOCKS*XOF_BLOCKBYTES;
         
+        // TODO:: Decide with this rejeciton sampling ?!?! -- parallel or sequential ?
           ctr = rej_uniform(a[i].vec[j].coeffs, KYBER_N, buf + ((i*2+j)*buflen) , buflen);
-
           while(ctr < KYBER_N) {
             off = buflen % 3;
             for(k = 0; k < off; k++)
@@ -216,9 +235,8 @@ void gen_matrix(polyvec *a, const uint8_t seed[KYBER_SYMBYTES], int transposed)
           }
        }
       }
-  #endif
 }
-
+#endif
 /*************************************************
 * Name:        indcpa_keypair
 *
@@ -243,12 +261,20 @@ void indcpa_keypair(uint8_t pk[KYBER_INDCPA_PUBLICKEYBYTES],
   pq_custom_randombytes(buf, KYBER_SYMBYTES);
   hash_g(buf, buf, KYBER_SYMBYTES);
 
+  #ifndef EXPERIMENTAL_AWS_LC_HYBRID_KECCAK
   gen_a(a, publicseed);
+  #else
+  gen_a_hybrid(a, publicseed);
+  #endif
 
+  #ifndef EXPERIMENTAL_AWS_LC_HYBRID_KECCAK
   for(i=0;i<KYBER_K;i++)
     poly_getnoise_eta1(&skpv.vec[i], noiseseed, nonce++);
   for(i=0;i<KYBER_K;i++)
     poly_getnoise_eta1(&e.vec[i], noiseseed, nonce++);
+  #else
+    poly_getnoise_eta1_x4_hybrid(&skpv.vec[0], &skpv.vec[1], &e.vec[0], &e.vec[1], noiseseed, nonce);
+  #endif
 
   polyvec_ntt(&skpv);
   polyvec_ntt(&e);
@@ -295,12 +321,22 @@ void indcpa_enc(uint8_t c[KYBER_INDCPA_BYTES],
 
   unpack_pk(&pkpv, seed, pk);
   poly_frommsg(&k, m);
-  gen_at(at, seed);
 
+  #ifndef EXPERIMENTAL_AWS_LC_HYBRID_KECCAK
+  gen_at(at, seed);
+  #else
+  gen_at_hybrid(at, seed);
+  #endif
+
+  #ifndef EXPERIMENTAL_AWS_LC_HYBRID_KECCAK
   for(i=0;i<KYBER_K;i++)
     poly_getnoise_eta1(sp.vec+i, coins, nonce++);
   for(i=0;i<KYBER_K;i++)
     poly_getnoise_eta2(ep.vec+i, coins, nonce++);
+  #else
+  poly_getnoise_eta1_eta2_x4_hybrid(sp.vec+0, sp.vec+1, ep.vec+0, ep.vec+1, coins, nonce);
+  nonce+=4;
+  #endif
   poly_getnoise_eta2(&epp, coins, nonce++);
 
   polyvec_ntt(&sp);

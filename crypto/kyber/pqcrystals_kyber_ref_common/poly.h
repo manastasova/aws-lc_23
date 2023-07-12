@@ -30,6 +30,11 @@ void poly_tomsg(uint8_t msg[KYBER_INDCPA_MSGBYTES], const poly *r);
 #define poly_getnoise_eta1 KYBER_NAMESPACE(poly_getnoise_eta1)
 void poly_getnoise_eta1(poly *r, const uint8_t seed[KYBER_SYMBYTES], uint8_t nonce);
 
+#define poly_getnoise_eta1_x4_hybrid KYBER_NAMESPACE(poly_getnoise_eta1_x4_hybrid)
+void poly_getnoise_eta1_x4_hybrid(poly *r1, poly *r2, poly *r3, poly *r4, const uint8_t seed[KYBER_SYMBYTES], uint8_t nonce);
+#define poly_getnoise_eta1_eta2_x4_hybrid KYBER_NAMESPACE(poly_getnoise_eta1_eta2_x4_hybrid)
+void poly_getnoise_eta1_eta2_x4_hybrid(poly *r1, poly *r2, poly *r3, poly *r4, const uint8_t coins[KYBER_SYMBYTES], uint8_t nonce);
+
 #define poly_getnoise_eta2 KYBER_NAMESPACE(poly_getnoise_eta2)
 void poly_getnoise_eta2(poly *r, const uint8_t seed[KYBER_SYMBYTES], uint8_t nonce);
 

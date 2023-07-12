@@ -213,6 +213,39 @@ void poly_getnoise_eta1(poly *r, const uint8_t seed[KYBER_SYMBYTES], uint8_t non
 }
 
 /*************************************************
+* Name:        poly_getnoise_eta1_x4_hybrid
+*
+* Description: Sample a polynomial deterministically from a seed and a nonce,
+*              with output polynomial close to centered binomial distribution
+*              with parameter KYBER_ETA1
+*
+* Arguments:   - poly *r: pointer to output polynomial
+*              - const uint8_t *seed: pointer to input seed
+*                                     (of length KYBER_SYMBYTES bytes)
+*              - uint8_t nonce: one-byte input nonce
+**************************************************/
+void poly_getnoise_eta1_x4_hybrid(poly *r1, poly *r2, poly *r3, poly *r4, const uint8_t seed[KYBER_SYMBYTES], uint8_t nonce) {
+  uint8_t buf[4 * KYBER_ETA1*KYBER_N/4];
+  prf_x4_hybrid(buf, sizeof(buf)/4, seed, nonce);
+
+  poly_cbd_eta1(r1,                        buf + (0) * KYBER_ETA1*KYBER_N/4);
+  poly_cbd_eta1(r2,                        buf + (1) * KYBER_ETA1*KYBER_N/4);
+  poly_cbd_eta1(r3,                        buf + (2) * KYBER_ETA1*KYBER_N/4);
+  poly_cbd_eta1(r4,                        buf + (3) * KYBER_ETA1*KYBER_N/4);
+}
+
+void poly_getnoise_eta1_eta2_x4_hybrid(poly *r1, poly *r2, poly *r3, poly *r4, const uint8_t coins[KYBER_SYMBYTES], uint8_t nonce) {
+  // TODO:: Buffer is larger since prf hybrid will process the same number of bytes
+  uint8_t buf[4 * KYBER_ETA1*KYBER_N/4];
+  prf_x4_hybrid(buf, KYBER_ETA1*KYBER_N/4, coins, nonce);
+
+  poly_cbd_eta1(r1,                        buf + (0) * KYBER_ETA1*KYBER_N/4);
+  poly_cbd_eta1(r2,                        buf + (1) * KYBER_ETA1*KYBER_N/4);
+  poly_cbd_eta2(r3,                        buf + (2) * KYBER_ETA1*KYBER_N/4);
+  poly_cbd_eta2(r4,                        buf + (3) * KYBER_ETA1*KYBER_N/4);
+}
+
+/*************************************************
 * Name:        poly_getnoise_eta2
 *
 * Description: Sample a polynomial deterministically from a seed and a nonce,
