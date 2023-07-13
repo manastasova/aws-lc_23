@@ -151,7 +151,7 @@ void kyber_shake256_prf(uint8_t *out, size_t outlen,
   extkey[KYBER_SYMBYTES] = nonce;
 
   //#ifndef EXPERIMENTAL_AWS_LC_HYBRID_KECCAK
-  shake256(out, outlen, extkey, sizeof(extkey));
+  //shake256(out, outlen, extkey, sizeof(extkey));
   //#else
   //SHAKE256(extkey, sizeof(extkey), out, outlen*8);
   //#endif

@@ -225,11 +225,12 @@ void gen_matrix_hybrid(polyvec *a, const uint8_t seed[KYBER_SYMBYTES], int trans
         
         // TODO:: Decide with this rejeciton sampling ?!?! -- parallel or sequential ?
           ctr = rej_uniform(a[i].vec[j].coeffs, KYBER_N, buf + ((i*2+j)*buflen) , buflen);
+          
           while(ctr < KYBER_N) {
             off = buflen % 3;
             for(k = 0; k < off; k++)
               (buf + ((i*2+j)*buflen))[k] = (buf + ((i*2+j)*buflen))[buflen - off + k];
-            xof_squeezeblocks_x4_hybrid(buf + off, 1, &state_hybrid);
+            xof_squeezeblocks(buf + off, 1,(keccak_state *)&state_hybrid);
             buflen = off + XOF_BLOCKBYTES;
             ctr += rej_uniform(a[i].vec[j].coeffs + ctr, KYBER_N - ctr, buf + ((i*2+j)*buflen), buflen);
           }
