@@ -198,6 +198,9 @@ Loop:
 	AARCH64_VALIDATE_LINK_REGISTER
 	ret
 
+
+.globl	KeccakF1600
+
 .def KeccakF1600
    .type 32
 .endef
@@ -251,6 +254,7 @@ KeccakF1600:
 	ldp	x29,x30,[sp],#128
 	AARCH64_VALIDATE_LINK_REGISTER
 	ret
+
 
 .globl	SHA3_Absorb_hw
 

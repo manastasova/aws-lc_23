@@ -197,8 +197,11 @@ Loop:
 	ret
 
 
+.globl	_KeccakF1600
+.private_extern	_KeccakF1600
+
 .align	5
-KeccakF1600:
+_KeccakF1600:
 	AARCH64_SIGN_LINK_REGISTER
 	stp	x29,x30,[sp,#-128]!
 	add	x29,sp,#0
@@ -247,6 +250,7 @@ KeccakF1600:
 	ldp	x29,x30,[sp],#128
 	AARCH64_VALIDATE_LINK_REGISTER
 	ret
+
 
 .globl	_SHA3_Absorb_hw
 .private_extern	_SHA3_Absorb_hw
@@ -510,7 +514,7 @@ Loop_squeeze:
 	subs	x3,x3,#8
 	bhi	Loop_squeeze
 	mov	x0,x19
-	bl	KeccakF1600
+	bl	_KeccakF1600
 	mov	x0,x19
 	mov	x3,x22
 	b	Loop_squeeze

@@ -196,6 +196,9 @@ KeccakF1600_int:
 	AARCH64_VALIDATE_LINK_REGISTER
 	ret
 .size	KeccakF1600_int,.-KeccakF1600_int
+
+.globl	KeccakF1600
+.hidden	KeccakF1600
 .type	KeccakF1600,%function
 .align	5
 KeccakF1600:
@@ -248,6 +251,7 @@ KeccakF1600:
 	AARCH64_VALIDATE_LINK_REGISTER
 	ret
 .size	KeccakF1600,.-KeccakF1600
+
 .globl	SHA3_Absorb_hw
 .hidden	SHA3_Absorb_hw
 .type	SHA3_Absorb_hw,%function
