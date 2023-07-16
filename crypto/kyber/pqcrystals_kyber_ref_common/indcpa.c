@@ -230,7 +230,7 @@ void gen_matrix_hybrid(polyvec *a, const uint8_t seed[KYBER_SYMBYTES], int trans
             off = buflen % 3;
             for(k = 0; k < off; k++)
               (buf + ((i*2+j)*buflen))[k] = (buf + ((i*2+j)*buflen))[buflen - off + k];
-            xof_squeezeblocks(buf + off, 1,(keccak_state *)&state_hybrid);
+            xof_squeezeblocks_x4_hybrid(buf + off, 1, &state_hybrid);
             buflen = off + XOF_BLOCKBYTES;
             ctr += rej_uniform(a[i].vec[j].coeffs + ctr, KYBER_N - ctr, buf + ((i*2+j)*buflen), buflen);
           }
@@ -335,10 +335,18 @@ void indcpa_enc(uint8_t c[KYBER_INDCPA_BYTES],
   for(i=0;i<KYBER_K;i++)
     poly_getnoise_eta2(ep.vec+i, coins, nonce++);
   #else
-  poly_getnoise_eta1_eta2_x4_hybrid(sp.vec+0, sp.vec+1, ep.vec+0, ep.vec+1, coins, nonce);
-  nonce+=4;
+  // NOTE:: Option 1 in Quip Design Doc
+  // poly_getnoise_eta1_eta2_x4_hybrid(sp.vec+0, sp.vec+1, ep.vec+0, ep.vec+1, coins, nonce);
+  // nonce+=4;
+  // poly_getnoise_eta2(&epp, coins, nonce++);
+
+  nonce = 0;
+  poly_getnoise_eta1_x2_hybrid(sp.vec+0, sp.vec+1, coins, nonce);
+  nonce+=2;
+  poly_getnoise_eta2_x3_hybrid(ep.vec+0, ep.vec+1, &epp, coins, nonce);
+  nonce+=3;
   #endif
-  poly_getnoise_eta2(&epp, coins, nonce++);
+  
 
   polyvec_ntt(&sp);
 

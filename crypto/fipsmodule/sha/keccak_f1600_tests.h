@@ -60,5 +60,8 @@ int benchmark_keccak_f1600_x4_hybrid_asm_v5p_opt(void);
 int validate_keccak_f1600_x4_hybrid_asm_v5p(void);
 int validate_keccak_f1600_x4_hybrid_asm_v5p_opt(void);
 
+int validate_keccak_f1600_x2_neon_asm_v2p1(void);
+int validate_keccak_f1600_x3_hybrid_asm_v6(void);
+
 
 #endif /* KECCAK_F1600_X2_TEST_H */

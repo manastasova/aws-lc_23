@@ -372,8 +372,8 @@ size_t SHA3_Absorb(uint64_t A[SHA3_ROWS][SHA3_ROWS], const uint8_t *inp, size_t 
  // 72, but can also be (1600 - 448)/8 = 144. All this means that message
  // padding and intermediate sub-block buffering, byte- or bitwise, is
  // caller's responsibility.
-size_t SHA3_Absorb_hybrid(uint64_t A[SHA3_ROWS_PARALLEL][SHA3_ROWS], const uint8_t *inp, size_t len,
-                   size_t r)
+size_t SHA3_Absorb_hybrid(uint64_t *A, const uint8_t *inp, size_t len,
+                   size_t r, uint8_t par_fac)
 {
     uint64_t *A_flat = (uint64_t *)A;
     size_t i, w = r / 8;
@@ -391,7 +391,15 @@ size_t SHA3_Absorb_hybrid(uint64_t A[SHA3_ROWS_PARALLEL][SHA3_ROWS], const uint8
             A_flat[i] ^= BitInterleave(Ai);
         }
         // EXPERIMENTAL
-        keccak_f1600_x4_hybrid_asm_v5p_opt((uint64_t *)A);
+        if(par_fac == 4) {
+            keccak_f1600_x4_hybrid_asm_v5p_opt((uint64_t *)A);
+        }else if(par_fac == 2) {
+            keccak_f1600_x2_neon_asm_v2p1((uint64_t *)A);
+        }else if(par_fac == 3) {
+            keccak_f1600_x3_hybrid_asm_v6((uint64_t *)A);
+        }
+        //TODO:: Throug error when else
+        
         len -= r;
     }
 
@@ -438,7 +446,7 @@ void SHA3_Squeeze(uint64_t A[SHA3_ROWS][SHA3_ROWS], uint8_t *out, size_t len, si
 
  // SHA3_Squeeze is called once at the end to generate |out| hash value
  // of |len| bytes.
-void SHA3_Squeeze_x4_hybrid(uint64_t A[SHA3_ROWS_PARALLEL][SHA3_ROWS], uint8_t *out, size_t len, size_t r)
+void SHA3_Squeeze_hybrid(uint64_t *A, uint8_t *out, size_t len, size_t r, uint8_t par_fac)
 {
     uint64_t *A_flat = (uint64_t *)A;
     size_t i, w = r / 8; // for shake128 w = 21 (words) per block size
@@ -458,7 +466,7 @@ void SHA3_Squeeze_x4_hybrid(uint64_t A[SHA3_ROWS_PARALLEL][SHA3_ROWS], uint8_t *
                 return;
             }
 
-            for (int k = 0; k < 4; k++)
+            for (int k = 0; k < par_fac; k++)
             {
             
                 out[0 + k*len_cpy] = (uint8_t)(Ai);
@@ -469,13 +477,21 @@ void SHA3_Squeeze_x4_hybrid(uint64_t A[SHA3_ROWS_PARALLEL][SHA3_ROWS], uint8_t *
                 out[5 + k*len_cpy] = (uint8_t)(Ai >> 40);
                 out[6 + k*len_cpy] = (uint8_t)(Ai >> 48);
                 out[7 + k*len_cpy] = (uint8_t)(Ai >> 56);
-                Ai = BitDeinterleave(A_flat[i*4 + k + 1]);
+                Ai = BitDeinterleave(A_flat[i*par_fac + k + 1]);
             }
             out += 8;
             len -= 8;
         }
         if (len != 0) {
-            keccak_f1600_x4_hybrid_asm_v5p_opt((uint64_t *)A);
+            // EXPERIMENTAL
+            if(par_fac == 4) {
+                keccak_f1600_x4_hybrid_asm_v5p_opt((uint64_t *)A);
+            }else if(par_fac == 2) {
+                keccak_f1600_x2_neon_asm_v2p1((uint64_t *)A);
+            }else if(par_fac == 3) {
+                keccak_f1600_x3_hybrid_asm_v6((uint64_t *)A);
+            }
+            //TODO:: Throug error when else
         }
     }
 }

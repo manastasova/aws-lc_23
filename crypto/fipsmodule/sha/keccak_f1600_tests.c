@@ -85,7 +85,7 @@ void zip_f1600_states_real( int num, uint64_t *dst, uint64_t const  *src )
 
 void zip_f1600_states( int num, uint64_t *dst, uint64_t const  *src )
 {
-    if( num == 1 || num == 2 || num == 4 )
+    if( num == 1 || num == 2 || num == 3 || num == 4 )
     {
         zip_f1600_states_real( num, dst, src );
     }
@@ -270,6 +270,95 @@ int validate_keccak_f1600_x4_hybrid_asm_v5p_opt(void)
                             "Reference" );                              
         debug_print_buf_u8( (uint8_t*) state,                           
                             4 * KECCAK_F1600_X1_STATE_SIZE_BYTES,     
+                            "Actual" );                                 
+        debug_test_fail();                                              
+    }                                                                   
+                                                                        
+    debug_test_ok();                                                    
+    return 1;                                                           
+}
+
+int validate_keccak_f1600_x2_neon_asm_v2p1(void)                                                     
+{                                                                       
+    debug_test_start(stringify(validate_keccak_f1600_x2_neon_asm_v2p1));                            
+                                                                        
+    ALIGN(64)                                                           
+    uint64_t state[2*KECCAK_F1600_X1_STATE_SIZE_UINT64] = { 0 };      
+    ALIGN(64)                                                           
+    uint64_t ref_state[2*KECCAK_F1600_X1_STATE_SIZE_UINT64] = { 0 };  
+    ALIGN(64)                                                           
+    uint64_t ref_state_[2*KECCAK_F1600_X1_STATE_SIZE_UINT64] = { 0 }; 
+                                                                        
+    fill_random_u8( (uint8_t*) ref_state, KECCAK_F1600_X1_STATE_SIZE_BYTES ); 
+    for( int i=1; i < 2; i++ )                                        
+    memcpy( (uint8_t*) &ref_state[i*KECCAK_F1600_X1_STATE_SIZE_UINT64],   
+            (uint8_t*) &ref_state[0*KECCAK_F1600_X1_STATE_SIZE_UINT64], 
+            KECCAK_F1600_X1_STATE_SIZE_BYTES );                         
+                                                                        
+    zip_f1600_states( 2, state, ref_state );                          
+                                                                        
+    keccak_f1600_x2_neon_asm_v2p1( state );                                                  
+                                                                        
+    for( int i=0; i<2; i++ )                                          
+    {                                                                   
+        keccak_f1600_x1_scalar_C( ref_state +                           
+                               i * KECCAK_F1600_X1_STATE_SIZE_UINT64 ); 
+    }                                                                   
+                                                                        
+    zip_f1600_states( 2, ref_state_, ref_state );                     
+                                                                        
+    if( compare_buf_u8( (uint8_t*) state, (uint8_t*) ref_state_,        
+                        2 * KECCAK_F1600_X1_STATE_SIZE_BYTES ) != 0 ) 
+    {                                                                   
+        debug_print_buf_u8( (uint8_t*) ref_state_,                      
+                            2 * KECCAK_F1600_X1_STATE_SIZE_BYTES,     
+                            "Reference" );                              
+        debug_print_buf_u8( (uint8_t*) state,                           
+                            2 * KECCAK_F1600_X1_STATE_SIZE_BYTES,     
+                            "Actual" );                                 
+        debug_test_fail();                                              
+    }                                                                   
+                                                                        
+    debug_test_ok();                                                    
+    return 1;                                                           
+}
+int validate_keccak_f1600_x3_hybrid_asm_v6(void)                                                     
+{                                                                       
+    debug_test_start(stringify(validate_keccak_f1600_x3_hybrid_asm_v6));                            
+                                                                        
+    ALIGN(64)                                                           
+    uint64_t state[3*KECCAK_F1600_X1_STATE_SIZE_UINT64] = { 0 };      
+    ALIGN(64)                                                           
+    uint64_t ref_state[3*KECCAK_F1600_X1_STATE_SIZE_UINT64] = { 0 };  
+    ALIGN(64)                                                           
+    uint64_t ref_state_[3*KECCAK_F1600_X1_STATE_SIZE_UINT64] = { 0 }; 
+                                                                        
+    fill_random_u8( (uint8_t*) ref_state, KECCAK_F1600_X1_STATE_SIZE_BYTES ); 
+    for( int i=1; i < 3; i++ )                                        
+    memcpy( (uint8_t*) &ref_state[i*KECCAK_F1600_X1_STATE_SIZE_UINT64],   
+            (uint8_t*) &ref_state[0*KECCAK_F1600_X1_STATE_SIZE_UINT64], 
+            KECCAK_F1600_X1_STATE_SIZE_BYTES );                         
+                                                                        
+    zip_f1600_states( 3, state, ref_state );                          
+                                                                        
+    keccak_f1600_x3_hybrid_asm_v6( state );                                                  
+                                                                        
+    for( int i=0; i<3; i++ )                                          
+    {                                                                   
+        keccak_f1600_x1_scalar_C( ref_state +                           
+                               i * KECCAK_F1600_X1_STATE_SIZE_UINT64 ); 
+    }                                                                   
+                                                                        
+    zip_f1600_states( 3, ref_state_, ref_state );                     
+                                                                        
+    if( compare_buf_u8( (uint8_t*) state, (uint8_t*) ref_state_,        
+                        3 * KECCAK_F1600_X1_STATE_SIZE_BYTES ) != 0 ) 
+    {                                                                   
+        debug_print_buf_u8( (uint8_t*) ref_state_,                      
+                            3 * KECCAK_F1600_X1_STATE_SIZE_BYTES,     
+                            "Reference" );                              
+        debug_print_buf_u8( (uint8_t*) state,                           
+                            3 * KECCAK_F1600_X1_STATE_SIZE_BYTES,     
                             "Actual" );                                 
         debug_test_fail();                                              
     }                                                                   

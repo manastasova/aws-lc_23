@@ -167,16 +167,22 @@ OPENSSL_EXPORT void SHA3_Squeeze(uint64_t A[SHA3_ROWS][SHA3_ROWS],
 
 OPENSSL_EXPORT void KeccakF1600(uint64_t A[SHA3_ROWS][SHA3_ROWS]);
 
-OPENSSL_EXPORT void keccak_f1600_x4_hybrid_asm_v5p_opt(uint64_t state[4*25]);
-size_t SHA3_Absorb_hybrid(uint64_t A[SHA3_ROWS_PARALLEL][SHA3_ROWS], const uint8_t *inp, size_t len,
-                   size_t r);
+OPENSSL_EXPORT void keccak_f1600_x4_hybrid_asm_v5p_opt(uint64_t state[KECCAK_PARALLEL_FACTOR*25]);
+OPENSSL_EXPORT void keccak_f1600_x2_neon_asm_v2p1(uint64_t state[2*25]);
+OPENSSL_EXPORT void keccak_f1600_x3_hybrid_asm_v6(uint64_t state[3*25]);
 
-void SHA3_Squeeze_x4_hybrid(uint64_t A[SHA3_ROWS_PARALLEL][SHA3_ROWS], uint8_t *out, size_t len, size_t r);
+size_t SHA3_Absorb_hybrid(uint64_t *A, const uint8_t *inp, size_t len,
+                   size_t r, uint8_t par_fac);
+
+void SHA3_Squeeze_hybrid(uint64_t *A, uint8_t *out, size_t len, size_t r, uint8_t par_fac);
 
 // validate_keccak_f1600_x4_hybrid_asm_v5p{_new} tests the x4 parallel implementation 
 // of Keccakf1600 and returns 1.
 OPENSSL_EXPORT int validate_keccak_f1600_x4_hybrid_asm_v5p(void);
 OPENSSL_EXPORT int validate_keccak_f1600_x4_hybrid_asm_v5p_opt(void);
+
+OPENSSL_EXPORT int validate_keccak_f1600_x2_neon_asm_v2p1(void);
+OPENSSL_EXPORT int validate_keccak_f1600_x3_hybrid_asm_v6(void);
 OPENSSL_EXPORT int benchmark_keccak_f1600_x4_hybrid_asm_v5p(void);
 OPENSSL_EXPORT int benchmark_keccak_f1600_x4_hybrid_asm_v5p_opt(void);
 

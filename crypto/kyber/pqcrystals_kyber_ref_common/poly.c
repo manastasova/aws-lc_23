@@ -226,7 +226,7 @@ void poly_getnoise_eta1(poly *r, const uint8_t seed[KYBER_SYMBYTES], uint8_t non
 **************************************************/
 void poly_getnoise_eta1_x4_hybrid(poly *r1, poly *r2, poly *r3, poly *r4, const uint8_t seed[KYBER_SYMBYTES], uint8_t nonce) {
   uint8_t buf[4 * KYBER_ETA1*KYBER_N/4];
-  prf_x4_hybrid(buf, sizeof(buf)/4, seed, nonce);
+  prf_hybrid(buf, sizeof(buf)/4, seed, nonce, 4);
 
   poly_cbd_eta1(r1,                        buf + (0) * KYBER_ETA1*KYBER_N/4);
   poly_cbd_eta1(r2,                        buf + (1) * KYBER_ETA1*KYBER_N/4);
@@ -236,13 +236,32 @@ void poly_getnoise_eta1_x4_hybrid(poly *r1, poly *r2, poly *r3, poly *r4, const 
 
 void poly_getnoise_eta1_eta2_x4_hybrid(poly *r1, poly *r2, poly *r3, poly *r4, const uint8_t coins[KYBER_SYMBYTES], uint8_t nonce) {
   // TODO:: Buffer is larger since prf hybrid will process the same number of bytes
-  uint8_t buf[4 * KYBER_ETA1*KYBER_N/4];
-  prf_x4_hybrid(buf, KYBER_ETA1*KYBER_N/4, coins, nonce);
+  uint8_t buf[4 * KYBER_ETA1*KYBER_N/4] = {0};
+  prf_hybrid(buf, KYBER_ETA1*KYBER_N/4, coins, nonce, 4);
 
   poly_cbd_eta1(r1,                        buf + (0) * KYBER_ETA1*KYBER_N/4);
   poly_cbd_eta1(r2,                        buf + (1) * KYBER_ETA1*KYBER_N/4);
   poly_cbd_eta2(r3,                        buf + (2) * KYBER_ETA1*KYBER_N/4);
   poly_cbd_eta2(r4,                        buf + (3) * KYBER_ETA1*KYBER_N/4);
+}
+
+void poly_getnoise_eta1_x2_hybrid(poly *r1, poly *r2, const uint8_t coins[KYBER_SYMBYTES], uint8_t nonce) {
+  // TODO:: Buffer is larger since prf hybrid will process the same number of bytes
+  uint8_t buf[2 * KYBER_ETA1*KYBER_N/4] = {0};
+  prf_hybrid(buf, KYBER_ETA1*KYBER_N/4, coins, nonce, 2);
+
+  poly_cbd_eta1(r1,                        buf + (0) * KYBER_ETA1*KYBER_N/4);
+  poly_cbd_eta1(r2,                        buf + (1) * KYBER_ETA1*KYBER_N/4);
+}
+
+void poly_getnoise_eta2_x3_hybrid(poly *r1, poly *r2, poly *r3, const uint8_t coins[KYBER_SYMBYTES], uint8_t nonce) {
+  // TODO:: Buffer is larger since prf hybrid will process the same number of bytes
+  uint8_t buf[3 * KYBER_ETA2*KYBER_N/4] = {0};
+  prf_hybrid(buf, KYBER_ETA2*KYBER_N/4, coins, nonce, 3);
+
+  poly_cbd_eta2(r1,                        buf + (0) * KYBER_ETA2*KYBER_N/4);
+  poly_cbd_eta2(r2,                        buf + (1) * KYBER_ETA2*KYBER_N/4);
+  poly_cbd_eta2(r3,                        buf + (2) * KYBER_ETA2*KYBER_N/4);
 }
 
 /*************************************************
