@@ -18,34 +18,6 @@
 
 round_constants:
 .quad	0x0000000000000001
-.quad	0x0000000000008082
-.quad	0x800000000000808a
-.quad	0x8000000080008000
-.quad	0x000000000000808b
-.quad	0x0000000080000001
-.quad	0x8000000080008081
-.quad	0x8000000000008009
-.quad	0x000000000000008a
-.quad	0x0000000000000088
-.quad	0x0000000080008009
-.quad	0x000000008000000a
-.quad	0x000000008000808b
-.quad	0x800000000000008b
-.quad	0x8000000000008089
-.quad	0x8000000000008003
-.quad	0x8000000000008002
-.quad	0x8000000000000080
-.quad	0x000000000000800a
-.quad	0x800000008000000a
-.quad	0x8000000080008081
-.quad	0x8000000000008080
-.quad	0x0000000080000001
-.quad	0x8000000080008008
-
-
-
-round_constants_vec:
-.quad	0x0000000000000001
 .quad	0x0000000000000001
 .quad	0x0000000000008082
 .quad	0x0000000000008082
@@ -97,304 +69,94 @@ round_constants_vec:
 
 
 
-	input_addr	.req x0
-	const_addr	.req x1
-	count	.req x2
-	cur_const	.req x3
 
 	/*	Mapping of Kecck-f1600 state to vector registers
 	*	at the beginning and end of each round. */
-	Aba	.req v0
-	Abe	.req v1
-	Abi	.req v2
-	Abo	.req v3
-	Abu	.req v4
-	Aga	.req v5
-	Age	.req v6
-	Agi	.req v7
-	Ago	.req v8
-	Agu	.req v9
-	Aka	.req v10
-	Ake	.req v11
-	Aki	.req v12
-	Ako	.req v13
-	Aku	.req v14
-	Ama	.req v15
-	Ame	.req v16
-	Ami	.req v17
-	Amo	.req v18
-	Amu	.req v19
-	Asa	.req v20
-	Ase	.req v21
-	Asi	.req v22
-	Aso	.req v23
-	Asu	.req v24
 
-
-	Abaq	.req q0
-	Abeq	.req q1
-	Abiq	.req q2
-	Aboq	.req q3
-	Abuq	.req q4
-	Agaq	.req q5
-	Ageq	.req q6
-	Agiq	.req q7
-	Agoq	.req q8
-	Aguq	.req q9
-	Akaq	.req q10
-	Akeq	.req q11
-	Akiq	.req q12
-	Akoq	.req q13
-	Akuq	.req q14
-	Amaq	.req q15
-	Ameq	.req q16
-	Amiq	.req q17
-	Amoq	.req q18
-	Amuq	.req q19
-	Asaq	.req q20
-	Aseq	.req q21
-	Asiq	.req q22
-	Asoq	.req q23
-	Asuq	.req q24
-
-
-	C0	.req v27
-	C1	.req v28
-	C2	.req v29
-	C3	.req v30
-	C4	.req v31
-
-	C0q	.req q27
-	C1q	.req q28
-	C2q	.req q29
-	C3q	.req q30
-	C4q	.req q31
-
-
-	E0	.req v26
-	E1	.req v26
-	E2	.req v26
-	E3	.req v26
-	E4	.req v26
-
-	E0q	.req q26
-	E1q	.req q26
-	E2q	.req q26
-	E3q	.req q26
-	E4q	.req q26
-
-
-	vBgo	.req v27
-	vBgi	.req Ame
-	vBga	.req Aka
-	vBge	.req Abo
-	vBgu	.req Agu
-	vBki	.req Asi
-	vBko	.req Ako
-	vBka	.req Amu
-	vBke	.req Abe
-	vBku	.req Agi
-	vBmu	.req Asa
-	vBmo	.req Aso
-	vBmi	.req Ami
-	vBma	.req Ake
-	vBme	.req Abu
-	vBba	.req Aga
-	vBbi	.req Aba
-	vBbo	.req Aki
-	vBbu	.req Amo
-	vBbe	.req Asu
-	vBsa	.req Age
-	vBso	.req Abi
-	vBse	.req Ama
-	vBsi	.req Ago
-	vBsu	.req Aku
-
-	vBgoq	.req q27
-	vBgiq	.req Ameq
-	vBgaq	.req Akaq
-	vBgeq	.req Aboq
-	vBguq	.req Aguq
-	vBkiq	.req Asiq
-	vBkoq	.req Akoq
-	vBkaq	.req Amuq
-	vBkeq	.req Abeq
-	vBkuq	.req Agiq
-	vBmuq	.req Asaq
-	vBmoq	.req Asoq
-	vBmiq	.req Amiq
-	vBmaq	.req Akeq
-	vBmeq	.req Abuq
-	vBbaq	.req Agaq
-	vBbiq	.req Abaq
-	vBboq	.req Akiq
-	vBbuq	.req Amoq
-	vBbeq	.req Asuq
-	vBsaq	.req Ageq
-	vBsoq	.req Abiq
-	vBseq	.req Amaq
-	vBsiq	.req Agoq
-	vBsuq	.req Akuq
-
-	vEga	.req v28
-	vEge	.req v29
-	vEgi	.req vBgi
-	vEgo	.req vBgo
-	vEgu	.req vBgu
-	vEka	.req vBga
-	vEke	.req vBge
-	vEki	.req vBki
-	vEko	.req vBko
-	vEku	.req vBku
-	vEma	.req vBka
-	vEme	.req vBke
-	vEmi	.req vBmi
-	vEmo	.req vBmo
-	vEmu	.req vBmu
-	vEba	.req vBma
-	vEbe	.req vBme
-	vEbi	.req vBbi
-	vEbo	.req vBbo
-	vEbu	.req vBbu
-	vEsa	.req vBba
-	vEse	.req vBbe
-	vEsi	.req vBsi
-	vEso	.req vBso
-	vEsu	.req vBsu
-
-	vEgaq	.req q28
-	vEgeq	.req q29
-	vEgiq	.req vBgiq
-	vEgoq	.req vBgoq
-	vEguq	.req vBguq
-	vEkaq	.req vBgaq
-	vEkeq	.req vBgeq
-	vEkiq	.req vBkiq
-	vEkoq	.req vBkoq
-	vEkuq	.req vBkuq
-	vEmaq	.req vBkaq
-	vEmeq	.req vBkeq
-	vEmiq	.req vBmiq
-	vEmoq	.req vBmoq
-	vEmuq	.req vBmuq
-	vEbaq	.req vBmaq
-	vEbeq	.req vBmeq
-	vEbiq	.req vBbiq
-	vEboq	.req vBboq
-	vEbuq	.req vBbuq
-	vEsaq	.req vBbaq
-	vEseq	.req vBbeq
-	vEsiq	.req vBsiq
-	vEsoq	.req vBsoq
-	vEsuq	.req vBsuq
+.macro	load_constant_ptr
+	adr	x1, round_constants
+.endm
 
 
 
 .macro	load_input
-	ldp	Abaq, Abeq, [input_addr, #(2*8*0)]
-	ldp	Abiq, Aboq, [input_addr, #(2*8*2)]
-	ldp	Abuq, Agaq, [input_addr, #(2*8*4)]
-	ldp	Ageq, Agiq, [input_addr, #(2*8*6)]
-	ldp	Agoq, Aguq, [input_addr, #(2*8*8)]
-	ldp	Akaq, Akeq, [input_addr, #(2*8*10)]
-	ldp	Akiq, Akoq, [input_addr, #(2*8*12)]
-	ldp	Akuq, Amaq, [input_addr, #(2*8*14)]
-	ldp	Ameq, Amiq, [input_addr, #(2*8*16)]
-	ldp	Amoq, Amuq, [input_addr, #(2*8*18)]
-	ldp	Asaq, Aseq, [input_addr, #(2*8*20)]
-	ldp	Asiq, Asoq, [input_addr, #(2*8*22)]
-	ldr	Asuq, [input_addr, #(2*8*24)]
+	ldp	q0, q1, [x0, #(2*8*0)]
+	ldp	q2, q3, [x0, #(2*8*2)]
+	ldp	q4, q5, [x0, #(2*8*4)]
+	ldp	q6, q7, [x0, #(2*8*6)]
+	ldp	q8, q9, [x0, #(2*8*8)]
+	ldp	q10, q11, [x0, #(2*8*10)]
+	ldp	q12, q13, [x0, #(2*8*12)]
+	ldp	q14, q15, [x0, #(2*8*14)]
+	ldp	q16, q17, [x0, #(2*8*16)]
+	ldp	q18, q19, [x0, #(2*8*18)]
+	ldp	q20, q21, [x0, #(2*8*20)]
+	ldp	q22, q23, [x0, #(2*8*22)]
+	ldr	q24, [x0, #(2*8*24)]
 .endm
 
 .macro	store_input
-	str	Abaq, [input_addr, #(2*8*0)]
-	str	Abeq, [input_addr, #(2*8*1)]
-	str	Abiq, [input_addr, #(2*8*2)]
-	str	Aboq, [input_addr, #(2*8*3)]
-	str	Abuq, [input_addr, #(2*8*4)]
-	str	Agaq, [input_addr, #(2*8*5)]
-	str	Ageq, [input_addr, #(2*8*6)]
-	str	Agiq, [input_addr, #(2*8*7)]
-	str	Agoq, [input_addr, #(2*8*8)]
-	str	Aguq, [input_addr, #(2*8*9)]
-	str	Akaq, [input_addr, #(2*8*10)]
-	str	Akeq, [input_addr, #(2*8*11)]
-	str	Akiq, [input_addr, #(2*8*12)]
-	str	Akoq, [input_addr, #(2*8*13)]
-	str	Akuq, [input_addr, #(2*8*14)]
-	str	Amaq, [input_addr, #(2*8*15)]
-	str	Ameq, [input_addr, #(2*8*16)]
-	str	Amiq, [input_addr, #(2*8*17)]
-	str	Amoq, [input_addr, #(2*8*18)]
-	str	Amuq, [input_addr, #(2*8*19)]
-	str	Asaq, [input_addr, #(2*8*20)]
-	str	Aseq, [input_addr, #(2*8*21)]
-	str	Asiq, [input_addr, #(2*8*22)]
-	str	Asoq, [input_addr, #(2*8*23)]
-	str	Asuq, [input_addr, #(2*8*24)]
+	str	q0, [x0, #(2*8*0)]
+	str	q1, [x0, #(2*8*1)]
+	str	q2, [x0, #(2*8*2)]
+	str	q3, [x0, #(2*8*3)]
+	str	q4, [x0, #(2*8*4)]
+	str	q5, [x0, #(2*8*5)]
+	str	q6, [x0, #(2*8*6)]
+	str	q7, [x0, #(2*8*7)]
+	str	q8, [x0, #(2*8*8)]
+	str	q9, [x0, #(2*8*9)]
+	str	q10, [x0, #(2*8*10)]
+	str	q11, [x0, #(2*8*11)]
+	str	q12, [x0, #(2*8*12)]
+	str	q13, [x0, #(2*8*13)]
+	str	q14, [x0, #(2*8*14)]
+	str	q15, [x0, #(2*8*15)]
+	str	q16, [x0, #(2*8*16)]
+	str	q17, [x0, #(2*8*17)]
+	str	q18, [x0, #(2*8*18)]
+	str	q19, [x0, #(2*8*19)]
+	str	q20, [x0, #(2*8*20)]
+	str	q21, [x0, #(2*8*21)]
+	str	q22, [x0, #(2*8*22)]
+	str	q23, [x0, #(2*8*23)]
+	str	q24, [x0, #(2*8*24)]
 .endm
 
-#define STACK_SIZE (16*4 + 16*30)
+#define STACK_SIZE (16*4 + 16*34)
 #define STACK_BASE_VREGS 0
 #define STACK_BASE_TMP   16*4
 
-#define E0_offset  0
-#define E1_offset  1
-#define E2_offset  2
-#define E3_offset  3
-#define E4_offset  4
-
-#define Aba_offset (5 + 0  )
-#define Abe_offset (5 + 1  )
-#define Abi_offset (5 + 2  )
-#define Abo_offset (5 + 3  )
-#define Abu_offset (5 + 4  )
-#define Aga_offset (5 + 5  )
-#define Age_offset (5 + 6  )
-#define Agi_offset (5 + 7  )
-#define Ago_offset (5 + 8  )
-#define Agu_offset (5 + 9  )
-#define Aka_offset (5 + 10 )
-#define Ake_offset (5 + 11 )
-#define Aki_offset (5 + 12 )
-#define Ako_offset (5 + 13 )
-#define Aku_offset (5 + 14 )
-#define Ama_offset (5 + 15 )
-#define Ame_offset (5 + 16 )
-#define Ami_offset (5 + 17 )
-#define Amo_offset (5 + 18 )
-#define Amu_offset (5 + 19 )
-#define Asa_offset (5 + 20 )
-#define Ase_offset (5 + 21 )
-#define Asi_offset (5 + 22 )
-#define Aso_offset (5 + 23 )
-#define Asu_offset (5 + 24 )
-
-#define vEba_offset (5 + 0  )
-#define vEbe_offset (5 + 1  )
-#define vEbi_offset (5 + 2  )
-#define vEbo_offset (5 + 3  )
-#define vEbu_offset (5 + 4  )
-#define vEga_offset (5 + 5  )
-#define vEge_offset (5 + 6  )
-#define vEgi_offset (5 + 7  )
-#define vEgo_offset (5 + 8  )
-#define vEgu_offset (5 + 9  )
-#define vEka_offset (5 + 10 )
-#define vEke_offset (5 + 11 )
-#define vEki_offset (5 + 12 )
-#define vEko_offset (5 + 13 )
-#define vEku_offset (5 + 14 )
-#define vEma_offset (5 + 15 )
-#define vEme_offset (5 + 16 )
-#define vEmi_offset (5 + 17 )
-#define vEmo_offset (5 + 18 )
-#define vEmu_offset (5 + 19 )
-#define vEsa_offset (5 + 20 )
-#define vEse_offset (5 + 21 )
-#define vEsi_offset (5 + 22 )
-#define vEso_offset (5 + 23 )
-#define vEsu_offset (5 + 24 )
+#define Aga_offset 0
+#define E0_offset  1
+#define E1_offset  2
+#define E2_offset  3
+#define E3_offset  4
+#define E4_offset  5
+#define Ame_offset  7
+#define Agi_offset  8
+#define Aka_offset  9
+#define Abo_offset  10
+#define Amo_offset  11
+#define Ami_offset  12
+#define Ake_offset  13
+#define Agu_offset  14
+#define Asi_offset  15
+#define Aku_offset  16
+#define Asa_offset  17
+#define Abu_offset  18
+#define Asu_offset  19
+#define Ase_offset  20
+//#define Aga_offset  21
+#define Age_offset  22
+#define vBgo_offset 23
+#define vBke_offset 24
+#define vBgi_offset 25
+#define vBga_offset 26
+#define vBbo_offset 27
+#define vBmo_offset 28
+#define vBmi_offset 29
+#define vBge_offset 30
 
 .macro	alloc_stack
 	sub	sp, sp, #(STACK_SIZE)
@@ -433,32 +195,65 @@ round_constants_vec:
 .endm
 
 .macro	eor3_m1 d s0 s1 s2
-	eor3_m1_0	\d\(), \s0\(), \s1\(), \s2\()
-	eor3_m1_1	\d\(), \s0\(), \s1\(), \s2\()
+	eor3_m1_0	\d, \s0, \s1, \s2
+	eor3_m1_1	\d, \s0, \s1, \s2
 .endm
 
 .macro	rax1_m1 d s0 s1
+   // Use add instead of SHL #1
 	add	tmp.2d, \s1\().2d, \s1\().2d
 	sri	tmp.2d, \s1\().2d, #63
 	eor	\d\().16b, tmp.16b, \s0\().16b
 .endm
 
 .macro	xar_m1 d s0 s1 imm
+   // Special cases where we can replace SHLs by ADDs
+.if	\imm == 63
+	eor	\s0\().16b, \s0\().16b, \s1\().16b
+	add	\d\().2d, \s0\().2d, \s0\().2d
+	sri	\d\().2d, \s0\().2d, #(63)
+.elseif	\imm == 62
+	eor	\s0\().16b, \s0\().16b, \s1\().16b
+	add	\d\().2d, \s0\().2d, \s0\().2d
+	add	\d\().2d, \d\().2d,  \d\().2d
+	sri	\d\().2d, \s0\().2d, #(62)
+   // .elseif \imm == 61
+   //   eor \s0\().16b, \s0\().16b, \s1\().16b
+   //   add \d\().2d, \s0\().2d, \s0\().2d
+   //   add \d\().2d, \d\().2d,  \d\().2d
+   //   add \d\().2d, \d\().2d,  \d\().2d
+   //   sri \d\().2d, \s0\().2d, #(61)
+.else
 	eor	\s0\().16b, \s0\().16b, \s1\().16b
 	shl	\d\().2d, \s0\().2d, #(64-\imm)
 	sri	\d\().2d, \s0\().2d, #(\imm)
+.endif
 .endm
 
-.macro	xar_m1_0 d s0 s1 imm tmp
-	eor	\tmp\().16b, \s0\().16b, \s1\().16b
+.macro	xar_m1_0 d s0 s1 imm
+   // Special cases where we can replace SHLs by ADDs
+.if	\imm == 63
+	eor	\s0\().16b, \s0\().16b, \s1\().16b
+.elseif	\imm == 62
+	eor	\s0\().16b, \s0\().16b, \s1\().16b
+.else
+	eor	\s0\().16b, \s0\().16b, \s1\().16b
+.endif
 .endm
 
-.macro	xar_m1_1 d s0 s1 imm tmp
-	shl	\d\().2d, \tmp\().2d, #(64-\imm)
-.endm
-
-.macro	xar_m1_2 d s0 s1 imm tmp
-	sri	\d\().2d, \tmp\().2d, #(\imm)
+.macro	xar_m1_1 d s0 s1 imm
+   // Special cases where we can replace SHLs by ADDs
+.if	\imm == 63
+	add	\d\().2d, \s0\().2d, \s0\().2d
+	sri	\d\().2d, \s0\().2d, #(63)
+.elseif	\imm == 62
+	add	\d\().2d, \s0\().2d, \s0\().2d
+	add	\d\().2d, \d\().2d,  \d\().2d
+	sri	\d\().2d, \s0\().2d, #(62)
+.else
+	shl	\d\().2d, \s0\().2d, #(64-\imm)
+	sri	\d\().2d, \s0\().2d, #(\imm)
+.endif
 .endm
 
 .macro	bcax_m1 d s0 s1 s2
@@ -466,295 +261,337 @@ round_constants_vec:
 	eor	\d\().16b, tmp.16b, \s0\().16b
 .endm
 
-.macro	refresh d
-	mov	\d\().16b, \d\().16b
-.endm
-
 
 .macro	keccak_f1600_round_pre
-	eor2	C0,  Aka, Aga
-	eor2	C1,  Ake, Age
-	eor2	C2,  Aki, Agi
-	eor2	C3,  Ako, Ago
-	eor2	C4,  Aku, Agu
-	eor2	C0,  C0,  Ama
-	eor2	C1,  C1,  Ame
-	eor2	C2,  C2,  Ami
-	eor2	C3,  C3,  Amo
-	eor2	C4,  C4,  Amu
-	eor2	C0,  C0,  Asa
-	eor2	C1,  C1,  Ase
-	eor2	C2,  C2,  Asi
-	eor2	C3,  C3,  Aso
-	eor2	C4,  C4,  Asu
-	eor2	C0,  C0,  Aba
-	eor2	C1,  C1,  Abe
-	eor2	C2,  C2,  Abi
-	eor2	C3,  C3,  Abo
-	eor2	C4,  C4,  Abu
+
+	eor3_m1_0	v28, v1, v6, v11
+	eor3_m1_0	v30, v3, v8, v13
+	eor3_m1_0	v27, v0, v5, v10
+	eor3_m1_0	v29, v2, v7, v12
+	eor3_m1_0	v31, v4, v9, v14
+	eor3_m1_1	v28, v1, v6, v11
+	eor3_m1_1	v30, v3, v8, v13
+	eor3_m1_1	v27, v0, v5, v10
+	eor3_m1_1	v29, v2, v7, v12
+	eor3_m1_1	v31, v4, v9, v14
+	eor3_m1_0	v28, v28, v16,  v21
+	eor3_m1_0	v30, v30, v18,  v23
+	eor3_m1_0	v27, v27, v15,  v20
+	eor3_m1_0	v29, v29, v17,  v22
+	eor3_m1_0	v31, v31, v19,  v24
+	eor3_m1_1	v28, v28, v16,  v21
+	eor3_m1_1	v30, v30, v18,  v23
+	eor3_m1_1	v27, v27, v15,  v20
+	eor3_m1_1	v29, v29, v17,  v22
+	eor3_m1_1	v31, v31, v19,  v24
+
 .endm
 
-.macro	keccak_f1600_round_post
+.macro	keccak_f1600_round
 
+	eor3_m1_0	v27, v0, v5, v10
+	eor3_m1_0	v28, v1, v6, v11
+	eor3_m1_0	v29, v2, v7, v12
+	eor3_m1_0	v30, v3, v8, v13
+	eor3_m1_0	v31, v4, v9, v14
+	eor3_m1_1	v27, v0, v5, v10
+	eor3_m1_1	v28, v1, v6, v11
+	eor3_m1_1	v29, v2, v7, v12
+	eor3_m1_1	v30, v3, v8, v13
+	eor3_m1_1	v31, v4, v9, v14
+	eor3_m1_0	v27, v27, v15,  v20
+	eor3_m1_0	v28, v28, v16,  v21
+	eor3_m1_0	v29, v29, v17,  v22
+	eor3_m1_0	v30, v30, v18,  v23
+	eor3_m1_0	v31, v31, v19,  v24
+	eor3_m1_1	v27, v27, v15,  v20
+	eor3_m1_1	v28, v28, v16,  v21
+	eor3_m1_1	v29, v29, v17,  v22
+	eor3_m1_1	v30, v30, v18,  v23
+	eor3_m1_1	v31, v31, v19,  v24
 
 	tmp	.req v25
-	rax1_m1	E2, C1, C3                 SEP      str E2q, [sp, #(STACK_BASE_TMP + 16 * E2_offset)]
-	rax1_m1	E4, C3, C0                 SEP      str E4q, [sp, #(STACK_BASE_TMP + 16 * E4_offset)]
-	rax1_m1	E1, C0, C2                 SEP      str E1q, [sp, #(STACK_BASE_TMP + 16 * E1_offset)]
-	rax1_m1	E3, C2, C4                 SEP      str E3q, [sp, #(STACK_BASE_TMP + 16 * E3_offset)]
-	rax1_m1	E0, C4, C1                 SEP      str E0q, [sp, #(STACK_BASE_TMP + 16 * E0_offset)]
+	rax1_m1	v26, v28, v30
+	rax1_m1	v30, v30, v27
+	rax1_m1	v27, v27, v29
+	rax1_m1	v29, v29, v31
+	rax1_m1	v31, v31, v28
+.unreq	tmp
 
-	ldr	E1q, [sp, #(STACK_BASE_TMP + 16 * E1_offset)]
-	xar_m1	vBgo, Ame, E1, 19           SEP      ldr E0q, [sp, #(STACK_BASE_TMP + 16 * E0_offset)]
-	xar_m1	vBgi, Aka, E0, 61           SEP      ldr E3q, [sp, #(STACK_BASE_TMP + 16 * E3_offset)]
-	xar_m1	vBga, Abo, E3, 36           SEP      ldr E4q, [sp, #(STACK_BASE_TMP + 16 * E4_offset)]
-	xar_m1	vBge, Agu, E4, 44           SEP      ldr E2q, [sp, #(STACK_BASE_TMP + 16 * E2_offset)]
-	xar_m1	vBgu, Asi, E2, 3            SEP
+	tmp	.req v28
+	tmpq	.req q28
 
-	bcax_m1	vEga, vBga, vBgi, vBge     SEP      str vEgaq, [sp, #(STACK_BASE_TMP + 16 * vEga_offset)]
-	bcax_m1	vEge, vBge, vBgo, vBgi     SEP      str vEgeq, [sp, #(STACK_BASE_TMP + 16 * vEge_offset)]
-	bcax_m1	vEgi, vBgi, vBgu, vBgo     SEP      str vEgiq, [sp, #(STACK_BASE_TMP + 16 * vEgi_offset)]
-	bcax_m1	vEgo, vBgo, vBga, vBgu     SEP      str vEgoq, [sp, #(STACK_BASE_TMP + 16 * vEgo_offset)]
-	bcax_m1	vEgu, vBgu, vBge, vBga     SEP      str vEguq, [sp, #(STACK_BASE_TMP + 16 * vEgu_offset)]
+	eor	v25.16b, v0.16b, v31.16b
+	xar_m1	v0, v2, v26, 2
+	xar_m1	v2, v12, v26, 21
+	xar_m1	v12, v13, v29, 39
+	xar_m1	v13, v19, v30, 56
+	xar_m1	v19, v23, v29, 8
+	xar_m1	v23, v15, v31, 23
+	xar_m1	v15, v1, v27, 63
+	xar_m1	v1, v8, v29, 9
+	xar_m1	v8, v16, v27, 19
+	xar_m1	v16, v7, v26, 58
+	xar_m1	v7, v10, v31, 61
+	xar_m1	v10, v3, v29, 36
+	xar_m1	v3, v18, v29, 43
+	xar_m1	v18, v17, v26, 49
+	xar_m1	v17, v11, v27, 54
+	xar_m1	v11, v9, v30, 44
+	xar_m1	v9, v22, v26, 3
+	xar_m1	v22, v14, v30, 25
+	xar_m1	v14, v20, v31, 46
+	xar_m1	v20, v4, v30, 37
+	xar_m1	v4, v24, v30, 50
+	xar_m1	v24, v21, v27, 62
+	xar_m1	v21, v5, v31, 28
+	xar_m1	v26, v6, v27, 20
 
-	ldr	E3q, [sp, #(STACK_BASE_TMP + 16 * E3_offset)]
-	xar_m1	vBki, Ako, E3, 39           SEP      ldr E4q, [sp, #(STACK_BASE_TMP + 16 * E4_offset)]
-	xar_m1	vBko, Amu, E4, 56           SEP      ldr E1q, [sp, #(STACK_BASE_TMP + 16 * E1_offset)]
-	xar_m1	vBka, Abe, E1, 63           SEP      ldr E2q, [sp, #(STACK_BASE_TMP + 16 * E2_offset)]
-	xar_m1	vBke, Agi, E2, 58           SEP      ldr E0q, [sp, #(STACK_BASE_TMP + 16 * E0_offset)]
-	xar_m1	vBku, Asa, E0, 46
+	bcax_m1	v5, v10, v7, v11
+	bcax_m1	v6, v11, v8, v7
+	bcax_m1	v7, v7, v9, v8
+	bcax_m1	v8, v8, v10, v9
+	bcax_m1	v9, v9, v11, v10
+	bcax_m1	v10, v15, v12, v16
+	bcax_m1	v11, v16, v13, v12
+	bcax_m1	v12, v12, v14, v13
+	bcax_m1	v13, v13, v15, v14
+	bcax_m1	v14, v14, v16, v15
+	bcax_m1	v15, v20, v17, v21
+	bcax_m1	v16, v21, v18, v17
+	bcax_m1	v17, v17, v19, v18
+	bcax_m1	v18, v18, v20, v19
+	bcax_m1	v19, v19, v21, v20
+	bcax_m1	v20, v0, v22, v1
+	bcax_m1	v21, v1, v23, v22
+	bcax_m1	v22, v22, v24, v23
+	bcax_m1	v23, v23, v0, v24
+	bcax_m1	v24, v24, v1, v0
+	bcax_m1	v0, v25, v2, v26
+	bcax_m1	v1, v26, v3, v2
+	bcax_m1	v2, v2, v4, v3
+	bcax_m1	v3, v3, v25, v4
+	bcax_m1	v4, v4, v26, v25
 
-	bcax_m1	vEka, vBka, vBki, vBke     SEP      str vEkaq, [sp, #(STACK_BASE_TMP + 16 * vEka_offset)]
-	bcax_m1	vEke, vBke, vBko, vBki     SEP      str vEkeq, [sp, #(STACK_BASE_TMP + 16 * vEke_offset)]
-	bcax_m1	vEki, vBki, vBku, vBko     SEP      str vEkiq, [sp, #(STACK_BASE_TMP + 16 * vEki_offset)]
-	bcax_m1	vEko, vBko, vBka, vBku     SEP      str vEkoq, [sp, #(STACK_BASE_TMP + 16 * vEko_offset)]
-	bcax_m1	vEku, vBku, vBke, vBka     SEP      str vEkuq, [sp, #(STACK_BASE_TMP + 16 * vEku_offset)]
-
-	ldr	E0q, [sp, #(STACK_BASE_TMP + 16 * E0_offset)]
-	xar_m1	vBmu, Aso, E3, 8            SEP      ldr E2q, [sp, #(STACK_BASE_TMP + 16 * E2_offset)]
-	xar_m1	vBmo, Ami, E2, 49           SEP      ldr E3q, [sp, #(STACK_BASE_TMP + 16 * E3_offset)]
-	xar_m1	vBmi, Ake, E1, 54           SEP      ldr E4q, [sp, #(STACK_BASE_TMP + 16 * E4_offset)]
-	xar_m1	vBma, Abu, E4, 37           SEP      ldr E1q, [sp, #(STACK_BASE_TMP + 16 * E1_offset)]
-	xar_m1	vBme, Aga, E0, 28
-
-	bcax_m1	vEma, vBma, vBmi, vBme     SEP      str vEmaq, [sp, #(STACK_BASE_TMP + 16 * vEma_offset)]
-	bcax_m1	vEme, vBme, vBmo, vBmi     SEP      str vEmeq, [sp, #(STACK_BASE_TMP + 16 * vEme_offset)]
-	bcax_m1	vEmi, vBmi, vBmu, vBmo     SEP      str vEmiq, [sp, #(STACK_BASE_TMP + 16 * vEmi_offset)]
-	bcax_m1	vEmo, vBmo, vBma, vBmu     SEP      str vEmoq, [sp, #(STACK_BASE_TMP + 16 * vEmo_offset)]
-	bcax_m1	vEmu, vBmu, vBme, vBma     SEP      str vEmuq, [sp, #(STACK_BASE_TMP + 16 * vEmu_offset)]
-
-	ldr	E0q, [sp, #(STACK_BASE_TMP + 16 * E0_offset)]
-	eor2	vBba, Aba, E0               SEP      ldr E2q, [sp, #(STACK_BASE_TMP + 16 * E2_offset)]
-	xar_m1	vBbi, Aki, E2, 21           SEP      ldr E3q, [sp, #(STACK_BASE_TMP + 16 * E3_offset)]
-	xar_m1	vBbo, Amo, E3, 43           SEP      ldr E4q, [sp, #(STACK_BASE_TMP + 16 * E4_offset)]
-	xar_m1	vBbu, Asu, E4, 50           SEP      ldr E1q, [sp, #(STACK_BASE_TMP + 16 * E1_offset)]
-	xar_m1	vBbe, Age, E1, 20
-
-	bcax_m1	vEba, vBba, vBbi, vBbe     SEP      str vEbaq, [sp, #(STACK_BASE_TMP + 16 * vEba_offset)]
-	bcax_m1	vEbe, vBbe, vBbo, vBbi     SEP      str vEbeq, [sp, #(STACK_BASE_TMP + 16 * vEbe_offset)]
-	bcax_m1	vEbi, vBbi, vBbu, vBbo     SEP      str vEbiq, [sp, #(STACK_BASE_TMP + 16 * vEbi_offset)]
-	bcax_m1	vEbo, vBbo, vBba, vBbu     SEP      str vEboq, [sp, #(STACK_BASE_TMP + 16 * vEbo_offset)]
-	bcax_m1	vEbu, vBbu, vBbe, vBba     SEP      str vEbuq, [sp, #(STACK_BASE_TMP + 16 * vEbu_offset)]
-
-	ldr	E2q, [sp, #(STACK_BASE_TMP + 16 * E2_offset)]
-	xar_m1	vBsa, Abi, E2, 2           SEP       ldr E0q, [sp, #(STACK_BASE_TMP + 16 * E0_offset)]
-	xar_m1	vBso, Ama, E0, 23          SEP       ldr E3q, [sp, #(STACK_BASE_TMP + 16 * E3_offset)]
-	xar_m1	vBse, Ago, E3, 9           SEP       ldr E4q, [sp, #(STACK_BASE_TMP + 16 * E4_offset)]
-	xar_m1	vBsi, Aku, E4, 25          SEP       ldr E1q, [sp, #(STACK_BASE_TMP + 16 * E1_offset)]
-	xar_m1	vBsu, Ase, E1, 62
-
-	bcax_m1	vEsa, vBsa, vBsi, vBse    SEP       str vEsaq, [sp, #(STACK_BASE_TMP + 16 * vEsa_offset)]
-	bcax_m1	vEse, vBse, vBso, vBsi    SEP       str vEseq, [sp, #(STACK_BASE_TMP + 16 * vEse_offset)]
-	bcax_m1	vEsi, vBsi, vBsu, vBso    SEP       str vEsiq, [sp, #(STACK_BASE_TMP + 16 * vEsi_offset)]
-	bcax_m1	vEso, vBso, vBsa, vBsu    SEP       str vEsoq, [sp, #(STACK_BASE_TMP + 16 * vEso_offset)]
-	bcax_m1	vEsu, vBsu, vBse, vBsa    SEP       str vEsuq, [sp, #(STACK_BASE_TMP + 16 * vEsu_offset)]
-
-	ldr	Abaq, [sp, #(STACK_BASE_TMP + 16 * Aba_offset)]
-	ldr	Abeq, [sp, #(STACK_BASE_TMP + 16 * Abe_offset)]
-	ldr	Abiq, [sp, #(STACK_BASE_TMP + 16 * Abi_offset)]
-	ldr	Aboq, [sp, #(STACK_BASE_TMP + 16 * Abo_offset)]
-	ldr	Abuq, [sp, #(STACK_BASE_TMP + 16 * Abu_offset)]
-	ldr	Agaq, [sp, #(STACK_BASE_TMP + 16 * Aga_offset)]
-	ldr	Ageq, [sp, #(STACK_BASE_TMP + 16 * Age_offset)]
-	ldr	Agiq, [sp, #(STACK_BASE_TMP + 16 * Agi_offset)]
-	ldr	Agoq, [sp, #(STACK_BASE_TMP + 16 * Ago_offset)]
-	ldr	Aguq, [sp, #(STACK_BASE_TMP + 16 * Agu_offset)]
-	ldr	Akaq, [sp, #(STACK_BASE_TMP + 16 * Aka_offset)]
-	ldr	Akeq, [sp, #(STACK_BASE_TMP + 16 * Ake_offset)]
-	ldr	Akiq, [sp, #(STACK_BASE_TMP + 16 * Aki_offset)]
-	ldr	Akoq, [sp, #(STACK_BASE_TMP + 16 * Ako_offset)]
-	ldr	Akuq, [sp, #(STACK_BASE_TMP + 16 * Aku_offset)]
-	ldr	Amaq, [sp, #(STACK_BASE_TMP + 16 * Ama_offset)]
-	ldr	Ameq, [sp, #(STACK_BASE_TMP + 16 * Ame_offset)]
-	ldr	Amiq, [sp, #(STACK_BASE_TMP + 16 * Ami_offset)]
-	ldr	Amoq, [sp, #(STACK_BASE_TMP + 16 * Amo_offset)]
-	ldr	Amuq, [sp, #(STACK_BASE_TMP + 16 * Amu_offset)]
-	ldr	Asaq, [sp, #(STACK_BASE_TMP + 16 * Asa_offset)]
-	ldr	Aseq, [sp, #(STACK_BASE_TMP + 16 * Ase_offset)]
-	ldr	Asiq, [sp, #(STACK_BASE_TMP + 16 * Asi_offset)]
-	ldr	Asoq, [sp, #(STACK_BASE_TMP + 16 * Aso_offset)]
-	ldr	Asuq, [sp, #(STACK_BASE_TMP + 16 * Asu_offset)]
-
-	ld1r	{tmp.2d}, [const_addr], #8
-	eor	Aba.16b, Aba.16b, tmp.16b
+    // iota step
+    //ld1r {tmp.2d}, [x1], #8
+	ldr	tmpq, [x1], #16
+	eor	v0.16b, v0.16b, tmp.16b
 
 .unreq	tmp
+.unreq	tmpq
 
 .endm
 
 .macro	keccak_f1600_round_core
 
+	tmp	.req v25
+	rax1_m1	v26, v28, v30
+	str	q5, [sp, #(STACK_BASE_TMP + 16 * 30)]
+	rax1_m1	v30, v30, v27
+	rax1_m1	v27, v27, v29
+	rax1_m1	v29, v29, v31
+	rax1_m1	v31, v31, v28
 
+
+.unreq	tmp
+	tmp	.req v28
+	tmpq	.req q28
+
+	eor	v25.16b, v0.16b, v31.16b
+	xar_m1	v0, v2, v26, 2
+	xar_m1	v2, v12, v26, 21
+	xar_m1	v12, v13, v29, 39
+	xar_m1	v13, v19, v30, 56
+	xar_m1	v19, v23, v29, 8
+	xar_m1	v23, v15, v31, 23
+	xar_m1	v15, v1, v27, 63
+	xar_m1	v1, v8, v29, 9
+	xar_m1	v8, v16, v27, 19
+	xar_m1	v16, v7, v26, 58
+	xar_m1	v7, v10, v31, 61
+	xar_m1	v10, v3, v29, 36
+	xar_m1	v3, v18, v29, 43
+	xar_m1	v18, v17, v26, 49
+	xar_m1	v17, v11, v27, 54
+	xar_m1	v11, v9, v30, 44
+	bcax_m1	v5, v10, v7, v11
+	xar_m1	v9, v22, v26, 3
+	xar_m1	v22, v14, v30, 25
+	xar_m1	v14, v20, v31, 46
+	xar_m1	v20, v4, v30, 37
+	xar_m1	v4, v24, v30, 50
+	xar_m1	v24, v21, v27, 62
+	ldr	tmpq, [sp, #(STACK_BASE_TMP + 16*30)]
+	xar_m1	v21, tmp, v31, 28
+	xar_m1	v26, v6, v27, 20
+
+	bcax_m1	v6, v11, v8, v7
+	bcax_m1	v7, v7, v9, v8
+	bcax_m1	v8, v8, v10, v9
+	bcax_m1	v9, v9, v11, v10
+	bcax_m1	v10, v15, v12, v16
+	bcax_m1	v11, v16, v13, v12
+
+.unreq	tmp
+.unreq	tmpq
+
+	eor2	v27,  v10, v5
+	str	q5, [sp, #(STACK_BASE_TMP + 16 * Aga_offset)]
+
+	tmp	.req v5
+	tmpq	.req q5
+	bcax_m1	v12, v12, v14, v13
+	bcax_m1	v13, v13, v15, v14
+	eor2	v28,  v11, v6
+	bcax_m1	v14, v14, v16, v15
+	eor2	v29,  v12, v7
+	bcax_m1	v15, v20, v17, v21
+	eor2	v30,  v13, v8
+	bcax_m1	v16, v21, v18, v17
+	eor2	v31,  v14, v9
+	bcax_m1	v17, v17, v19, v18
+	eor2	v27,  v27,  v15
+	bcax_m1	v18, v18, v20, v19
+	eor2	v28,  v28,  v16
+	bcax_m1	v19, v19, v21, v20
+	eor2	v29,  v29,  v17
+	bcax_m1	v20, v0, v22, v1
+	eor2	v30,  v30,  v18
+	bcax_m1	v21, v1, v23, v22
+	eor2	v31,  v31,  v19
+	bcax_m1	v22, v22, v24, v23
+	eor2	v27,  v27,  v20
+	bcax_m1	v23, v23, v0, v24
+	eor2	v28,  v28,  v21
+	bcax_m1	v24, v24, v1, v0
+	eor2	v29,  v29,  v22
+	eor2	v30,  v30,  v23
+	bcax_m1	v0, v25, v2, v26
+	bcax_m1	v1, v26, v3, v2
+	eor2	v28,  v28,  v1
+
+    // iota step
+    //ld1r {tmp.2d}, [x1], #8
+	ldr	tmpq, [x1], #16
+	eor	v0.16b, v0.16b, tmp.16b
+	eor2	v31,  v31,  v24
+	bcax_m1	v2, v2, v4, v3
+	bcax_m1	v3, v3, v25, v4
+	eor2	v30,  v30,  v3
+	eor2	v29,  v29,  v2
+	eor2	v27,  v27,  v0
+	bcax_m1	v4, v4, v26, v25
+	eor2	v31,  v31,  v4
+
+	ldr	q5, [sp, #(STACK_BASE_TMP + 16 * Aga_offset)]
+.unreq	tmp
+.unreq	tmpq
+
+.endm
+
+.macro	keccak_f1600_round_post
 
 	tmp	.req v25
+	rax1_m1	v26, v28, v30
+	str	q5, [sp, #(STACK_BASE_TMP + 16 * 30)]
+	rax1_m1	v30, v30, v27
+	rax1_m1	v27, v27, v29
+	rax1_m1	v29, v29, v31
+	rax1_m1	v31, v31, v28
 
-	rax1_m1	E1, C0, C2                 SEP      str E1q, [sp, #(STACK_BASE_TMP + 16 * E1_offset)]
-	rax1_m1	E0, C4, C1                 SEP      str E0q, [sp, #(STACK_BASE_TMP + 16 * E0_offset)]
-	rax1_m1	E3, C2, C4                 SEP      str E3q, [sp, #(STACK_BASE_TMP + 16 * E3_offset)]
-	rax1_m1	E4, C3, C0                 SEP      str E4q, [sp, #(STACK_BASE_TMP + 16 * E4_offset)]
-	rax1_m1	E2, C1, C3                 SEP      str E2q, [sp, #(STACK_BASE_TMP + 16 * E2_offset)]
 
-	ldr	E1q, [sp, #(STACK_BASE_TMP + 16 * E1_offset)]
-	xar_m1	vBgo, Ame, E1, 19           SEP      ldr E0q, [sp, #(STACK_BASE_TMP + 16 * E0_offset)]
-	xar_m1	vBgi, Aka, E0, 61           SEP      ldr E3q, [sp, #(STACK_BASE_TMP + 16 * E3_offset)]
-	xar_m1	vBga, Abo, E3, 36           SEP      ldr E4q, [sp, #(STACK_BASE_TMP + 16 * E4_offset)]
-	xar_m1	vBge, Agu, E4, 44           SEP      ldr E2q, [sp, #(STACK_BASE_TMP + 16 * E2_offset)]
-	xar_m1	vBgu, Asi, E2, 3            SEP
+.unreq	tmp
+	tmp	.req v28
+	tmpq	.req q28
 
-	bcax_m1	vEga, vBga, vBgi, vBge     SEP      str vEgaq, [sp, #(STACK_BASE_TMP + 16 * vEga_offset)]
-	bcax_m1	vEge, vBge, vBgo, vBgi     SEP      str vEgeq, [sp, #(STACK_BASE_TMP + 16 * vEge_offset)]
-	bcax_m1	vEgi, vBgi, vBgu, vBgo     SEP      str vEgiq, [sp, #(STACK_BASE_TMP + 16 * vEgi_offset)]
-	bcax_m1	vEgo, vBgo, vBga, vBgu     SEP      str vEgoq, [sp, #(STACK_BASE_TMP + 16 * vEgo_offset)]
-	bcax_m1	vEgu, vBgu, vBge, vBga     SEP      str vEguq, [sp, #(STACK_BASE_TMP + 16 * vEgu_offset)]
+	eor	v25.16b, v0.16b, v31.16b
+	xar_m1	v0, v2, v26, 2
+	xar_m1	v2, v12, v26, 21
+	xar_m1	v12, v13, v29, 39
+	xar_m1	v13, v19, v30, 56
+	xar_m1	v19, v23, v29, 8
+	xar_m1	v23, v15, v31, 23
+	xar_m1	v15, v1, v27, 63
+	xar_m1	v1, v8, v29, 9
+	xar_m1	v8, v16, v27, 19
+	xar_m1	v16, v7, v26, 58
+	xar_m1	v7, v10, v31, 61
+	xar_m1	v10, v3, v29, 36
+	xar_m1	v3, v18, v29, 43
+	xar_m1	v18, v17, v26, 49
+	xar_m1	v17, v11, v27, 54
+	xar_m1	v11, v9, v30, 44
+	bcax_m1	v5, v10, v7, v11
+	xar_m1	v9, v22, v26, 3
+	xar_m1	v22, v14, v30, 25
+	xar_m1	v14, v20, v31, 46
+	xar_m1	v20, v4, v30, 37
+	xar_m1	v4, v24, v30, 50
+	xar_m1	v24, v21, v27, 62
+	ldr	tmpq, [sp, #(STACK_BASE_TMP + 16*30)]
+	xar_m1	v21, tmp, v31, 28
+	xar_m1	v26, v6, v27, 20
 
-	ldr	E3q, [sp, #(STACK_BASE_TMP + 16 * E3_offset)]
-	xar_m1	vBki, Ako, E3, 39           SEP      ldr E4q, [sp, #(STACK_BASE_TMP + 16 * E4_offset)]
-	xar_m1	vBko, Amu, E4, 56           SEP      ldr E1q, [sp, #(STACK_BASE_TMP + 16 * E1_offset)]
-	xar_m1	vBka, Abe, E1, 63           SEP      ldr E2q, [sp, #(STACK_BASE_TMP + 16 * E2_offset)]
-	xar_m1	vBke, Agi, E2, 58           SEP      ldr E0q, [sp, #(STACK_BASE_TMP + 16 * E0_offset)]
-	xar_m1	vBku, Asa, E0, 46
+	bcax_m1	v6, v11, v8, v7
+	bcax_m1	v7, v7, v9, v8
+	bcax_m1	v8, v8, v10, v9
+	bcax_m1	v9, v9, v11, v10
+	bcax_m1	v10, v15, v12, v16
+	bcax_m1	v11, v16, v13, v12
+	bcax_m1	v12, v12, v14, v13
+	bcax_m1	v13, v13, v15, v14
+	bcax_m1	v14, v14, v16, v15
+	bcax_m1	v15, v20, v17, v21
+	bcax_m1	v16, v21, v18, v17
+	bcax_m1	v17, v17, v19, v18
+	bcax_m1	v18, v18, v20, v19
+	bcax_m1	v19, v19, v21, v20
+	bcax_m1	v20, v0, v22, v1
+	bcax_m1	v21, v1, v23, v22
+	bcax_m1	v22, v22, v24, v23
+	bcax_m1	v23, v23, v0, v24
+	bcax_m1	v24, v24, v1, v0
+	bcax_m1	v0, v25, v2, v26
+	bcax_m1	v1, v26, v3, v2
+	bcax_m1	v2, v2, v4, v3
+	bcax_m1	v3, v3, v25, v4
+	bcax_m1	v4, v4, v26, v25
 
-	bcax_m1	vEka, vBka, vBki, vBke     SEP      str vEkaq, [sp, #(STACK_BASE_TMP + 16 * vEka_offset)]
-	bcax_m1	vEke, vBke, vBko, vBki     SEP      str vEkeq, [sp, #(STACK_BASE_TMP + 16 * vEke_offset)]
-	bcax_m1	vEki, vBki, vBku, vBko     SEP      str vEkiq, [sp, #(STACK_BASE_TMP + 16 * vEki_offset)]
-	bcax_m1	vEko, vBko, vBka, vBku     SEP      str vEkoq, [sp, #(STACK_BASE_TMP + 16 * vEko_offset)]
-	bcax_m1	vEku, vBku, vBke, vBka     SEP      str vEkuq, [sp, #(STACK_BASE_TMP + 16 * vEku_offset)]
-
-	eor2	C3, vEko, vEgo
-	eor2	C0, vEka, vEga
-	eor2	C1, vEke, vEge
-	eor2	C2, vEki, vEgi
-	eor2	C4, vEku, vEgu
-	ldr	E3q, [sp, #(STACK_BASE_TMP + 16 * E3_offset)]
-	xar_m1	vBmu, Aso, E3, 8            SEP      ldr E2q, [sp, #(STACK_BASE_TMP + 16 * E2_offset)]
-	xar_m1	vBmo, Ami, E2, 49           SEP      ldr E1q, [sp, #(STACK_BASE_TMP + 16 * E1_offset)]
-	xar_m1	vBmi, Ake, E1, 54           SEP      ldr E4q, [sp, #(STACK_BASE_TMP + 16 * E4_offset)]
-	xar_m1	vBma, Abu, E4, 37           SEP      ldr E0q, [sp, #(STACK_BASE_TMP + 16 * E0_offset)]
-	xar_m1	vBme, Aga, E0, 28
-
-	bcax_m1	vEma, vBma, vBmi, vBme     SEP      str vEmaq, [sp, #(STACK_BASE_TMP + 16 * vEma_offset)]
-	bcax_m1	vEme, vBme, vBmo, vBmi     SEP      str vEmeq, [sp, #(STACK_BASE_TMP + 16 * vEme_offset)]
-	bcax_m1	vEmi, vBmi, vBmu, vBmo     SEP      str vEmiq, [sp, #(STACK_BASE_TMP + 16 * vEmi_offset)]
-	bcax_m1	vEmo, vBmo, vBma, vBmu     SEP      str vEmoq, [sp, #(STACK_BASE_TMP + 16 * vEmo_offset)]
-	bcax_m1	vEmu, vBmu, vBme, vBma     SEP      str vEmuq, [sp, #(STACK_BASE_TMP + 16 * vEmu_offset)]
-
-	eor2	C0,  C0,  vEma
-	eor2	C1,  C1,  vEme
-	eor2	C2,  C2,  vEmi
-	eor2	C3,  C3,  vEmo
-	eor2	C4,  C4,  vEmu
-	ldr	E0q, [sp, #(STACK_BASE_TMP + 16 * E0_offset)]
-	eor2	vBba, Aba, E0               SEP      ldr E2q, [sp, #(STACK_BASE_TMP + 16 * E2_offset)]
-	xar_m1	vBbi, Aki, E2, 21           SEP      ldr E3q, [sp, #(STACK_BASE_TMP + 16 * E3_offset)]
-	xar_m1	vBbo, Amo, E3, 43           SEP      ldr E4q, [sp, #(STACK_BASE_TMP + 16 * E4_offset)]
-	xar_m1	vBbu, Asu, E4, 50           SEP      ldr E1q, [sp, #(STACK_BASE_TMP + 16 * E1_offset)]
-	xar_m1	vBbe, Age, E1, 20
-
-	bcax_m1	vEba, vBba, vBbi, vBbe
-	ld1r	{tmp.2d}, [const_addr], #8
-	eor2	vEba, vEba, tmp            SEP     str vEbaq, [sp, #(STACK_BASE_TMP + 16 * vEba_offset)]
-	bcax_m1	vEbe, vBbe, vBbo, vBbi     SEP     str vEbeq, [sp, #(STACK_BASE_TMP + 16 * vEbe_offset)]
-	bcax_m1	vEbi, vBbi, vBbu, vBbo     SEP     str vEbiq, [sp, #(STACK_BASE_TMP + 16 * vEbi_offset)]
-	bcax_m1	vEbo, vBbo, vBba, vBbu     SEP     str vEboq, [sp, #(STACK_BASE_TMP + 16 * vEbo_offset)]
-	bcax_m1	vEbu, vBbu, vBbe, vBba     SEP     str vEbuq, [sp, #(STACK_BASE_TMP + 16 * vEbu_offset)]
-
-	eor2	C0,  C0,  vEba
-	eor2	C1,  C1,  vEbe
-	eor2	C2,  C2,  vEbi
-	eor2	C3,  C3,  vEbo
-	eor2	C4,  C4,  vEbu
-	ldr	E2q, [sp, #(STACK_BASE_TMP + 16 * E2_offset)]
-	xar_m1	vBsa, Abi, E2, 2           SEP      ldr E0q, [sp, #(STACK_BASE_TMP + 16 * E0_offset)]
-	xar_m1	vBso, Ama, E0, 23          SEP      ldr E3q, [sp, #(STACK_BASE_TMP + 16 * E3_offset)]
-	xar_m1	vBse, Ago, E3, 9           SEP      ldr E4q, [sp, #(STACK_BASE_TMP + 16 * E4_offset)]
-	xar_m1	vBsi, Aku, E4, 25          SEP      ldr E1q, [sp, #(STACK_BASE_TMP + 16 * E1_offset)]
-	xar_m1	vBsu, Ase, E1, 62
-
-	bcax_m1	vEsa, vBsa, vBsi, vBse    SEP      str vEsaq, [sp, #(STACK_BASE_TMP + 16 * vEsa_offset)]
-	bcax_m1	vEse, vBse, vBso, vBsi    SEP      str vEseq, [sp, #(STACK_BASE_TMP + 16 * vEse_offset)]
-	bcax_m1	vEsi, vBsi, vBsu, vBso    SEP      str vEsiq, [sp, #(STACK_BASE_TMP + 16 * vEsi_offset)]
-	bcax_m1	vEsu, vBsu, vBse, vBsa    SEP      str vEsuq, [sp, #(STACK_BASE_TMP + 16 * vEsu_offset)]
-
-	eor2	C0,  C0,  vEsa
-	eor2	C1,  C1,  vEse
-	eor2	C2,  C2,  vEsi
-	eor2	C3,  C3,  vEso
-	eor2	C4,  C4,  vEsu
-
-	ldr	Abaq, [sp, #(STACK_BASE_TMP + 16 * Aba_offset)]
-	ldr	Abeq, [sp, #(STACK_BASE_TMP + 16 * Abe_offset)]
-	ldr	Abiq, [sp, #(STACK_BASE_TMP + 16 * Abi_offset)]
-	ldr	Aboq, [sp, #(STACK_BASE_TMP + 16 * Abo_offset)]
-	ldr	Abuq, [sp, #(STACK_BASE_TMP + 16 * Abu_offset)]
-	ldr	Agaq, [sp, #(STACK_BASE_TMP + 16 * Aga_offset)]
-	ldr	Ageq, [sp, #(STACK_BASE_TMP + 16 * Age_offset)]
-	ldr	Agiq, [sp, #(STACK_BASE_TMP + 16 * Agi_offset)]
-	ldr	Agoq, [sp, #(STACK_BASE_TMP + 16 * Ago_offset)]
-	ldr	Aguq, [sp, #(STACK_BASE_TMP + 16 * Agu_offset)]
-	ldr	Akaq, [sp, #(STACK_BASE_TMP + 16 * Aka_offset)]
-	ldr	Akeq, [sp, #(STACK_BASE_TMP + 16 * Ake_offset)]
-	ldr	Akiq, [sp, #(STACK_BASE_TMP + 16 * Aki_offset)]
-	ldr	Akoq, [sp, #(STACK_BASE_TMP + 16 * Ako_offset)]
-	ldr	Akuq, [sp, #(STACK_BASE_TMP + 16 * Aku_offset)]
-	ldr	Amaq, [sp, #(STACK_BASE_TMP + 16 * Ama_offset)]
-	ldr	Ameq, [sp, #(STACK_BASE_TMP + 16 * Ame_offset)]
-	ldr	Amiq, [sp, #(STACK_BASE_TMP + 16 * Ami_offset)]
-	ldr	Amoq, [sp, #(STACK_BASE_TMP + 16 * Amo_offset)]
-	ldr	Amuq, [sp, #(STACK_BASE_TMP + 16 * Amu_offset)]
-	ldr	Asaq, [sp, #(STACK_BASE_TMP + 16 * Asa_offset)]
-	ldr	Aseq, [sp, #(STACK_BASE_TMP + 16 * Ase_offset)]
-	ldr	Asiq, [sp, #(STACK_BASE_TMP + 16 * Asi_offset)]
-	ldr	Asoq, [sp, #(STACK_BASE_TMP + 16 * Aso_offset)]
-	ldr	Asuq, [sp, #(STACK_BASE_TMP + 16 * Asu_offset)]
+    // iota step
+    //ld1r {tmp.2d}, [x1], #8
+	ldr	tmpq, [x1], #16
+	eor	v0.16b, v0.16b, tmp.16b
 
 .unreq	tmp
 
 .endm
 
+
 .text
 .align	4
-.globl	_keccak_f1600_x2_neon_asm_v2p1
-.private_extern	_keccak_f1600_x2_neon_asm_v2p1
-.globl	__keccak_f1600_x2_neon_asm_v2p1
-.private_extern	__keccak_f1600_x2_neon_asm_v2p1
+.globl	_keccak_f1600_x2_v84a_asm_v2pp2
+.private_extern	_keccak_f1600_x2_v84a_asm_v2pp2
+.globl	__keccak_f1600_x2_v84a_asm_v2pp2
+.private_extern	__keccak_f1600_x2_v84a_asm_v2pp2
 
 #define KECCAK_F1600_ROUNDS 24
 
-_keccak_f1600_x2_neon_asm_v2p1:
-__keccak_f1600_x2_neon_asm_v2p1:
+_keccak_f1600_x2_v84a_asm_v2pp2:
+__keccak_f1600_x2_v84a_asm_v2pp2:
 	alloc_stack
 	save_vregs
-	adr	const_addr, round_constants
+	load_constant_ptr
 	load_input
 
-    //mov count, #(KECCAK_F1600_ROUNDS-2)
-	mov	count, #11
+    //mov x2, #(KECCAK_F1600_ROUNDS-2)
+	mov	x2, #11
 	keccak_f1600_round_pre
 loop:
 	keccak_f1600_round_core
 	keccak_f1600_round_core
-	sub	count, count, #1
-	cbnz	count, loop
+	sub	x2, x2, #1
+	cbnz	x2, loop
 
 	keccak_f1600_round_core
 	keccak_f1600_round_post

@@ -50,4 +50,5 @@ typedef uint64x2_t v128;
 void keccak_f1600_x4_hybrid_asm_v5p(uint64_t state[4*KECCAK_F1600_X1_STATE_SIZE_UINT64]);
 void keccak_f1600_x4_hybrid_asm_v5p_opt(uint64_t state[4*KECCAK_F1600_X1_STATE_SIZE_UINT64]);
 
+void keccak_f1600_x2_v84a_asm_v2pp2(uint64_t state[2*KECCAK_F1600_X1_STATE_SIZE_UINT64]);
 #endif

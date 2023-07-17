@@ -278,9 +278,9 @@ int validate_keccak_f1600_x4_hybrid_asm_v5p_opt(void)
     return 1;                                                           
 }
 
-int validate_keccak_f1600_x2_neon_asm_v2p1(void)                                                     
+int validate_keccak_f1600_x2_v84a_asm_v2pp2(void)                                                     
 {                                                                       
-    debug_test_start(stringify(validate_keccak_f1600_x2_neon_asm_v2p1));                            
+    debug_test_start(stringify(validate_keccak_f1600_x2_v84a_asm_v2pp2));                            
                                                                         
     ALIGN(64)                                                           
     uint64_t state[2*KECCAK_F1600_X1_STATE_SIZE_UINT64] = { 0 };      
@@ -297,7 +297,7 @@ int validate_keccak_f1600_x2_neon_asm_v2p1(void)
                                                                         
     zip_f1600_states( 2, state, ref_state );                          
                                                                         
-    keccak_f1600_x2_neon_asm_v2p1( state );                                                  
+    keccak_f1600_x2_v84a_asm_v2pp2( state );                                                  
                                                                         
     for( int i=0; i<2; i++ )                                          
     {                                                                   

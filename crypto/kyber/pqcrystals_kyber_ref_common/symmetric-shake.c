@@ -134,16 +134,12 @@ void kyber_shake128_squeeze_x4_hybrid(uint8_t *out, int nblocks, keccak_state_x4
 void kyber_shake128_squeeze_x3_hybrid(uint8_t *out, int nblocks, keccak_state_x4_hybrid *state)
 {
    keccak_f1600_x3_hybrid_asm_v6((uint64_t *)state->s);
-   for (int jj = 0; jj < 3 * 25; jj++)
-        {
-            printf("%lx ", state->s[jj]);
-        }printf("\n\n");
    SHA3_Squeeze_hybrid((uint64_t *)state->s, out, (nblocks) * SHAKE128_RATE  , SHAKE128_RATE, 3);
 }
 
 void kyber_shake128_squeeze_x2_hybrid(uint8_t *out, int nblocks, keccak_state_x4_hybrid *state)
 {
-   keccak_f1600_x2_neon_asm_v2p1((uint64_t *)state->s);
+   keccak_f1600_x2_v84a_asm_v2pp2((uint64_t *)state->s);
    SHA3_Squeeze_hybrid((uint64_t *)state->s, out, (nblocks) * SHAKE128_RATE  , SHAKE128_RATE, 2);
 }
 #endif
@@ -222,11 +218,10 @@ void shake256_kyber(uint8_t *out, size_t outlen, const uint8_t in[KYBER_SYMBYTES
   if (par_fac == 4) {
     keccak_f1600_x4_hybrid_asm_v5p_opt((uint64_t *)(&state)->s);
   }else if (par_fac == 2) {
-    keccak_f1600_x2_neon_asm_v2p1((uint64_t *)(&state)->s);
+    keccak_f1600_x2_v84a_asm_v2pp2((uint64_t *)(&state)->s);
   }else if (par_fac == 3) {
     keccak_f1600_x3_hybrid_asm_v6((uint64_t *)(&state)->s);
   }
-  
   SHA3_Squeeze_hybrid((uint64_t (*))(&state)->s, out, outlen , SHAKE256_RATE, par_fac);
 }
 

@@ -394,7 +394,7 @@ size_t SHA3_Absorb_hybrid(uint64_t *A, const uint8_t *inp, size_t len,
         if(par_fac == 4) {
             keccak_f1600_x4_hybrid_asm_v5p_opt((uint64_t *)A);
         }else if(par_fac == 2) {
-            keccak_f1600_x2_neon_asm_v2p1((uint64_t *)A);
+            keccak_f1600_x2_v84a_asm_v2pp2((uint64_t *)A);
         }else if(par_fac == 3) {
             keccak_f1600_x3_hybrid_asm_v6((uint64_t *)A);
         }
@@ -452,7 +452,6 @@ void SHA3_Squeeze(uint64_t A[SHA3_ROWS][SHA3_ROWS], uint8_t *out, size_t len, si
  // of |len| bytes.
 void SHA3_Squeeze_hybrid(uint64_t *A, uint8_t *out, size_t len, size_t r, uint8_t par_fac)
 {
-    printf("\n\n PARALLEL FACTOR x%d --- \n\n", par_fac);
     uint64_t *A_flat = (uint64_t *)A;
     size_t i, w = r / 8; // for shake128 w = 21 (words) per block size
     size_t len_cpy = len;
@@ -461,7 +460,7 @@ void SHA3_Squeeze_hybrid(uint64_t *A, uint8_t *out, size_t len, size_t r, uint8_
 
     while (len != 0) {
         for (i = 0; i < w && len != 0; i++) {
-            uint64_t Ai = BitDeinterleave(A_flat[i*4]);
+            uint64_t Ai = BitDeinterleave(A_flat[i*par_fac]);
 
             if (len < 8) {
                 for (i = 0; i < len; i++) {
@@ -483,12 +482,6 @@ void SHA3_Squeeze_hybrid(uint64_t *A, uint8_t *out, size_t len, size_t r, uint8_
                 out[6 + k*len_cpy] = (uint8_t)(Ai >> 48);
                 out[7 + k*len_cpy] = (uint8_t)(Ai >> 56);
                 Ai = BitDeinterleave(A_flat[i*par_fac + k + 1]);
-                // if(par_fac == 4){
-                //     for (int jj = 0; jj < 8; jj++)
-                //     {
-                //         printf("%lx ", out[jj]);
-                //     }printf("\n\n");
-                // }
             }
             out += 8;
             len -= 8;
@@ -498,21 +491,12 @@ void SHA3_Squeeze_hybrid(uint64_t *A, uint8_t *out, size_t len, size_t r, uint8_
             if(par_fac == 4) {
                 keccak_f1600_x4_hybrid_asm_v5p_opt((uint64_t *)A);
             }else if(par_fac == 2) {
-                keccak_f1600_x2_neon_asm_v2p1((uint64_t *)A);
+                keccak_f1600_x2_v84a_asm_v2pp2((uint64_t *)A);
             }else if(par_fac == 3) {
                 keccak_f1600_x3_hybrid_asm_v6((uint64_t *)A);
             }
             
         }
-        // if(par_fac == 3) {
-        //  printf("\n\n INPUT x%d --- \n\n", par_fac);
-        // for (int j = 0; j < par_fac; j++){
-        //     for (int ii = j; ii < (int)len * par_fac; ii+=par_fac){
-        //         printf("%lx ", out[ii]);
-        //     }printf("\n\n");
-        // }
-        // }
-
     }
 }
 #else

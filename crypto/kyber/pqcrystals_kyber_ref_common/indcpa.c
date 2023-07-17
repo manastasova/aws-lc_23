@@ -336,26 +336,10 @@ void indcpa_enc(uint8_t c[KYBER_INDCPA_BYTES],
     poly_getnoise_eta2(ep.vec+i, coins, nonce++);
   #else
   // NOTE:: Option 1 in Quip Design Doc
- 
   // poly_getnoise_eta1_eta2_x4_hybrid(sp.vec+0, sp.vec+1, ep.vec+0, ep.vec+1, coins, nonce);
   // nonce+=4;
   // poly_getnoise_eta2(&epp, coins, nonce++);
-
-  // for(i=0;i<KYBER_K;i++)
-  //   poly_getnoise_eta1(sp.vec+i, coins, nonce++);
-  // for(i=0;i<KYBER_K;i++)
-  //   poly_getnoise_eta2(ep.vec+i, coins, nonce++);
-  // poly_getnoise_eta2(&epp, coins, nonce++);
-
-
-  // for(i=0;i<KYBER_K;i++)
-  //   poly_getnoise_eta1(sp.vec+i, coins, nonce++);
-
-  nonce = 4;
-  // for(i=0;i<KYBER_K;i++)
-  //    poly_getnoise_eta2(ep.vec+i, coins, nonce++);
-   poly_getnoise_eta2(&epp, coins, nonce++);
-
+  poly_getnoise_eta1_x2_hybrid(sp.vec+0, sp.vec+1, coins, nonce++);
   nonce = 2;
   poly_getnoise_eta2_x3_hybrid(ep.vec+0, ep.vec+1, &epp, coins, nonce);
 

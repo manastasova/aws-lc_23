@@ -29,6 +29,11 @@ typedef struct {
 } keccak_state_x4_hybrid;
 
 typedef struct {
+  uint64_t s[3*25];
+  unsigned int pos;
+} keccak_state_x3_hybrid;
+
+typedef struct {
   uint64_t s[2*25];
   unsigned int pos;
 } keccak_state_x2_hybrid;
