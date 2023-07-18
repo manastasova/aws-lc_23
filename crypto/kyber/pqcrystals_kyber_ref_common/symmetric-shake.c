@@ -2,7 +2,6 @@
 #include <stdint.h>
 #include <string.h>
 #include <stdlib.h>
-#include <stdio.h>
 #include "params.h"
 #include "symmetric.h"
 
@@ -114,6 +113,82 @@ void kyber_shake128_absorb_hybrid(keccak_state_x4_hybrid *state,
         state->s[(j) + i/8] ^= (uint64_t)p << 8*((i+2)%8);
         state->s[(SHAKE128_RATE-1)*4/8 - 3 + j ] ^= 1ULL << 63;
       }
+}
+
+/*************************************************
+ * Name:        kyber_shake128_absorb_hybrid
+ *
+ * Description: Absorb step of the SHAKE128 specialized for the Kyber context with parallel x4 Keccakf1600.
+ *
+ * Arguments:   - keccak_state_x4_hybrid *state: pointer to hybrid (uninitialized) output 4 Keccak
+ *state
+ *              - const uint8_t *seed: pointer to KYBER_SYMBYTES input to be
+ *absorbed into state
+ *              - uint8_t i: additional byte of input
+ *              - uint8_t j: additional byte of input
+ **************************************************/
+void kyber_shake128_absorb_x3_hybrid(keccak_state_x4_hybrid *state,
+                           const uint8_t seed[KYBER_SYMBYTES], uint8_t transposed, uint8_t x) {
+
+  int par_fac = 3;
+  uint8_t *extseed = calloc(par_fac * (KYBER_SYMBYTES + 2), sizeof(uint8_t));
+
+    
+    for (int i = 0; i < par_fac; i++) {
+        for (int j = 0, k = 0; j < par_fac * KYBER_SYMBYTES; j++, k++) {
+            if (j % 8 == 0 && j != 0){
+              j += (par_fac - 1) * 8;
+            }if (j < par_fac * KYBER_SYMBYTES){
+            extseed[8 * i + j] = seed[k];
+            }
+        }
+    }
+  
+  // TODO:: Can do better here  
+      if (transposed == 1) {
+          extseed[KYBER_SYMBYTES * par_fac + 0] = x;
+          extseed[KYBER_SYMBYTES * par_fac + 1] = 0;
+          extseed[KYBER_SYMBYTES * par_fac + 2] = x;
+          extseed[KYBER_SYMBYTES * par_fac + 3] = 1;
+          extseed[KYBER_SYMBYTES * par_fac + 4] = x;
+          extseed[KYBER_SYMBYTES * par_fac + 5] = 2;
+      }
+      else {
+          extseed[KYBER_SYMBYTES * par_fac + 0] = 0;
+          extseed[KYBER_SYMBYTES * par_fac + 1] = x;
+          extseed[KYBER_SYMBYTES * par_fac + 2] = 1;
+          extseed[KYBER_SYMBYTES * par_fac + 3] = x;
+          extseed[KYBER_SYMBYTES * par_fac + 4] = 2;
+          extseed[KYBER_SYMBYTES * par_fac + 5] = x;
+      }
+
+  int p = 0x1F; 
+
+  for (int i = 0; i < par_fac * 25; i++)
+  {
+    state->s[i] = 0;
+  }
+  
+  int i = 0; 
+  int rem = 0;
+  rem = SHA3_Absorb_hybrid((uint64_t (*))state->s, extseed, (KYBER_SYMBYTES + 2), SHAKE128_RATE, par_fac);
+
+      // TODO:: Can do better here 
+      // (rem/KECCAK_PARALLEL_FACTOR)*KECCAK_PARALLEL_FACTOR) to round down the rem
+      for(i=0; i<par_fac*((rem/8)*8); i++) {
+        state->s[i/8] ^= (uint64_t)extseed[i + (KYBER_SYMBYTES + 2) - rem] << 8*(i%8);
+      }
+
+      for (int j = 0; j < 8; j++) {
+        state->s[(j/2) + i/8     ] ^= (uint64_t)extseed[i + (KYBER_SYMBYTES + 2) - rem + j ] << 8*(j%2);
+      }
+    
+      for (int j = 0; j < 3; j++) {
+        state->s[(j) + i/8] ^= (uint64_t)p << 8*((i+2)%8);
+        state->s[(SHAKE128_RATE-1)*3/8 - 2 + j ] ^= 1ULL << 63;
+      }
+
+      free(extseed);
 }
 #endif
 

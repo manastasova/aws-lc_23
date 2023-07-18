@@ -55,6 +55,10 @@ void kyber_shake128_absorb(keccak_state *s, const uint8_t seed[KYBER_SYMBYTES],
 void kyber_shake128_absorb_hybrid(keccak_state_x4_hybrid *state,
                            const uint8_t seed[KYBER_SYMBYTES], uint8_t transposed);
 
+#define kyber_shake128_absorb_x3_hybrid KYBER_NAMESPACE(kyber_shake128_absorb_x3_hybrid)
+void kyber_shake128_absorb_x3_hybrid(keccak_state_x4_hybrid *state,
+                           const uint8_t seed[KYBER_SYMBYTES], uint8_t transposed, uint8_t x);
+
 #define kyber_shake256_prf KYBER_NAMESPACE(kyber_shake256_prf)
 void kyber_shake256_prf(uint8_t *out, size_t outlen,
                         const uint8_t key[KYBER_SYMBYTES], uint8_t nonce);
@@ -104,7 +108,7 @@ void shake256_kyber(uint8_t *out, size_t outlen, const uint8_t in[KYBER_SYMBYTES
   kyber_shake128_squeeze(OUT, OUTBLOCKS, STATE)
   // Define |xof_absorb_x4_hybrid| based on x4 parallel Keccak
 #define xof_absorb_x4_hybrid(STATE, SEED, T) kyber_shake128_absorb_hybrid(STATE, SEED, T)
-#define xof_absorb_x3_hybrid(STATE, SEED, T) kyber_shake128_absorb_hybrid(STATE, SEED, T)
+#define xof_absorb_x3_hybrid(STATE, SEED, T, X) kyber_shake128_absorb_x3_hybrid(STATE, SEED, T, X)
 #define xof_absorb_x2_hybrid(STATE, SEED, T) kyber_shake128_absorb_hybrid(STATE, SEED, T)
 // Define |xof_squeezeblocks_x4_hybrid| based on x4 parallel Keccak
 #define xof_squeezeblocks_x4_hybrid(OUT, OUTBLOCKS, STATE) \

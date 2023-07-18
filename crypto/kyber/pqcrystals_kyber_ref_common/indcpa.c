@@ -1,6 +1,7 @@
 #include "indcpa.h"
 #include <stddef.h>
 #include <stdint.h>
+#include <stdio.h>
 #include "ntt.h"
 #include "params.h"
 #include "poly.h"
@@ -270,45 +271,45 @@ void gen_matrix_hybrid(polyvec *a, const uint8_t seed[KYBER_SYMBYTES], int trans
 // Not static for benchmarking
 void gen_matrix_hybrid_Kyber768(polyvec *a, const uint8_t seed[KYBER_SYMBYTES], int transposed)
 {
-  // if (KYBER_K == 3) {
+  if (KYBER_K != 3) {
+    return;
+  }
     
+  unsigned int ctr[3], ctr_total, i, j, k;
+  unsigned int buflen, off;
+  xof_state_x4_hybrid state_hybrid;
+  uint8_t buf[KYBER_K*(GEN_MATRIX_NBLOCKS*XOF_BLOCKBYTES+2)];
 
-  // unsigned int ctr[3], ctr_total, i, j, k;
-  // unsigned int buflen, off;
-  // xof_state_x4_hybrid state_hybrid;
-  // uint8_t buf[KYBER_K*(GEN_MATRIX_NBLOCKS*XOF_BLOCKBYTES+2)];
+  for(i=0;i<KYBER_K;i++) {
+      ctr_total = 0;
 
-  // for(i=0;i<KYBER_K;i++) {
-  //     ctr_total = 0;
+      xof_absorb_x3_hybrid(&state_hybrid, seed, transposed, i);
+      xof_squeezeblocks_x3_hybrid(buf, GEN_MATRIX_NBLOCKS, (xof_state_x3_hybrid *)&state_hybrid);
 
-  //     xof_absorb_x3_hybrid(&state_hybrid, seed, transposed);
-  //     xof_squeezeblocks_x3_hybrid(buf, GEN_MATRIX_NBLOCKS, (xof_state_x4_hybrid *) &state_hybrid);
-
-  //     buflen = GEN_MATRIX_NBLOCKS*XOF_BLOCKBYTES;
-  //     for(j = 0; j < KYBER_K ;j++) {
-  //       ctr[j] = rej_uniform(a[i].vec[j].coeffs, KYBER_N, buf + (j*buflen), buflen);
-  //       ctr_total += ctr[j];
-  //     }
+      buflen = GEN_MATRIX_NBLOCKS*XOF_BLOCKBYTES;
+      for(j = 0; j < KYBER_K ;j++) {
+        ctr[j] = rej_uniform(a[i].vec[j].coeffs, KYBER_N, buf + (j*buflen), buflen);
+        ctr_total += ctr[j];
+      }
 
 
-  //     while(ctr_total < KYBER_K * KYBER_N) {
-  //       off = buflen % 3;
-  //       for(k = 0; k < off; k++) {
-  //         for(j = 0 ; j < KYBER_K ; j++) {
-  //           (buf + (j*buflen))[k] = (buf + ((j)*buflen))[buflen - off + k];
-  //         }
-  //       }
-  //     }
-  //     xof_squeezeblocks_x3_hybrid(buf + off, GEN_MATRIX_NBLOCKS, (xof_state_x4_hybrid *) &state_hybrid);
-  //     buflen = off + XOF_BLOCKBYTES;
-  //         for(j=0;j<KYBER_K;j++) {
-  //           if (ctr[j] < KYBER_N) {
-  //             ctr[j] += rej_uniform(a[i].vec[j].coeffs + ctr[j], KYBER_N - ctr[j], buf + ((j)*buflen), buflen);
-  //             ctr_total += ctr[j];
-  //           }
-  //       }
-  //   }
-  // }
+      while(ctr_total < KYBER_K * KYBER_N) {
+        off = buflen % 3;
+        for(k = 0; k < off; k++) {
+          for(j = 0 ; j < KYBER_K ; j++) {
+            (buf + (j*buflen))[k] = (buf + (j*buflen))[buflen - off + k];
+          }
+        }
+      xof_squeezeblocks_x3_hybrid(buf + off, 1, (xof_state_x3_hybrid *)&state_hybrid);
+      buflen = off + XOF_BLOCKBYTES;
+      for(j=0;j<KYBER_K;j++) {
+        if (ctr[j] < KYBER_N) {
+          ctr[j] += rej_uniform(a[i].vec[j].coeffs + ctr[j], KYBER_N - ctr[j], buf + (j*buflen), buflen);
+          ctr_total += ctr[j];
+        }
+      }
+    }
+  }
 }
 
 
@@ -340,10 +341,10 @@ void indcpa_keypair(uint8_t pk[KYBER_INDCPA_PUBLICKEYBYTES],
   // gen_a(a, publicseed);
   // #else
   // if(KYBER_K == 2) {
-    gen_a_hybrid(a, publicseed);
+   // gen_a_hybrid(a, publicseed);
   // }
   // if(KYBER_K == 3) {
-  //   gen_at_hybrid_Kyber768(a, publicseed);
+     gen_a_hybrid_Kyber768(a, publicseed);
   // }
   // else {
   //   gen_a(a, publicseed);
@@ -352,16 +353,16 @@ void indcpa_keypair(uint8_t pk[KYBER_INDCPA_PUBLICKEYBYTES],
 
   // #ifdef EXPERIMENTAL_AWS_LC_HYBRID_KECCAK
   // if(KYBER_K == 2) {
-   poly_getnoise_eta1_x4_hybrid(&skpv.vec[0], &skpv.vec[1], &e.vec[0], &e.vec[1], noiseseed, nonce);
+   //poly_getnoise_eta1_x4_hybrid(&skpv.vec[0], &skpv.vec[1], &e.vec[0], &e.vec[1], noiseseed, nonce);
   // }
   // else if(KYBER_K == 3){
   // // NOW
   // }
   // else {
-  //   for(i=0;i<KYBER_K;i++)
-  //     poly_getnoise_eta1(&skpv.vec[i], noiseseed, nonce++);
-  //   for(i=0;i<KYBER_K;i++)
-  //     poly_getnoise_eta1(&e.vec[i], noiseseed, nonce++);
+    for(i=0;i<KYBER_K;i++)
+      poly_getnoise_eta1(&skpv.vec[i], noiseseed, nonce++);
+    for(i=0;i<KYBER_K;i++)
+      poly_getnoise_eta1(&e.vec[i], noiseseed, nonce++);
   // }
   // #else
   // for(i=0;i<KYBER_K;i++)
@@ -419,8 +420,9 @@ void indcpa_enc(uint8_t c[KYBER_INDCPA_BYTES],
   // #ifndef EXPERIMENTAL_AWS_LC_HYBRID_KECCAK
   // gen_at(at, seed);
   // #else
-  gen_at_hybrid(at, seed);
+  //gen_at_hybrid(at, seed);
   // #endif
+  gen_at_hybrid_Kyber768(at, seed);
 
   // #ifdef EXPERIMENTAL_AWS_LC_HYBRID_KECCAK
   // if(KYBER_K == 2) {
@@ -428,19 +430,19 @@ void indcpa_enc(uint8_t c[KYBER_INDCPA_BYTES],
   // poly_getnoise_eta1_eta2_x4_hybrid(sp.vec+0, sp.vec+1, ep.vec+0, ep.vec+1, coins, nonce);
   // nonce+=4;
   // poly_getnoise_eta2(&epp, coins, nonce++);
-  poly_getnoise_eta1_x2_hybrid(sp.vec+0, sp.vec+1, coins, nonce++);
-  nonce = 2;
-  poly_getnoise_eta2_x3_hybrid(ep.vec+0, ep.vec+1, &epp, coins, nonce);
+  // poly_getnoise_eta1_x2_hybrid(sp.vec+0, sp.vec+1, coins, nonce++);
+  // nonce = 2;
+  // poly_getnoise_eta2_x3_hybrid(ep.vec+0, ep.vec+1, &epp, coins, nonce);
   // }
   // else if(KYBER_K == 3) {
 
   // }
   // else {
-  //   for(i=0;i<KYBER_K;i++)
-  //     poly_getnoise_eta1(sp.vec+i, coins, nonce++);
-  //   for(i=0;i<KYBER_K;i++)
-  //     poly_getnoise_eta2(ep.vec+i, coins, nonce++);
-  // poly_getnoise_eta2(&epp, coins, nonce++);
+    for(i=0;i<KYBER_K;i++)
+      poly_getnoise_eta1(sp.vec+i, coins, nonce++);
+    for(i=0;i<KYBER_K;i++)
+      poly_getnoise_eta2(ep.vec+i, coins, nonce++);
+  poly_getnoise_eta2(&epp, coins, nonce++);
   // #else
   // for(i=0;i<KYBER_K;i++)
   //   poly_getnoise_eta1(sp.vec+i, coins, nonce++);
