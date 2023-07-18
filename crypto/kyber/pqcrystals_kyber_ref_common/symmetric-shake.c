@@ -65,7 +65,7 @@ void kyber_shake128_absorb(keccak_state *state,
  *              - uint8_t j: additional byte of input
  **************************************************/
 void kyber_shake128_absorb_hybrid(keccak_state_x4_hybrid *state,
-                           const uint8_t seed[KYBER_SYMBYTES], uint8_t transposed) {
+                           const uint8_t seed[KYBER_SYMBYTES], uint8_t transposed, uint8_t x) {
 
   uint8_t extseed[KECCAK_PARALLEL_FACTOR * (KYBER_SYMBYTES + 2)];
 
@@ -76,6 +76,7 @@ void kyber_shake128_absorb_hybrid(keccak_state_x4_hybrid *state,
     }
   
   // TODO:: Can do better here  
+  if (KYBER_K == 2) {
   for (int i = 0; i < KECCAK_PARALLEL_FACTOR; i++)
   { 
       if (transposed == 1) {
@@ -85,6 +86,29 @@ void kyber_shake128_absorb_hybrid(keccak_state_x4_hybrid *state,
       else {
           extseed[i*2 + KYBER_SYMBYTES * KECCAK_PARALLEL_FACTOR + 0] = i%2;
           extseed[i*2 + KYBER_SYMBYTES * KECCAK_PARALLEL_FACTOR + 1] = i/2;
+      }
+  }
+  }
+  if (KYBER_K == 4) {
+      if (transposed == 1) {
+          extseed[KYBER_SYMBYTES * 4 + 0] = x;
+          extseed[KYBER_SYMBYTES * 4 + 1] = 0;
+          extseed[KYBER_SYMBYTES * 4 + 2] = x;
+          extseed[KYBER_SYMBYTES * 4 + 3] = 1;
+          extseed[KYBER_SYMBYTES * 4 + 4] = x;
+          extseed[KYBER_SYMBYTES * 4 + 5] = 2;
+          extseed[KYBER_SYMBYTES * 4 + 6] = x;
+          extseed[KYBER_SYMBYTES * 4 + 7] = 3;
+      }
+      else {
+          extseed[KYBER_SYMBYTES * 4 + 0] = 0;
+          extseed[KYBER_SYMBYTES * 4 + 1] = x;
+          extseed[KYBER_SYMBYTES * 4 + 2] = 1;
+          extseed[KYBER_SYMBYTES * 4 + 3] = x;
+          extseed[KYBER_SYMBYTES * 4 + 4] = 2;
+          extseed[KYBER_SYMBYTES * 4 + 5] = x;
+          extseed[KYBER_SYMBYTES * 4 + 6] = 3;
+          extseed[KYBER_SYMBYTES * 4 + 7] = x;
       }
   }
 

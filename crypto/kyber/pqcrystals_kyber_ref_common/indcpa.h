@@ -12,7 +12,8 @@ void gen_matrix(polyvec *a, const uint8_t seed[KYBER_SYMBYTES], int transposed);
 void gen_matrix_hybrid(polyvec *a, const uint8_t seed[KYBER_SYMBYTES], int transposed);
 #define gen_matrix_hybrid_Kyber768 KYBER_NAMESPACE(gen_matrix_hybrid_Kyber768)
 void gen_matrix_hybrid_Kyber768(polyvec *a, const uint8_t seed[KYBER_SYMBYTES], int transposed);
-
+#define gen_matrix_hybrid_Kyber1024 KYBER_NAMESPACE(gen_matrix_hybrid_Kyber1024)
+void gen_matrix_hybrid_Kyber1024(polyvec *a, const uint8_t seed[KYBER_SYMBYTES], int transposed);
 #define indcpa_keypair KYBER_NAMESPACE(indcpa_keypair)
 void indcpa_keypair(uint8_t pk[KYBER_INDCPA_PUBLICKEYBYTES],
                     uint8_t sk[KYBER_INDCPA_SECRETKEYBYTES]);
