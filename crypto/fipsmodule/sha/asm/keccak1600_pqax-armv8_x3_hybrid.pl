@@ -371,7 +371,7 @@ $code.=<<___;
 .endm
 
 .macro xar_m0 d s0 s1 imm
-    xar \\d\\().2d, \\s0\\().2d, \\s1\\().2d, #\\imm
+    xar \\d\\().2d, \\s0\\().2d, \\s1\\().2d, \\imm
 .endm
 
 .macro bcax_m0 d s0 s1 s2
@@ -1034,7 +1034,7 @@ ror sC4, sC4, 58                                SEP      xar_m1 $vBgo, $vAme, $v
 ror sC2, sC2, 62                                SEP      xar_m1 $vBke, $vAgi, $vE2, 58
 eor sE1, sC0, sC2, ROR #63                      SEP      xar_m1 $vBgi, $vAka, $vE0, 61
 eor sE3, sC2, sC4, ROR #63                      SEP      xar_m1 $vBga, $vAbo, $vE3, 36
-eor sE0, sC4, sC1, ROR #63                      SEP
+eor sE0, sC4, sC1, ROR #63                      SEP 
 eor sE2, sC1, sC3, ROR #63                      SEP      xar_m1 $vBbo, $vAmo, $vE3, 43
 eor sE4, sC3, sC0, ROR #63                      SEP      xar_m1 $vBmo, $vAmi, $vE2, 49
 eor s_Aba_, sE0, s_Aba                          SEP      xar_m1 $vBmi, $vAke, $vE1, 54
@@ -1307,16 +1307,16 @@ bic tmp, sAka_, sAku_, ROR #47                  SEP
 eor sAko, tmp,  sAko_, ROR #57                  SEP      bcax_m1 $vAga, $vBga, $vBgi, $vBge
 bic tmp, sAke_, sAka_, ROR #5                   SEP
 eor sAku, tmp,  sAku_, ROR #52                  SEP      xar_m1 $vBgu, $vAsi, $vE2, 3
-bic tmp, sAmi_, sAme_, ROR #38                  SEP      xar_m1 $vBsi, $vAku, $vE4, 25
+bic tmp, sAmi_, sAme_, ROR #38                  SEP      xar $vBsi, $vAku, $vE4, #25
 eor sAma, tmp,  sAma_, ROR #47                  SEP
-bic tmp, sAmo_, sAmi_, ROR #5                   SEP      xar_m1 $vBku, $vAsa, $vE0, 46
-eor sAme, tmp,  sAme_, ROR #43                  SEP      xar_m1 $vBma, $vAbu, $vE4, 37
+bic tmp, sAmo_, sAmi_, ROR #5                   SEP      xar_m0 $vBku, $vAsa, $vE0, #46
+eor sAme, tmp,  sAme_, ROR #43                  SEP      xar $vBma, $vAbu, $vE4, #37
 bic tmp, sAmu_, sAmo_, ROR #41                  SEP
-eor sAmi, tmp,  sAmi_, ROR #46                  SEP      xar_m1 $vBbu, $vAsu, $vE4, 50
+eor sAmi, tmp,  sAmi_, ROR #46                  SEP      xar $vBbu, $vAsu, $vE4, #50
 bic tmp, sAma_, sAmu_, ROR #35                  SEP      xar_m1 $vBsu, $vAse, $vE1, 62
 ldr cur_const, [const_addr, count, UXTW #3]     SEP
-add count, count, #1                            SEP      xar_m1 $vBme, $vE3, $vE0, 28
-eor sAmo, tmp,  sAmo_, ROR #12                  SEP      xar_m1 $vBbe, $vAge, $vE1, 20
+add count, count, #1                            SEP      xar $vBme, $vE3, $vE0, #28
+eor sAmo, tmp,  sAmo_, ROR #12                  SEP      xar $vBbe, $vAge, $vE1, #20
 bic tmp, sAme_, sAma_, ROR #9                   SEP
 eor sAmu, tmp,  sAmu_, ROR #44                  SEP      bcax_m0 $vAge, $vBge, $vBgo, $vBgi
 bic tmp, sAsi_, sAse_, ROR #48                  SEP      bcax_m1 $vAgi, $vBgi, $vBgu, $vBgo
@@ -1361,6 +1361,13 @@ ror sAso, sAso,(64-62)                          SEP      ldr vvtmpq, [x26], #16
 ror sAbu, sAbu,(64-44)                          SEP
 ror sAgu, sAgu,(64-20)                          SEP      save x26, STACK_OFFSET_CONST
 ror sAku, sAku,(64-6)                           SEP      eor $vAba.16b, $vAba.16b, vvtmp.16b
+                                                SEP   //movi v0.4s, #0
+                                                SEP   //movi v1.4s, #1
+                                                SEP   //xar v0.2d, v1.2d, v0.2d, 2
+                                                SEP   //xar v0.2d, v0.2d, v0.2d, 2
+                                                SEP   //movi v24.4s, #0
+
+                                                SEP   //xar $vBsa, $vAbi, $vE2, 2
 ror sAmu, sAmu,(64-36)                          SEP      .unreq vvtmp
 ror sAsu, sAsu,(64-55)                          SEP      .unreq vvtmpq
 .endm
@@ -1408,13 +1415,14 @@ ___
 					}}}
 					
 $code.=<<___;
+//1100 1110 10 0 11111 000000 11101 10101
 .asciz	"Keccak-1600 absorb and squeeze for ARMv8, CRYPTOGAMS by <appro\@openssl.org>"
 ___
 
 {
     my  %opcode = (
     "rax1_m0"    => 0xce608c00,    "eor3_m0"    => 0xce000000,
-    "bcax_m0"    => 0xce200000,    "xar_m0"    => 0xce800000    );
+    "bcax_m0"    => 0xce200000,    "xar_m0"    => 0xce800000,    "xar"    => 0xce800000    );
 
     sub unsha3 {
          my ($mnemonic,$arg)=@_;
@@ -1425,6 +1433,7 @@ ___
             $opcode{$mnemonic}|$1|($2<<5)|($3<<16)|(eval($4)<<10),
             $mnemonic,$arg;
     }
+
     sub unvmov {
         my $arg=shift;
 
@@ -1438,7 +1447,7 @@ ___
         s/\`([^\`]*)\`/eval($1)/ge;
 
         m/\bld1r\b/ and s/\.16b/.2d/g    or
-        s/\b(eor3_m0|rax1_m0|xar_m0|bcax_m0)\s+(v.*)/unsha3($1,$2)/ge;
+        s/\b(eor3_m0|xar_m0|xar|rax1_m0|bcax_m0)\s+(v.*)/unsha3($1,$2)/ge;
         print $_,"\n";
      }
 }

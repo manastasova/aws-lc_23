@@ -261,6 +261,6 @@ TEST(KECCAKf1600Test, x4_hybrid) {
   // EXPECT_TRUE(validate_keccak_f1600_x4_hybrid_asm_v5p());
   // EXPECT_TRUE(validate_keccak_f1600_x4_hybrid_asm_v5p_opt());
 
-  EXPECT_TRUE(validate_keccak_f1600_x2_v84a_asm_v2pp2());
-  //EXPECT_TRUE(validate_keccak_f1600_x3_hybrid_asm_v6());
+  //EXPECT_TRUE(validate_keccak_f1600_x2_v84a_asm_v2pp2());
+  EXPECT_TRUE(validate_keccak_f1600_x3_hybrid_asm_v6());
 }

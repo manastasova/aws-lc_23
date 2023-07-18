@@ -246,7 +246,6 @@ void poly_getnoise_eta1_eta2_x4_hybrid(poly *r1, poly *r2, poly *r3, poly *r4, c
 }
 
 void poly_getnoise_eta1_x2_hybrid(poly *r1, poly *r2, const uint8_t coins[KYBER_SYMBYTES], uint8_t nonce) {
-  // TODO:: Buffer is larger since prf hybrid will process the same number of bytes
   uint8_t buf[2 * KYBER_ETA1*KYBER_N/4] = {0};
   prf_hybrid(buf, KYBER_ETA1*KYBER_N/4, coins, nonce, 2);
 
@@ -255,7 +254,6 @@ void poly_getnoise_eta1_x2_hybrid(poly *r1, poly *r2, const uint8_t coins[KYBER_
 }
 
 void poly_getnoise_eta2_x3_hybrid(poly *r1, poly *r2, poly *r3, const uint8_t coins[KYBER_SYMBYTES], uint8_t nonce) {
-  // TODO:: Buffer is larger since prf hybrid will process the same number of bytes
   uint8_t buf[3 * KYBER_ETA2*KYBER_N/4] = {0};
   prf_hybrid(buf, KYBER_ETA2*KYBER_N/4, coins, nonce, 3);
 

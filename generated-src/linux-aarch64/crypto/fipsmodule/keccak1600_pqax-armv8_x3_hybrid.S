@@ -1141,7 +1141,7 @@ round_constants_vec:
 	eor	sAmi, tmp,  sAmi_, ROR #46                  SEP      xar_m1 v4, v24, v30, 50
 	bic	tmp, sAma_, sAmu_, ROR #35                  SEP      xar_m1 v24, v21, v27, 62
 	ldr	cur_const, [const_addr, count, UXTW #3]     SEP
-	add	count, count, #1                            SEP      xar_m1 v21, v29, v31, 28
+	add	count, count, #1                            SEP      .inst	0xce9f73b5	//xar v21, v29, v31, #28
 	eor	sAmo, tmp,  sAmo_, ROR #12                  SEP      xar_m1 v26, v6, v27, 20
 	bic	tmp, sAme_, sAma_, ROR #9                   SEP
 	eor	sAmu, tmp,  sAmu_, ROR #44                  SEP      .inst	0xce281d66	//bcax_m0 v6, v11, v8, v7
@@ -1187,6 +1187,13 @@ round_constants_vec:
 	ror	sAbu, sAbu,(64-44)                          SEP
 	ror	sAgu, sAgu,(64-20)                          SEP      save x26, STACK_OFFSET_CONST
 	ror	sAku, sAku,(64-6)                           SEP      eor v0.16b, v0.16b, vvtmp.16b
+	SEP	//movi v0.4s, #0
+	SEP	//movi v1.4s, #1
+	SEP	//.inst	0xce800020	//xar v0.2d, v1.2d, v0.2d, 2
+	SEP	//.inst	0xce800000	//xar v0.2d, v0.2d, v0.2d, 2
+	SEP	//movi v24.4s, #0
+
+	SEP	//.inst	0xce9a0040	//xar v0, v2, v26, 2
 	ror	sAmu, sAmu,(64-36)                          SEP      .unreq vvtmp
 	ror	sAsu, sAsu,(64-55)                          SEP      .unreq vvtmpq
 .endm
@@ -1232,6 +1239,7 @@ loop_0:
 	restore_gprs
 	free_stack
 	ret
+//1100 1110 10 0 11111 000000 11101 10101
 .byte	75,101,99,99,97,107,45,49,54,48,48,32,97,98,115,111,114,98,32,97,110,100,32,115,113,117,101,101,122,101,32,102,111,114,32,65,82,77,118,56,44,32,67,82,89,80,84,79,71,65,77,83,32,98,121,32,60,97,112,112,114,111,64,111,112,101,110,115,115,108,46,111,114,103,62,0
 .align	2
 #endif  // !OPENSSL_NO_ASM && defined(__AARCH64EL__) && defined(__ELF__)
