@@ -42,48 +42,86 @@ void kyber_aes256ctr_prf(uint8_t *out, size_t outlen, const uint8_t key[32],
 #endif
 
 #include "fips202.h"
+#define XOF_BLOCKBYTES SHAKE128_RATE
 
 typedef keccak_state xof_state;
-typedef keccak_state_x4_hybrid xof_state_x4_hybrid;
-typedef keccak_state_x3_hybrid xof_state_x3_hybrid;
 
 #define kyber_shake128_absorb KYBER_NAMESPACE(kyber_shake128_absorb)
 void kyber_shake128_absorb(keccak_state *s, const uint8_t seed[KYBER_SYMBYTES],
                            uint8_t x, uint8_t y);
-
-#define kyber_shake128_absorb_hybrid KYBER_NAMESPACE(kyber_shake128_absorb_hybrid)
-void kyber_shake128_absorb_hybrid(keccak_state_x4_hybrid *state,
-                           const uint8_t seed[KYBER_SYMBYTES], uint8_t transposed, uint8_t x);
-
-#define kyber_shake128_absorb_x3_hybrid KYBER_NAMESPACE(kyber_shake128_absorb_x3_hybrid)
-void kyber_shake128_absorb_x3_hybrid(keccak_state_x4_hybrid *state,
-                           const uint8_t seed[KYBER_SYMBYTES], uint8_t transposed, uint8_t x);
+#define kyber_shake128_squeeze KYBER_NAMESPACE(kyber_shake128_squeeze)
+void kyber_shake128_squeeze(uint8_t *out, int nblocks, keccak_state *state);
 
 #define kyber_shake256_prf KYBER_NAMESPACE(kyber_shake256_prf)
 void kyber_shake256_prf(uint8_t *out, size_t outlen,
                         const uint8_t key[KYBER_SYMBYTES], uint8_t nonce);
-#define kyber_shake256_prf_hybrid KYBER_NAMESPACE(kyber_shake256_prf)
-void kyber_shake256_prf_hybrid(uint8_t *out, size_t outlen,
-                        const uint8_t key[KYBER_SYMBYTES], uint8_t nonce, uint8_t par_fac);
+
+#define shake256_kyber_hybrid KYBER_NAMESPACE(shake256_kyber_hybrid)
+void shake256_kyber_hybrid(uint8_t *out, size_t outlen, const uint8_t in[KYBER_SYMBYTES + 1], size_t inlen, int par_fac);
+       
 #ifdef EXPERIMENTAL_AWS_LC_HYBRID_KECCAK
-#define kyber_shake128_squeeze KYBER_NAMESPACE(kyber_shake128_squeeze)
-void kyber_shake128_squeeze(uint8_t *out, int nblocks, keccak_state *state);
-#define kyber_shake128_squeeze_x4_hybrid KYBER_NAMESPACE(kyber_shake128_squeeze_x4_hybrid)
-void kyber_shake128_squeeze_x4_hybrid(uint8_t *out, int nblocks, keccak_state_x4_hybrid *state);
+
+typedef keccak_state_x2_hybrid xof_state_x2_hybrid;
+typedef keccak_state_x3_hybrid xof_state_x3_hybrid;
+typedef keccak_state_x4_hybrid xof_state_x4_hybrid;
+
+#define kyber_shake128_absorb_hybrid KYBER_NAMESPACE(kyber_shake128_absorb_hybrid)
+void kyber_shake128_absorb_hybrid(keccak_state_x4_hybrid *state,
+                           const uint8_t seed[KYBER_SYMBYTES], uint8_t transposed, uint8_t x, int par_fac);
+
+#define kyber_shake128_absorb_x3_hybrid KYBER_NAMESPACE(kyber_shake128_absorb_x3_hybrid)
+void kyber_shake128_absorb_x3_hybrid(keccak_state_x4_hybrid *state,
+                           const uint8_t seed[KYBER_SYMBYTES], uint8_t transposed, uint8_t x);
+                    
 #define kyber_shake128_squeeze_x2_hybrid KYBER_NAMESPACE(kyber_shake128_squeeze_x2_hybrid)
 void kyber_shake128_squeeze_x2_hybrid(uint8_t *out, int nblocks, keccak_state_x2_hybrid *state);
+
 #define kyber_shake128_squeeze_x3_hybrid KYBER_NAMESPACE(kyber_shake128_squeeze_x3_hybrid)
 void kyber_shake128_squeeze_x3_hybrid(uint8_t *out, int nblocks, keccak_state_x3_hybrid *state);
 
+#define kyber_shake128_squeeze_x4_hybrid KYBER_NAMESPACE(kyber_shake128_squeeze_x4_hybrid)
+void kyber_shake128_squeeze_x4_hybrid(uint8_t *out, int nblocks, keccak_state_x4_hybrid *state);
+
+#define kyber_shake256_prf_hybrid KYBER_NAMESPACE(kyber_shake256_prf)
+void kyber_shake256_prf_hybrid(uint8_t *out, size_t outlen,
+                        const uint8_t key[KYBER_SYMBYTES], uint8_t nonce, int par_fac);
+
 #define kyber_shake256_absorb_hybrid KYBER_NAMESPACE(kyber_shake256_absorb_hybrid)
-void kyber_shake256_absorb_hybrid(keccak_state_x4_hybrid *state, const uint8_t in[KYBER_SYMBYTES + 1], size_t inlen, uint8_t par_fac);
-#define shake256_kyber KYBER_NAMESPACE(shake256_kyber)
-void shake256_kyber(uint8_t *out, size_t outlen, const uint8_t in[KYBER_SYMBYTES + 1], size_t inlen, uint8_t par_fac);
+void kyber_shake256_absorb_hybrid(keccak_state_x4_hybrid *state, const uint8_t in[KYBER_SYMBYTES + 1], size_t inlen, int par_fac);
 
-#endif
-#define XOF_BLOCKBYTES SHAKE128_RATE
+// No need to parallelize hash_h and hash_g since they are only used by Kyber.CCAKEM
+#define hash_h(OUT, IN, INBYTES) SHA3_256(IN, INBYTES, OUT)
+#define hash_g(OUT, IN, INBYTES) SHA3_512(IN, INBYTES, OUT)
 
-#ifndef EXPERIMENTAL_AWS_LC_HYBRID_KECCAK
+// Define |xof_absorb| based on x1 parallel Keccak
+#define xof_absorb(STATE, SEED, X, Y) kyber_shake128_absorb(STATE, SEED, X, Y)
+// Define |xof_absorb_xN_hybrid| based on xN parallel Keccak
+#define xof_absorb_x2_hybrid(STATE, SEED, T, X, PARALLEL) kyber_shake128_absorb_hybrid(STATE, SEED, T, X, PARALLEL)
+#define xof_absorb_x3_hybrid(STATE, SEED, T, X, PARALLEL) kyber_shake128_absorb_hybrid(STATE, SEED, T, X, PARALLEL)
+#define xof_absorb_x4_hybrid(STATE, SEED, T, X, PARALLEL) kyber_shake128_absorb_hybrid(STATE, SEED, T, X, PARALLEL)
+
+// Define |xof_squeezeblocks| based on x1 parallel Keccak
+#define xof_squeezeblocks(OUT, OUTBLOCKS, STATE) \
+  kyber_shake128_squeeze(OUT, OUTBLOCKS, STATE)
+// Define |xof_squeezeblocks_xN_hybrid| based on xN parallel Keccak
+#define xof_squeezeblocks_x2_hybrid(OUT, OUTBLOCKS, STATE) \
+  kyber_shake128_squeeze_x2_hybrid(OUT, OUTBLOCKS, STATE)
+#define xof_squeezeblocks_x3_hybrid(OUT, OUTBLOCKS, STATE) \
+  kyber_shake128_squeeze_x3_hybrid(OUT, OUTBLOCKS, STATE)
+#define xof_squeezeblocks_x4_hybrid(OUT, OUTBLOCKS, STATE) \
+  kyber_shake128_squeeze_x4_hybrid(OUT, OUTBLOCKS, STATE)
+
+// Define |prf| based on x1 parallel Keccak
+#define prf(OUT, OUTBYTES, KEY, NONCE) \
+  kyber_shake256_prf(OUT, OUTBYTES, KEY, NONCE)
+// Define |prf_hybrid| based on xPARALLEL parallel Keccak
+#define prf_hybrid(OUT, OUTBYTES, KEY, NONCE, PARALLEL) \
+  kyber_shake256_prf_hybrid(OUT, OUTBYTES, KEY, NONCE, PARALLEL)
+
+// No need to parallelize kdf since it is only used by Kyber.CCAKEM
+#define kdf(OUT, IN, INBYTES) SHAKE256(IN, INBYTES, OUT, KYBER_SSBYTES*8)
+#else
+
 #define hash_h(OUT, IN, INBYTES) sha3_256(OUT, IN, INBYTES)
 #define hash_g(OUT, IN, INBYTES) sha3_512(OUT, IN, INBYTES)
 #define xof_squeezeblocks(OUT, OUTBLOCKS, STATE) \
@@ -92,41 +130,8 @@ void shake256_kyber(uint8_t *out, size_t outlen, const uint8_t in[KYBER_SYMBYTES
 #define prf(OUT, OUTBYTES, KEY, NONCE) \
   kyber_shake256_prf(OUT, OUTBYTES, KEY, NONCE)
 #define kdf(OUT, IN, INBYTES) shake256(OUT, KYBER_SSBYTES, IN, INBYTES)
+#endif /* EXPERIMENTAL_AWS_LC_HYBRID_KECCAK */
 
-#else
-// EXPERIMENTAL_AWS_LC_HYBRID_KECCAK
-
-// Define |hash_h| and |hash_g| based on x1 parallel Keccak (
-// No need to parallelize since they are only used by Kyber.CCAKEM
-#define hash_h(OUT, IN, INBYTES) SHA3_256(IN, INBYTES, OUT)
-#define hash_g(OUT, IN, INBYTES) SHA3_512(IN, INBYTES, OUT)
-
-// Define |xof_absorb| based on x1 parallel Keccak
-#define xof_absorb(STATE, SEED, X, Y) kyber_shake128_absorb(STATE, SEED, X, Y)
-// Define |xof_squeezeblocks| based on x1 parallel Keccak
-#define xof_squeezeblocks(OUT, OUTBLOCKS, STATE) \
-  kyber_shake128_squeeze(OUT, OUTBLOCKS, STATE)
-  // Define |xof_absorb_x4_hybrid| based on x4 parallel Keccak
-#define xof_absorb_x4_hybrid(STATE, SEED, T, X) kyber_shake128_absorb_hybrid(STATE, SEED, T, X)
-#define xof_absorb_x3_hybrid(STATE, SEED, T, X) kyber_shake128_absorb_x3_hybrid(STATE, SEED, T, X)
-#define xof_absorb_x2_hybrid(STATE, SEED, T) kyber_shake128_absorb_hybrid(STATE, SEED, T)
-// Define |xof_squeezeblocks_x4_hybrid| based on x4 parallel Keccak
-#define xof_squeezeblocks_x4_hybrid(OUT, OUTBLOCKS, STATE) \
-  kyber_shake128_squeeze_x4_hybrid(OUT, OUTBLOCKS, STATE)
-#define xof_squeezeblocks_x3_hybrid(OUT, OUTBLOCKS, STATE) \
-  kyber_shake128_squeeze_x3_hybrid(OUT, OUTBLOCKS, STATE)
-  #define xof_squeezeblocks_x2_hybrid(OUT, OUTBLOCKS, STATE) \
-  kyber_shake128_squeeze_x2_hybrid(OUT, OUTBLOCKS, STATE)
-// Define |prf| based on x1 parallel Keccak
-#define prf(OUT, OUTBYTES, KEY, NONCE) \
-  kyber_shake256_prf(OUT, OUTBYTES, KEY, NONCE)
-// Define |prf_x4_hybrid| based on x4 parallel Keccak
-#define prf_hybrid(OUT, OUTBYTES, KEY, NONCE, PARALLEL) \
-  kyber_shake256_prf_hybrid(OUT, OUTBYTES, KEY, NONCE, PARALLEL)
-
-#define kdf(OUT, IN, INBYTES) SHAKE256(IN, INBYTES, OUT, KYBER_SSBYTES*8)
-  
-#endif
 #endif /* KYBER_90S */
 
 #endif /* SYMMETRIC_H */

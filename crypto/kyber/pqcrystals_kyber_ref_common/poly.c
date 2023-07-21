@@ -213,56 +213,6 @@ void poly_getnoise_eta1(poly *r, const uint8_t seed[KYBER_SYMBYTES], uint8_t non
 }
 
 /*************************************************
-* Name:        poly_getnoise_eta1_x4_hybrid
-*
-* Description: Sample a polynomial deterministically from a seed and a nonce,
-*              with output polynomial close to centered binomial distribution
-*              with parameter KYBER_ETA1
-*
-* Arguments:   - poly *r: pointer to output polynomial
-*              - const uint8_t *seed: pointer to input seed
-*                                     (of length KYBER_SYMBYTES bytes)
-*              - uint8_t nonce: one-byte input nonce
-**************************************************/
-void poly_getnoise_eta1_x4_hybrid(poly *r1, poly *r2, poly *r3, poly *r4, const uint8_t seed[KYBER_SYMBYTES], uint8_t nonce) {
-  uint8_t buf[4 * KYBER_ETA1*KYBER_N/4];
-  prf_hybrid(buf, sizeof(buf)/4, seed, nonce, 4);
-
-  poly_cbd_eta1(r1,                        buf + (0) * KYBER_ETA1*KYBER_N/4);
-  poly_cbd_eta1(r2,                        buf + (1) * KYBER_ETA1*KYBER_N/4);
-  poly_cbd_eta1(r3,                        buf + (2) * KYBER_ETA1*KYBER_N/4);
-  poly_cbd_eta1(r4,                        buf + (3) * KYBER_ETA1*KYBER_N/4);
-}
-
-void poly_getnoise_eta1_eta2_x4_hybrid(poly *r1, poly *r2, poly *r3, poly *r4, const uint8_t coins[KYBER_SYMBYTES], uint8_t nonce) {
-  // TODO:: Buffer is larger since prf hybrid will process the same number of bytes
-  uint8_t buf[4 * KYBER_ETA1*KYBER_N/4] = {0};
-  prf_hybrid(buf, KYBER_ETA1*KYBER_N/4, coins, nonce, 4);
-
-  poly_cbd_eta1(r1,                        buf + (0) * KYBER_ETA1*KYBER_N/4);
-  poly_cbd_eta1(r2,                        buf + (1) * KYBER_ETA1*KYBER_N/4);
-  poly_cbd_eta2(r3,                        buf + (2) * KYBER_ETA1*KYBER_N/4);
-  poly_cbd_eta2(r4,                        buf + (3) * KYBER_ETA1*KYBER_N/4);
-}
-
-void poly_getnoise_eta1_x2_hybrid(poly *r1, poly *r2, const uint8_t coins[KYBER_SYMBYTES], uint8_t nonce) {
-  uint8_t buf[2 * KYBER_ETA1*KYBER_N/4] = {0};
-  prf_hybrid(buf, KYBER_ETA1*KYBER_N/4, coins, nonce, 2);
-
-  poly_cbd_eta1(r1,                        buf + (0) * KYBER_ETA1*KYBER_N/4);
-  poly_cbd_eta1(r2,                        buf + (1) * KYBER_ETA1*KYBER_N/4);
-}
-
-void poly_getnoise_eta2_x3_hybrid(poly *r1, poly *r2, poly *r3, const uint8_t coins[KYBER_SYMBYTES], uint8_t nonce) {
-  uint8_t buf[3 * KYBER_ETA2*KYBER_N/4] = {0};
-  prf_hybrid(buf, KYBER_ETA2*KYBER_N/4, coins, nonce, 3);
-
-  poly_cbd_eta2(r1,                        buf + (0) * KYBER_ETA2*KYBER_N/4);
-  poly_cbd_eta2(r2,                        buf + (1) * KYBER_ETA2*KYBER_N/4);
-  poly_cbd_eta2(r3,                        buf + (2) * KYBER_ETA2*KYBER_N/4);
-}
-
-/*************************************************
 * Name:        poly_getnoise_eta2
 *
 * Description: Sample a polynomial deterministically from a seed and a nonce,
@@ -281,6 +231,154 @@ void poly_getnoise_eta2(poly *r, const uint8_t seed[KYBER_SYMBYTES], uint8_t non
   poly_cbd_eta2(r, buf);
 }
 
+#ifdef EXPERIMENTAL_AWS_LC_HYBRID_KECCAK
+/*************************************************
+* Name:        poly_getnoise_eta1_x2_hybrid
+*
+* Description: Sample a polynomial deterministically from a seed and a nonce,
+*              with output polynomial close to centered binomial distribution
+*              with parameter KYBER_ETA1 based on x2 parallel KeccakF1600
+*
+* Arguments:   - poly *r1: pointer to first  output polynomial
+*              - poly *r2: pointer to second output polynomial
+*              - const uint8_t *seed: pointer to input seed
+*                                     (of length KYBER_SYMBYTES bytes)
+*              - uint8_t nonce: one-byte input nonce
+**************************************************/
+void poly_getnoise_eta1_x2_hybrid(poly *r1, poly *r2, const uint8_t seed[KYBER_SYMBYTES], uint8_t nonce) {
+  uint8_t buf[2 * KYBER_ETA1*KYBER_N/4] = {0};
+  prf_hybrid(buf, KYBER_ETA1*KYBER_N/4, seed, nonce, 2);
+
+  poly_cbd_eta1(r1,                        buf + (0) * KYBER_ETA1*KYBER_N/4);
+  poly_cbd_eta1(r2,                        buf + (1) * KYBER_ETA1*KYBER_N/4);
+}
+
+/*************************************************
+* Name:        poly_getnoise_eta1_x3_hybrid
+*
+* Description: Sample a polynomial deterministically from a seed and a nonce,
+*              with output polynomial close to centered binomial distribution
+*              with parameter KYBER_ETA1 based on x3 parallel KeccakF1600
+*
+* Arguments:   - poly *r1: pointer to first  output polynomial
+*              - poly *r2: pointer to second output polynomial
+*              - poly *r3: pointer to third  output polynomial
+*              - const uint8_t *seed: pointer to input seed
+*                                     (of length KYBER_SYMBYTES bytes)
+*              - uint8_t nonce: one-byte input nonce
+**************************************************/
+void poly_getnoise_eta1_x3_hybrid(poly *r1, poly *r2, poly *r3, const uint8_t seed[KYBER_SYMBYTES],  uint8_t nonce) {
+  uint8_t buf[3 * KYBER_ETA1*KYBER_N/4] = {0};
+  prf_hybrid(buf, KYBER_ETA1*KYBER_N/4, seed, nonce, 3);
+
+  poly_cbd_eta1(r1,                        buf + (0) * KYBER_ETA1*KYBER_N/4);
+  poly_cbd_eta1(r2,                        buf + (1) * KYBER_ETA1*KYBER_N/4);
+  poly_cbd_eta1(r3,                        buf + (2) * KYBER_ETA1*KYBER_N/4);
+}
+
+/*************************************************
+* Name:        poly_getnoise_eta1_x4_hybrid
+*
+* Description: Sample a polynomial deterministically from a seed and a nonce,
+*              with output polynomial close to centered binomial distribution
+*              with parameter KYBER_ETA1 based on x4 parallel KeccakF1600
+*
+* Arguments:   - poly *r1: pointer to first  output polynomial
+*              - poly *r2: pointer to second output polynomial
+*              - poly *r3: pointer to third  output polynomial
+*              - poly *r4: pointer to forth  output polynomial
+*              - const uint8_t *seed: pointer to input seed
+*                                     (of length KYBER_SYMBYTES bytes)
+*              - uint8_t nonce: one-byte input nonce
+**************************************************/
+void poly_getnoise_eta1_x4_hybrid(poly *r1, poly *r2, poly *r3, poly *r4, const uint8_t seed[KYBER_SYMBYTES], uint8_t nonce) {
+  uint8_t buf[4 * KYBER_ETA1*KYBER_N/4];
+  prf_hybrid(buf, sizeof(buf)/4, seed, nonce, 4);
+
+  poly_cbd_eta1(r1,                        buf + (0) * KYBER_ETA1*KYBER_N/4);
+  poly_cbd_eta1(r2,                        buf + (1) * KYBER_ETA1*KYBER_N/4);
+  poly_cbd_eta1(r3,                        buf + (2) * KYBER_ETA1*KYBER_N/4);
+  poly_cbd_eta1(r4,                        buf + (3) * KYBER_ETA1*KYBER_N/4);
+}
+
+/*************************************************
+* Name:        poly_getnoise_eta2_x3_hybrid
+*
+* Description: Sample a polynomial deterministically from a seed and a nonce,
+*              with output polynomial close to centered binomial distribution
+*              with parameter KYBER_ETA2 based on x3 parallel KeccakF1600
+*
+* Arguments:   - poly *r1: pointer to first  output polynomial
+*              - poly *r2: pointer to second output polynomial
+*              - poly *r3: pointer to third  output polynomial
+*              - const uint8_t *seed: pointer to input seed
+*                                     (of length KYBER_SYMBYTES bytes)
+*              - uint8_t nonce: one-byte input nonce
+**************************************************/
+void poly_getnoise_eta2_x3_hybrid(poly *r1, poly *r2, poly *r3, const uint8_t seed[KYBER_SYMBYTES], uint8_t nonce) {
+  uint8_t buf[3 * KYBER_ETA2*KYBER_N/4] = {0};
+  prf_hybrid(buf, KYBER_ETA2*KYBER_N/4, seed, nonce, 3);
+
+  poly_cbd_eta2(r1,                        buf + (0) * KYBER_ETA2*KYBER_N/4);
+  poly_cbd_eta2(r2,                        buf + (1) * KYBER_ETA2*KYBER_N/4);
+  poly_cbd_eta2(r3,                        buf + (2) * KYBER_ETA2*KYBER_N/4);
+}
+
+/*************************************************
+* Name:        poly_getnoise_eta2_x4_hybrid
+*
+* Description: Sample a polynomial deterministically from a seed and a nonce,
+*              with output polynomial close to centered binomial distribution
+*              with parameter KYBER_ETA2 based on x4 parallel KeccakF1600
+*
+* Arguments:   - poly *r1: pointer to first  output polynomial
+*              - poly *r2: pointer to second output polynomial
+*              - poly *r3: pointer to third  output polynomial
+*              - poly *r4: pointer to forth  output polynomial
+*              - const uint8_t *seed: pointer to input seed
+*                                     (of length KYBER_SYMBYTES bytes)
+*              - uint8_t nonce: one-byte input nonce
+**************************************************/
+void poly_getnoise_eta2_x4_hybrid(poly *r1, poly *r2, poly *r3, poly *r4, const uint8_t seed[KYBER_SYMBYTES], uint8_t nonce) {
+  uint8_t buf[4 * KYBER_ETA2*KYBER_N/4];
+  prf_hybrid(buf, sizeof(buf)/4, seed, nonce, 4);
+
+  poly_cbd_eta2(r1,                        buf + (0) * KYBER_ETA2*KYBER_N/4);
+  poly_cbd_eta2(r2,                        buf + (1) * KYBER_ETA2*KYBER_N/4);
+  poly_cbd_eta2(r3,                        buf + (2) * KYBER_ETA2*KYBER_N/4);
+  poly_cbd_eta2(r4,                        buf + (3) * KYBER_ETA2*KYBER_N/4);
+}
+
+/*************************************************
+* Name:        poly_getnoise_eta1_eta2_x4_hybrid
+*
+* Description: Sample a polynomial deterministically from a seed and a nonce,
+*              with output polynomial close to centered binomial distribution
+*              with parameter KYBER_ETA1 for the first 2 inputs and 
+*              with parameter KYBER_ETA2 for the last 2 inputs based on 
+*              x3 parallel KeccakF1600; KYBER_ETA1 is larger then KYBER_ETA2, 
+*              therefore, all four outputs of prf_hybrid should have length 
+*              of 4 * KYBER_ETA1*KYBER_N/4
+*
+* Arguments:   - poly *r1: pointer to first  output polynomial
+*              - poly *r2: pointer to second output polynomial
+*              - poly *r3: pointer to third  output polynomial
+*              - poly *r4: pointer to forth  output polynomial
+*              - const uint8_t *seed: pointer to input seed
+*                                     (of length KYBER_SYMBYTES bytes)
+*              - uint8_t nonce: one-byte input nonce
+**************************************************/
+void poly_getnoise_eta1_eta2_x4_hybrid(poly *r1, poly *r2, poly *r3, poly *r4, const uint8_t coins[KYBER_SYMBYTES], uint8_t nonce) {
+  // TODO:: Buffer is larger since prf hybrid will process the same number of bytes
+  uint8_t buf[4 * KYBER_ETA1*KYBER_N/4] = {0};
+  prf_hybrid(buf, KYBER_ETA1*KYBER_N/4, coins, nonce, 4);
+
+  poly_cbd_eta1(r1,                        buf + (0) * KYBER_ETA1*KYBER_N/4);
+  poly_cbd_eta1(r2,                        buf + (1) * KYBER_ETA1*KYBER_N/4);
+  poly_cbd_eta2(r3,                        buf + (2) * KYBER_ETA1*KYBER_N/4);
+  poly_cbd_eta2(r4,                        buf + (3) * KYBER_ETA1*KYBER_N/4);
+}
+#endif /* EXPERIMENTAL_AWS_LC_HYBRID_KECCAK */
 
 /*************************************************
 * Name:        poly_ntt

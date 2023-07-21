@@ -297,7 +297,7 @@ int validate_keccak_f1600_x2_v84a_asm_v2pp2(void)
                                                                         
     zip_f1600_states( 2, state, ref_state );                          
                                                                         
-    keccak_f1600_x2_v84a_asm_v2pp2( state );                                                  
+    keccak_f1600_x2_hybrid_asm_v2pp2( state );                                                  
                                                                         
     for( int i=0; i<2; i++ )                                          
     {                                                                   
@@ -341,7 +341,7 @@ int validate_keccak_f1600_x3_hybrid_asm_v6(void)
                                                                         
     zip_f1600_states( 3, state, ref_state );                          
                                                                         
-    keccak_f1600_x3_hybrid_asm_v6( state );                                                  
+    keccak_f1600_x3_hybrid_asm_v3p( state );                                                  
                                                                         
     for( int i=0; i<3; i++ )                                          
     {                                                                   

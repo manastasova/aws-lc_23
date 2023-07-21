@@ -85,7 +85,9 @@ if(ARCH STREQUAL "aarch64")
     keccak1600_pqax-armv8.${ASM_EXT}
     keccak1600_pqax-armv8_lazy_absorb.${ASM_EXT}
     keccak1600_pqax-armv8_x2_hybrid.${ASM_EXT}
+    keccak1600_pqax-armv8_v84a_x2.${ASM_EXT}
     keccak1600_pqax-armv8_x3_hybrid.${ASM_EXT}
+    keccak1600_pqax-armv8_v84a_x3.${ASM_EXT}
     keccak1600_pqax-armv8_x4_hybrid_v5p.${ASM_EXT}
     keccak1600_pqax-armv8_x4_hybrid_v5p_new.${ASM_EXT}
     
@@ -136,7 +138,9 @@ if(PERL_EXECUTABLE)
   perlasm(keccak1600_pqax-armv8.${ASM_EXT} sha/asm/keccak1600_pqax-armv8.pl)
   perlasm(keccak1600_pqax-armv8_lazy_absorb.${ASM_EXT} sha/asm/keccak1600_pqax-armv8_lazy_absorb.pl)
   perlasm(keccak1600_pqax-armv8_x2_hybrid.${ASM_EXT} sha/asm/keccak1600_pqax-armv8_x2_hybrid.pl)
+  perlasm(keccak1600_pqax-armv8_v84a_x2.${ASM_EXT} sha/asm/keccak1600_pqax-armv8_v84a_x2.pl)
   perlasm(keccak1600_pqax-armv8_x3_hybrid.${ASM_EXT} sha/asm/keccak1600_pqax-armv8_x3_hybrid.pl)
+  perlasm(keccak1600_pqax-armv8_v84a_x3.${ASM_EXT} sha/asm/keccak1600_pqax-armv8_v84a_x3.pl)
   perlasm(keccak1600_pqax-armv8_x4_hybrid_v5p.${ASM_EXT} sha/asm/keccak1600_pqax-armv8_x4_hybrid_v5p.pl) 
   perlasm(keccak1600_pqax-armv8_x4_hybrid_v5p_new.${ASM_EXT} sha/asm/keccak1600_pqax-armv8_x4_hybrid_v5p_new.pl) 
   perlasm(md5-586.${ASM_EXT} md5/asm/md5-586.pl)

@@ -47,8 +47,10 @@ void keccak_f1600_x1_scalar_C     ( uint64_t state[KECCAK_F1600_X1_STATE_SIZE_UI
 typedef uint64x2_t v128;
 
 /* PQAX implementations and optimizations */
-void keccak_f1600_x4_hybrid_asm_v5p(uint64_t state[4*KECCAK_F1600_X1_STATE_SIZE_UINT64]);
-void keccak_f1600_x4_hybrid_asm_v5p_opt(uint64_t state[4*KECCAK_F1600_X1_STATE_SIZE_UINT64]);
-
-void keccak_f1600_x2_v84a_asm_v2pp2(uint64_t state[2*KECCAK_F1600_X1_STATE_SIZE_UINT64]);
+void keccak_f1600_x2_hybrid_asm_v2pp2(uint64_t state[2*25]); // Feat_SHA3
+void keccak_f1600_x2_v84a_asm_v2pp2(uint64_t state[2*25]);
+void keccak_f1600_x3_hybrid_asm_v6(uint64_t state[3*25]); // Feat_SHA3
+void keccak_f1600_x3_hybrid_asm_v3p(uint64_t state[3*25]);
+void keccak_f1600_x4_hybrid_asm_v5p_opt(uint64_t state[4*25]);
+void keccak_f1600_x4_hybrid_asm_v5p(uint64_t state[4*25]);
 #endif

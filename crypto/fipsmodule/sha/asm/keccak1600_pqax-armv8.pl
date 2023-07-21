@@ -573,6 +573,7 @@ keccak_f1600_x1_scalar_asm_lazy_rotation:
 	ret
 .size	keccak_f1600_x1_scalar_asm_lazy_rotation, .-keccak_f1600_x1_scalar_asm_lazy_rotation
 
+.globl	KeccakF1600
 .type	KeccakF1600, %function
 .align	5
 KeccakF1600:

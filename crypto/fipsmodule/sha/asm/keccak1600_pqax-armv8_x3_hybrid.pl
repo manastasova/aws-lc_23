@@ -50,7 +50,6 @@ if ($flavour && $flavour ne "void") {
     open OUT, ">$output";
     *STDOUT=*OUT;
 }
-
     $vAba = "v0";
     $vAbe = "v1";
     $vAbi = "v2";
@@ -75,111 +74,73 @@ if ($flavour && $flavour ne "void") {
     $vAse = "v21";
     $vAsi = "v22";
     $vAso = "v23";
-    $vAsu = "v24"; 
+    $vAsu = "v24";
 
-    $vC0 = "v27";
-    $vC1 = "v28";
-    $vC2 = "v29";
-    $vC3 = "v30";
-    $vC4 = "v31";
-    
-    $vBba = "v25";
-    $vBbe = "v26";
-    $vBbi = "v2"; 
-    $vBbo = "v3";
-    $vBbu = "v4";
-    $vBga = "v10";
-    $vBge = "v11";
-    $vBgi = "v7";
-    $vBgo = "v8";
-    $vBgu = "v9";
-    $vBka = "v15";
-    $vBke = "v16";
-    $vBki = "v12";
-    $vBko = "v13";
-    $vBku = "v14";
-    $vBma = "v20";
-    $vBme = "v21";
-    $vBmi = "v17";
-    $vBmo = "v18";
-    $vBmu = "v19";
-    $vBsa = "v0";
-    $vBse = "v1";
-    $vBsi = "v22";
-    $vBso = "v23";
-    $vBsu = "v24";
+    $vAbaq = "q0";
+    $vAbeq = "q1";
+    $vAbiq = "q2";
+    $vAboq = "q3";
+    $vAbuq = "q4";
+    $vAgaq = "q5";
+    $vAgeq = "q6";
+    $vAgiq = "q7";
+    $vAgoq = "q8";
+    $vAguq = "q9";
+    $vAkaq = "q10";
+    $vAkeq = "q11";
+    $vAkiq = "q12";
+    $vAkoq = "q13";
+    $vAkuq = "q14";
+    $vAmaq = "q15";
+    $vAmeq = "q16";
+    $vAmiq = "q17";
+    $vAmoq = "q18";
+    $vAmuq = "q19";
+    $vAsaq = "q20";
+    $vAseq = "q21";
+    $vAsiq = "q22";
+    $vAsoq = "q23";
+    $vAsuq = "q24";
 
-    $vE0 = "v31";
-    $vE1 = "v27";
-    $vE2 = "v26";
-    $vE3 = "v29";
-    $vE4 = "v30";
+    $vC0 = "v30";
+    $vC1 = "v29";
+    $vC2 = "v28";
+    $vC3 = "v27";
+    $vC4 = "v26";
 
+    $vE0 = "v26";
+    $vE1 = "v25";
+    $vE2 = "v29";
+    $vE3 = "v28";
+    $vE4 = "v27";
 
-    $vAbaq    =  "q0";
-    $vAbeq    =  "q1";
-    $vAbiq    =  "q2";
-    $vAboq    =  "q3";
-    $vAbuq    =  "q4";
-    $vAgaq    =  "q5";
-    $vAgeq    =  "q6";
-    $vAgiq    =  "q7";
-    $vAgoq    =  "q8";
-    $vAguq    =  "q9";
-    $vAkaq    =  "q10";
-    $vAkeq    =  "q11";
-    $vAkiq    =  "q12";
-    $vAkoq    =  "q13";
-    $vAkuq    =  "q14";
-    $vAmaq    =  "q15";
-    $vAmeq    =  "q16";
-    $vAmiq    =  "q17";
-    $vAmoq    =  "q18";
-    $vAmuq    =  "q19";
-    $vAsaq    =  "q20";
-    $vAseq    =  "q21";
-    $vAsiq    =  "q22";
-    $vAsoq    =  "q23";
-    $vAsuq    =  "q24";
+    $vAbi_ = "v2";
+    $vAbo_ = "v3";
+    $vAbu_ = "v4";
+    $vAga_ = "v10";
+    $vAge_ = "v11";
+    $vAgi_ = "v7";
+    $vAgo_ = "v8";
+    $vAgu_ = "v9";
+    $vAka_ = "v15";
+    $vAke_ = "v16";
+    $vAki_ = "v12";
+    $vAko_ = "v13";
+    $vAku_ = "v14";
+    $vAma_ = "v20";
+    $vAme_ = "v21";
+    $vAmi_ = "v17";
+    $vAmo_ = "v18";
+    $vAmu_ = "v19";
+    $vAsa_ = "v0";
+    $vAse_ = "v1";
+    $vAsi_ = "v22";
+    $vAso_ = "v23";
+    $vAsu_ = "v24";
+    $vAba_ = "v30";
+    $vAbe_ = "v27";
 
-    $C0q =  "q27";
-    $C1q =  "q28";
-    $C2q =  "q29";
-    $C3q =  "q30";
-    $C4q =  "q31";
-
-    $vBbaq =  "q25"; 
-    $vBbeq =  "q26";
-    $vBbiq =  "q2";
-    $vBboq =  "q3";
-    $vBbuq =  "q4";
-    $vBgaq =  "q10";
-    $vBgeq =  "q11";
-    $vBgiq =  "q7";
-    $vBgoq =  "q8";
-    $vBguq =  "q9";
-    $vBkaq =  "q15";
-    $vBkeq =  "q16";
-    $vBkiq =  "q12";
-    $vBkoq =  "q13";
-    $vBkuq =  "q14";
-    $vBmaq =  "q20";
-    $vBmeq =  "q21";
-    $vBmiq =  "q17";
-    $vBmoq =  "q18";
-    $vBmuq =  "q19";
-    $vBsaq =  "q0";
-    $vBseq =  "q1";
-    $vBsiq =  "q22";
-    $vBsoq =  "q23";
-    $vBsuq =  "q24";
-
-    $E0q =  "q31";
-    $E1q =  "q27";
-    $E2q =  "q26"; 
-    $E3q =  "q29";
-    $E4q =  "q30";
-
+    $vtmp = "v31";
 
 $code.=<<___;
 #ifndef	__KERNEL__
@@ -282,14 +243,6 @@ $code.=<<___;
     count          .req w27
     cur_const      .req x26
 
-    // Mapping of Kecck-f1600 SIMD state to vector registers at the beginning and end of each round. */
-
-    // Mapping of Kecck-f1600 state to vector registers at the beginning and end of each round. */
-
-    /* q-form of the above mapping */
-   
-    /* Mapping of Kecck-f1600 state to scalar registers
-     * at the beginning and end of each round. */
     s_Aba     .req x1
     sAbe     .req x6
     sAbi     .req x11
@@ -362,6 +315,29 @@ $code.=<<___;
 
 /* Macros using v8.4-A SHA-3 instructions */
 
+.macro eor3_m1 d s0 s1 s2
+	eor \\d\\().16b, \\s0\\().16b, \\s1\\().16b
+	eor \\d\\().16b, \\d\\().16b,  \\s2\\().16b
+.endm
+
+.macro rax1_m1 d s0 s1
+   add $vtmp.2d, \\s1\\().2d, \\s1\\().2d
+   sri $vtmp.2d, \\s1\\().2d, #63
+   eor \\d\\().16b, $vtmp.16b, \\s0\\().16b
+.endm
+
+.macro xar_m1 d s0 s1 imm
+   eor $vtmp.16b, \\s0\\().16b, \\s1\\().16b
+   shl \\d\\().2d, $vtmp.2d, #(64-\\imm)
+   sri \\d\\().2d, $vtmp.2d, #(\\imm)
+.endm
+
+.macro bcax_m1 d s0 s1 s2
+    bic $vtmp.16b, \\s1\\().16b, \\s2\\().16b
+    eor \\d\\().16b, $vtmp.16b, \\s0\\().16b
+        .endm
+
+
 .macro eor3_m0 d s0 s1 s2
     eor3 \\d\\().16b, \\s0\\().16b, \\s1\\().16b, \\s2\\().16b
 .endm
@@ -371,84 +347,11 @@ $code.=<<___;
 .endm
 
 .macro xar_m0 d s0 s1 imm
-    xar \\d\\().2d, \\s0\\().2d, \\s1\\().2d, \\imm
+    xar \\d\\().2d, \\s0\\().2d, \\s1\\().2d, #\\imm
 .endm
 
 .macro bcax_m0 d s0 s1 s2
     bcax \\d\\().16b, \\s0\\().16b, \\s1\\().16b, \\s2\\().16b
-.endm
-
-.macro eor3_m1_0 d s0 s1 s2
-    eor \\d\\().16b, \\s0\\().16b, \\s1\\().16b
-.endm
-
-.macro eor2 d s0 s1
-    eor \\d\\().16b, \\s0\\().16b, \\s1\\().16b
-.endm
-
-.macro eor3_m1_1 d s0 s1 s2
-    eor \\d\\().16b, \\d\\().16b,  \\s2\\().16b
-.endm
-
-.macro eor3_m1 d s0 s1 s2
-    eor3_m1_0 \\d, \\s0, \\s1, \\s2
-    eor3_m1_1 \\d, \\s0, \\s1, \\s2
-.endm
-
-.macro rax1_m1 d s0 s1
-   // Use add instead of SHL #1
-   add vvtmp.2d, \\s1\\().2d, \\s1\\().2d
-   sri vvtmp.2d, \\s1\\().2d, #63
-   eor \\d\\().16b, vvtmp.16b, \\s0\\().16b
-.endm
-
- .macro xar_m1 d s0 s1 imm
-   // Special cases where we can replace SHLs by ADDs
-   .if \\imm == 63
-     eor \\s0\\().16b, \\s0\\().16b, \\s1\\().16b
-     add \\d\\().2d, \\s0\\().2d, \\s0\\().2d
-     sri \\d\\().2d, \\s0\\().2d, #(63)
-   .elseif \\imm == 62
-     eor \\s0\\().16b, \\s0\\().16b, \\s1\\().16b
-     add \\d\\().2d, \\s0\\().2d, \\s0\\().2d
-     add \\d\\().2d, \\d\\().2d,  \\d\\().2d
-     sri \\d\\().2d, \\s0\\().2d, #(62)
-   .else
-     eor \\s0\\().16b, \\s0\\().16b, \\s1\\().16b
-     shl \\d\\().2d, \\s0\\().2d, #(64-\\imm)
-     sri \\d\\().2d, \\s0\\().2d, #(\\imm)
-   .endif
-.endm
-
- .macro xar_m1_0 d s0 s1 imm
-   // Special cases where we can replace SHLs by ADDs
-   .if \\imm == 63
-     eor \\s0\\().16b, \\s0\\().16b, \\s1\\().16b
-   .elseif \\imm == 62
-     eor \\s0\\().16b, \\s0\\().16b, \\s1\\().16b
-   .else
-     eor \\s0\\().16b, \\s0\\().16b, \\s1\\().16b
-   .endif
-.endm
-
- .macro xar_m1_1 d s0 s1 imm
-   // Special cases where we can replace SHLs by ADDs
-   .if \\imm == 63
-     add \\d\\().2d, \\s0\\().2d, \\s0\\().2d
-     sri \\d\\().2d, \\s0\\().2d, #(63)
-   .elseif \\imm == 62
-     add \\d\\().2d, \\s0\\().2d, \\s0\\().2d
-     add \\d\\().2d, \\d\\().2d,  \\d\\().2d
-     sri \\d\\().2d, \\s0\\().2d, #(62)
-   .else
-     shl \\d\\().2d, \\s0\\().2d, #(64-\\imm)
-     sri \\d\\().2d, \\s0\\().2d, #(\\imm)
-   .endif
-.endm
-
-.macro bcax_m1 d s0 s1 s2
-    bic vvtmp.16b, \\s1\\().16b, \\s2\\().16b
-    eor \\d\\().16b, vvtmp.16b, \\s0\\().16b
 .endm
 
 .macro load_input_vector num idx
@@ -570,45 +473,22 @@ $code.=<<___;
     ldr sAso, [input_addr, 24*(23)]
     ldr sAsu, [input_addr, 24*(24)]
 .endm
-#define STACK_SIZE (8*8 + 16*6 + 3*8 + 8 + 16*34) // VREGS (8*8), GPRs (16*6), count (8), const (8), input (8), padding (8)
-#define STACK_BASE_GPRS  (3*8+8)
-#define STACK_BASE_VREGS (3*8+8+16*6)
-#define STACK_BASE_TMP (8*8 + 16*6 + 3*8 + 8)
+
+#define STACK_SIZE (4*16 + 8*12 + 4*8)
+#define STACK_BASE_GPRS  (0)
+#define STACK_BASE_VREGS (12*8)
+#define STACK_BASE_TMP_GPRS (12*8 + 4*16)
 #define STACK_OFFSET_INPUT (0*8)
 #define STACK_OFFSET_CONST (1*8)
 #define STACK_OFFSET_COUNT (2*8)
 
-#define vAga_offset 0
-#define E0_offset  1
-#define E1_offset  2
-#define E2_offset  3
-#define E3_offset  4
-#define E4_offset  5
-#define Ame_offset  7
-#define Agi_offset  8
-#define Aka_offset  9
-#define Abo_offset  10
-#define Amo_offset  11
-#define Ami_offset  12
-#define Ake_offset  13
-#define Agu_offset  14
-#define Asi_offset  15
-#define Aku_offset  16
-#define Asa_offset  17
-#define Abu_offset  18
-#define Asu_offset  19
-#define Ase_offset  20
-//#define Aga_offset  21
-#define Age_offset  22
-#define vBgo_offset 23
-#define vBke_offset 24
-#define vBgi_offset 25
-#define vBga_offset 26
-#define vBbo_offset 27
-#define vBmo_offset 28
-#define vBmi_offset 29
-#define vBge_offset 30
+.macro save reg, offset
+    str \\reg, [sp, #(STACK_BASE_TMP_GPRS + \\offset)]
+.endm
 
+.macro restore reg, offset
+    ldr \\reg, [sp, #(STACK_BASE_TMP_GPRS + \\offset)]
+.endm
 
 .macro save_gprs
     stp x19, x20, [sp, #(STACK_BASE_GPRS + 16*0)]
@@ -669,739 +549,503 @@ $code.=<<___;
     ror \\dst, \\src, #(64-\\imm)
 .endm
 
-.macro save reg, offset
-    str \\reg, [sp, #\\offset]
-.endm
-
-.macro restore reg, offset
-    ldr \\reg, [sp, #\\offset]
-.endm
-
 .macro load_constant_ptr
 	adr const_addr, round_constants
 .endm
 
 .macro hybrid_round_initial
 eor sC0, sAma, sAsa                             SEP
-eor sC1, sAme, sAse                             SEP      eor3_m0 $vC1,$vAbe,$vAge,$vAke                                                                           
-eor sC2, sAmi, sAsi                             SEP      eor3_m1 $vC3,$vAbo,$vAgo,$vAko                                                                            
-eor sC3, sAmo, sAso                             SEP      eor3_m0 $vC0,$vAba,$vAga,$vAka                                                                                
-eor sC4, sAmu, sAsu                             SEP      eor3_m1 $vC2,$vAbi,$vAgi,$vAki                                                                           
-eor sC0, sAka, sC0                              SEP      eor3_m0 $vC4,$vAbu,$vAgu,$vAku                                                                            
-eor sC1, sAke, sC1                              SEP      eor3_m1 $vC1, $vC1,$vAme, $vAse                                                                           
-eor sC2, sAki, sC2                              SEP      eor3_m0 $vC3, $vC3,$vAmo, $vAso                                                                           
-eor sC3, sAko, sC3                              SEP      eor3_m1 $vC0, $vC0,$vAma, $vAsa                                                                           
-eor sC4, sAku, sC4                              SEP      eor3_m0 $vC2, $vC2,$vAmi, $vAsi                                                                           
-eor sC0, sAga, sC0                              SEP      eor3_m1 $vC4, $vC4,$vAmu, $vAsu                                                                            
-eor sC1, sAge, sC1                              SEP      vvtmp .req $vBba                                                                           
-eor sC2, sAgi, sC2                              SEP                                                                           
-eor sC3, sAgo, sC3                              SEP      rax1_m0 $vE2, $vC1, $vC3                                                                           
-eor sC4, sAgu, sC4                              SEP      rax1_m1 $vE4, $vC3, $vC0                                                                            
-eor sC0, s_Aba, sC0                             SEP      rax1_m0 $vE1, $vC0, $vC2                                                                           
-eor sC1, sAbe, sC1                              SEP      rax1_m1 $vE3, $vC2, $vC4                                                                           
-eor sC2, sAbi, sC2                              SEP      rax1_m0 $vE0, $vC4, $vC1                                                                           
-eor sC3, sAbo, sC3                              SEP      .unreq vvtmp                                                                           
-eor sC4, sAbu, sC4                              SEP      vvtmp .req $vC1                                                                           
-eor sE1, sC0, sC2, ROR #63                      SEP      vvtmpq .req $C1q                                                                           
-eor sE3, sC2, sC4, ROR #63                      SEP      eor $vBba.16b, $vAba.16b, $vE0.16b                                                                           
-eor sE0, sC4, sC1, ROR #63                      SEP      xar_m1 $vBsa, $vAbi, $vE2, 2                                                                            
-eor sE2, sC1, sC3, ROR #63                      SEP                                                                           
-eor sE4, sC3, sC0, ROR #63                      SEP      xar_m1 $vBbi, $vAki, $vE2, 21                                                                           
-eor s_Aba_, s_Aba, sE0                          SEP      xar_m1 $vBki, $vAko, $vE3, 39                                                                           
-eor sAsa_, sAbi, sE2                            SEP      xar_m1 $vBko, $vAmu, $vE4, 56                                                                           
-eor sAbi_, sAki, sE2                            SEP      xar_m1 $vBmu, $vAso, $vE3, 8                                                                            
-eor sAki_, sAko, sE3                            SEP      xar_m1 $vBso, $vAma, $vE0, 23                                                                           
-eor sAko_, sAmu, sE4                            SEP      xar_m1 $vBka, $vAbe, $vE1, 63                                                                           
-eor sAmu_, sAso, sE3                            SEP      xar_m1 $vBse, $vAgo, $vE3, 9                                                                            
-eor sAso_, sAma, sE0                            SEP      xar_m1 $vBgo, $vAme, $vE1, 19                                                                           
-eor sAka_, sAbe, sE1                            SEP      xar_m1 $vBke, $vAgi, $vE2, 58                                                                           
-eor sAse_, sAgo, sE3                            SEP      xar_m1 $vBgi, $vAka, $vE0, 61                                                                             
-eor sAgo_, sAme, sE1                            SEP                                                                           
-eor sAke_, sAgi, sE2                            SEP      xar_m1 $vBga, $vAbo, $vE3, 36                                                                           
-eor sAgi_, sAka, sE0                            SEP      xar_m1 $vBbo, $vAmo, $vE3, 43                                                                           
-eor sAga_, sAbo, sE3                            SEP      xar_m1 $vBmo, $vAmi, $vE2, 49                                                                           
-eor sAbo_, sAmo, sE3                            SEP      xar_m1 $vBmi, $vAke, $vE1, 54                                                                           
-eor sAmo_, sAmi, sE2                            SEP      xar_m1 $vBge, $vAgu, $vE4, 44                                                                           
-eor sAmi_, sAke, sE1                            SEP      mov $vE3.16b, $vAga.16b                                                                                       
-eor sAge_, sAgu, sE4                            SEP      bcax_m1 $vAga, $vBga, $vBgi, $vBge                                                                           
-eor sAgu_, sAsi, sE2                            SEP      xar_m1 $vBgu, $vAsi, $vE2, 3                                                                            
-eor sAsi_, sAku, sE4                            SEP      xar_m1 $vBsi, $vAku, $vE4, 25                                                                           
-eor sAku_, sAsa, sE0                            SEP      xar_m1 $vBku, $vAsa, $vE0, 46                                                                           
-eor sAma_, sAbu, sE4                            SEP                                                                                                               
-eor sAbu_, sAsu, sE4                            SEP      xar_m1 $vBma, $vAbu, $vE4, 37                                                                           
-eor sAsu_, sAse, sE1                            SEP      xar_m1 $vBbu, $vAsu, $vE4, 50                                                                           
-eor sAme_, sAga, sE0                            SEP      xar_m1 $vBsu, $vAse, $vE1, 62                                                                           
-eor sAbe_, sAge, sE1                            SEP      xar_m1 $vBme, $vE3, $vE0, 28                                                                             
-load_constant_ptr                               SEP      xar_m1 $vBbe, $vAge, $vE1, 20                                                                           
-bic tmp, sAgi_, sAge_, ROR #47                  SEP      bcax_m1 $vAge, $vBge, $vBgo, $vBgi                                                                           
-eor sAga, tmp,  sAga_, ROR #39                  SEP      bcax_m0 $vAgi, $vBgi, $vBgu, $vBgo                                                                           
-bic tmp, sAgo_, sAgi_, ROR #42                  SEP      bcax_m1 $vAgo, $vBgo, $vBga, $vBgu                                                                           
-eor sAge, tmp,  sAge_, ROR #25                  SEP      bcax_m0 $vAgu, $vBgu, $vBge, $vBga                                                                           
-bic tmp, sAgu_, sAgo_, ROR #16                  SEP      bcax_m1 $vAka, $vBka, $vBki, $vBke                                                                           
-eor sAgi, tmp,  sAgi_, ROR #58                  SEP      bcax_m0 $vAke, $vBke, $vBko, $vBki                                                                           
-bic tmp, sAga_, sAgu_, ROR #31                  SEP                                                                           
-eor sAgo, tmp,  sAgo_, ROR #47                  SEP      .unreq vvtmp                                                                                               
-bic tmp, sAge_, sAga_, ROR #56                  SEP      .unreq vvtmpq                                                                                               
-eor sAgu, tmp,  sAgu_, ROR #23                  SEP      eor2    $vC0,  $vAka, $vAga                                                                                    
-bic tmp, sAki_, sAke_, ROR #19                  SEP      str $vAgaq, [sp, #(STACK_BASE_TMP + 16 * vAga_offset)]                                                                                                    
-eor sAka, tmp,  sAka_, ROR #24                  SEP      vvtmp .req $vAga                                                                                                   
-bic tmp, sAko_, sAki_, ROR #47                  SEP      vvtmpq .req $vAgaq                                                                                                    
-eor sAke, tmp,  sAke_, ROR #2                   SEP      bcax_m0 $vAki, $vBki, $vBku, $vBko                                                                                  
-bic tmp, sAku_, sAko_, ROR #10                  SEP      bcax_m1 $vAko, $vBko, $vBka, $vBku                                                                                 
-eor sAki, tmp,  sAki_, ROR #57                  SEP      eor2    $vC1,  $vAke, $vAge                                                                                             
-bic tmp, sAka_, sAku_, ROR #47                  SEP      bcax_m0 $vAku, $vBku, $vBke, $vBka                                                                                    
-eor sAko, tmp,  sAko_, ROR #57                  SEP                                                                                 
-bic tmp, sAke_, sAka_, ROR #5                   SEP      eor2    $vC2,  $vAki, $vAgi                                                                                     
-eor sAku, tmp,  sAku_, ROR #52                  SEP      bcax_m1 $vAma, $vBma, $vBmi, $vBme                                                                            
-bic tmp, sAmi_, sAme_, ROR #38                  SEP      eor2    $vC3,  $vAko, $vAgo                                                                                      
-eor sAma, tmp,  sAma_, ROR #47                  SEP      bcax_m0 $vAme, $vBme, $vBmo, $vBmi                                                                           
-bic tmp, sAmo_, sAmi_, ROR #5                   SEP      eor2    $vC4,  $vAku, $vAgu                                                                                       
-eor sAme, tmp,  sAme_, ROR #43                  SEP      bcax_m1 $vAmi, $vBmi, $vBmu, $vBmo                                                                           
-bic tmp, sAmu_, sAmo_, ROR #41                  SEP      eor2    $vC0,  $vC0,  $vAma                                                                                     
-eor sAmi, tmp,  sAmi_, ROR #46                  SEP      bcax_m0 $vAmo, $vBmo, $vBma, $vBmu                                                                           
-ldr cur_const, [const_addr]                     SEP      eor2    $vC1,  $vC1,  $vAme                                                                                     
-mov count, #1                                   SEP      bcax_m1 $vAmu, $vBmu, $vBme, $vBma                                                                           
-bic tmp, sAma_, sAmu_, ROR #35                  SEP                                                                           
-eor sAmo, tmp,  sAmo_, ROR #12                  SEP      eor2    $vC2,  $vC2,  $vAmi                                                                                        
-bic tmp, sAme_, sAma_, ROR #9                   SEP      bcax_m0 $vAsa, $vBsa, $vBsi, $vBse                                                                           
-eor sAmu, tmp,  sAmu_, ROR #44                  SEP      eor2    $vC3,  $vC3,  $vAmo                                                                                       
-bic tmp, sAsi_, sAse_, ROR #48                  SEP      bcax_m1 $vAse, $vBse, $vBso, $vBsi                                                                           
-eor sAsa, tmp,  sAsa_, ROR #41                  SEP      eor2    $vC4,  $vC4,  $vAmu                                                                                       
-bic tmp, sAso_, sAsi_, ROR #2                   SEP      bcax_m0 $vAsi, $vBsi, $vBsu, $vBso                                                                           
-eor sAse, tmp,  sAse_, ROR #50                  SEP      eor2    $vC0,  $vC0,  $vAsa                                                                                      
-bic tmp, sAsu_, sAso_, ROR #25                  SEP      bcax_m1 $vAso, $vBso, $vBsa, $vBsu                                                                           
-eor sAsi, tmp,  sAsi_, ROR #27                  SEP      eor2    $vC1,  $vC1,  $vAse                                                                                     
-bic tmp, sAsa_, sAsu_, ROR #60                  SEP      bcax_m0 $vAsu, $vBsu, $vBse, $vBsa                                                                           
-eor sAso, tmp,  sAso_, ROR #21                  SEP                                                                           
-save count, STACK_OFFSET_COUNT                  SEP                                                                           
-bic tmp, sAse_, sAsa_, ROR #57                  SEP      eor2    $vC2,  $vC2,  $vAsi                                                                           
-eor sAsu, tmp,  sAsu_, ROR #53                  SEP      eor2    $vC3,  $vC3,  $vAso                                                                           
-bic tmp, sAbi_, sAbe_, ROR #63                  SEP      bcax_m1 $vAba, $vBba, $vBbi, $vBbe                                                                           
-eor s_Aba, s_Aba_, tmp,  ROR #21                SEP      bcax_m0 $vAbe, $vBbe, $vBbo, $vBbi                                                                           
-bic tmp, sAbo_, sAbi_, ROR #42                  SEP      eor2    $vC1,  $vC1,  $vAbe                                                                           
-eor sAbe, tmp,  sAbe_, ROR #41                  SEP      restore x27, STACK_OFFSET_CONST                                                                           
-bic tmp, sAbu_, sAbo_, ROR #57                  SEP      ldr vvtmpq, [x27], #16                                                                           
-eor sAbi, tmp,  sAbi_, ROR #35                  SEP      save x27, STACK_OFFSET_CONST                                                                           
-bic tmp, s_Aba_, sAbu_, ROR #50                 SEP      eor $vAba.16b, $vAba.16b, vvtmp.16b                                                                           
-eor sAbo, tmp,  sAbo_, ROR #43                  SEP      eor2    $vC4,  $vC4,  $vAsu                                                                           
-bic tmp, sAbe_, s_Aba_, ROR #44                 SEP                                                                           
-eor sAbu, tmp,  sAbu_, ROR #30                  SEP      bcax_m0 $vAbi, $vBbi, $vBbu, $vBbo                                                                           
-eor s_Aba, s_Aba, cur_const                     SEP      bcax_m1 $vAbo, $vBbo, $vBba, $vBbu                                                                           
-                                                SEP      eor2    $vC3,  $vC3,  $vAbo                                                                           
-eor sC0, sAka, sAsa, ROR #50                    SEP      eor2    $vC2,  $vC2,  $vAbi                                                                           
-eor sC1, sAse, sAge, ROR #60                    SEP      eor2    $vC0,  $vC0,  $vAba                                                                           
-eor sC2, sAmi, sAgi, ROR #59                    SEP      bcax_m0 $vAbu, $vBbu, $vBbe, $vBba                                                                           
-eor sC3, sAgo, sAso, ROR #30                    SEP      eor2    $vC4,  $vC4,  $vAbu                                                                           
-eor sC4, sAbu, sAsu, ROR #53                    SEP      ldr $vAgaq, [sp, #(STACK_BASE_TMP + 16 * vAga_offset)]                                                                          
-eor sC0, sAma, sC0, ROR #49                     SEP      .unreq vvtmp                                                                           
-eor sC1, sAbe, sC1, ROR #44                     SEP      .unreq vvtmpq                                                                           
-eor sC2, sAki, sC2, ROR #26                     SEP      vvtmp .req $vBba                                                                            
-eor sC3, sAmo, sC3, ROR #63                     SEP                                                                           
-eor sC4, sAmu, sC4, ROR #56                     SEP      rax1_m0 $vE2, $vC1, $vC3                                                                           
-eor sC0, sAga, sC0, ROR #57                     SEP      rax1_m1 $vE4, $vC3, $vC0                                                                           
-eor sC1, sAme, sC1, ROR #58                     SEP      rax1_m0 $vE1, $vC0, $vC2                                                                           
-eor sC2, sAbi, sC2, ROR #60                     SEP      rax1_m1 $vE3, $vC2, $vC4                                                                           
-eor sC3, sAko, sC3, ROR #38                     SEP      rax1_m0 $vE0, $vC4, $vC1                                                                           
-eor sC4, sAgu, sC4, ROR #48                     SEP      .unreq vvtmp                                                                           
-eor sC0, s_Aba, sC0, ROR #61                    SEP      vvtmp .req $vC1                                                                           
-eor sC1, sAke, sC1, ROR #57                     SEP      vvtmpq .req $C1q                                                                           
-eor sC2, sAsi, sC2, ROR #52                     SEP      eor $vBba.16b, $vAba.16b, $vE0.16b                                                                           
-eor sC3, sAbo, sC3, ROR #63                     SEP      xar_m1 $vBsa, $vAbi, $vE2, 2                                                                             
-eor sC4, sAku, sC4, ROR #50                     SEP                                                                           
-ror sC1, sC1, 56                                SEP      xar_m1 $vBbi, $vAki, $vE2, 21                                                                           
-ror sC4, sC4, 58                                SEP      xar_m1 $vBki, $vAko, $vE3, 39                                                                           
-ror sC2, sC2, 62                                SEP      xar_m1 $vBko, $vAmu, $vE4, 56                                                                           
-eor sE1, sC0, sC2, ROR #63                      SEP      xar_m1 $vBmu, $vAso, $vE3, 8                                                                            
-eor sE3, sC2, sC4, ROR #63                      SEP      xar_m1 $vBso, $vAma, $vE0, 23                                                                           
-eor sE0, sC4, sC1, ROR #63                      SEP      xar_m1 $vBka, $vAbe, $vE1, 63                                                                           
-eor sE2, sC1, sC3, ROR #63                      SEP      xar_m1 $vBse, $vAgo, $vE3, 9                                                                            
-eor sE4, sC3, sC0, ROR #63                      SEP      xar_m1 $vBgo, $vAme, $vE1, 19                                                                           
-eor s_Aba_, sE0, s_Aba                          SEP      xar_m1 $vBke, $vAgi, $vE2, 58                                                                           
-eor sAsa_, sE2, sAbi, ROR #50                   SEP      xar_m1 $vBgi, $vAka, $vE0, 61                                                                           
-eor sAbi_, sE2, sAki, ROR #46                   SEP                                                                           
-eor sAki_, sE3, sAko, ROR #63                   SEP      xar_m1 $vBga, $vAbo, $vE3, 36                                                                           
-eor sAko_, sE4, sAmu, ROR #28                   SEP      xar_m1 $vBbo, $vAmo, $vE3, 43                                                                           
-eor sAmu_, sE3, sAso, ROR #2                    SEP      xar_m1 $vBmo, $vAmi, $vE2, 49                                                                           
-eor sAso_, sE0, sAma, ROR #54                   SEP      xar_m1 $vBmi, $vAke, $vE1, 54                                                                           
-eor sAka_, sE1, sAbe, ROR #43                   SEP      xar_m1 $vBge, $vAgu, $vE4, 44                                                                           
-eor sAse_, sE3, sAgo, ROR #36                   SEP      mov $vE3.16b, $vAga.16b                                                                           
-eor sAgo_, sE1, sAme, ROR #49                   SEP      bcax_m1 $vAga, $vBga, $vBgi, $vBge                                                                           
-eor sAke_, sE2, sAgi, ROR #3                    SEP      xar_m1 $vBgu, $vAsi, $vE2, 3                                                                           
-eor sAgi_, sE0, sAka, ROR #39                   SEP      xar_m1 $vBsi, $vAku, $vE4, 25                                                                           
-eor sAga_, sE3, sAbo                            SEP      xar_m1 $vBku, $vAsa, $vE0, 46                                                                           
-eor sAbo_, sE3, sAmo, ROR #37                   SEP                                                                           
-eor sAmo_, sE2, sAmi, ROR #8                    SEP      xar_m1 $vBma, $vAbu, $vE4, 37                                                                           
-eor sAmi_, sE1, sAke, ROR #56                   SEP      xar_m1 $vBbu, $vAsu, $vE4, 50                                                                           
-eor sAge_, sE4, sAgu, ROR #44                   SEP      xar_m1 $vBsu, $vAse, $vE1, 62                                                                           
-eor sAgu_, sE2, sAsi, ROR #62                   SEP      xar_m1 $vBme, $vE3, $vE0, 28                                                                           
-eor sAsi_, sE4, sAku, ROR #58                   SEP      xar_m1 $vBbe, $vAge, $vE1, 20                                                                           
-eor sAku_, sE0, sAsa, ROR #25                   SEP      bcax_m1 $vAge, $vBge, $vBgo, $vBgi                                                                           
-eor sAma_, sE4, sAbu, ROR #20                   SEP      bcax_m0 $vAgi, $vBgi, $vBgu, $vBgo                                                                           
-eor sAbu_, sE4, sAsu, ROR #9                    SEP      bcax_m1 $vAgo, $vBgo, $vBga, $vBgu                                                                           
-eor sAsu_, sE1, sAse, ROR #23                   SEP      bcax_m0 $vAgu, $vBgu, $vBge, $vBga                                                                           
-eor sAme_, sE0, sAga, ROR #61                   SEP      bcax_m1 $vAka, $vBka, $vBki, $vBke                                                                           
-eor sAbe_, sE1, sAge, ROR #19                   SEP                                                                           
-load_constant_ptr                               SEP      bcax_m0 $vAke, $vBke, $vBko, $vBki                                                                           
-restore count, STACK_OFFSET_COUNT               SEP      .unreq vvtmp                                                                           
-bic tmp, sAgi_, sAge_, ROR #47                  SEP      .unreq vvtmpq                                                                           
-eor sAga, tmp,  sAga_, ROR #39                  SEP      eor2    $vC0,  $vAka, $vAga                                                                           
-bic tmp, sAgo_, sAgi_, ROR #42                  SEP      str $vAgaq, [sp, #(STACK_BASE_TMP + 16 * vAga_offset)]                                                                        
-eor sAge, tmp,  sAge_, ROR #25                  SEP      vvtmp .req $vAga                                                                           
-bic tmp, sAgu_, sAgo_, ROR #16                  SEP      vvtmpq .req $vAgaq                                                                           
-eor sAgi, tmp,  sAgi_, ROR #58                  SEP      bcax_m0 $vAki, $vBki, $vBku, $vBko                                                                           
-bic tmp, sAga_, sAgu_, ROR #31                  SEP      bcax_m1 $vAko, $vBko, $vBka, $vBku                                                                           
-eor sAgo, tmp,  sAgo_, ROR #47                  SEP      eor2    $vC1,  $vAke, $vAge                                                                           
-bic tmp, sAge_, sAga_, ROR #56                  SEP      bcax_m0 $vAku, $vBku, $vBke, $vBka                                                                           
-eor sAgu, tmp,  sAgu_, ROR #23                  SEP                                                                           
-bic tmp, sAki_, sAke_, ROR #19                  SEP      eor2    $vC2,  $vAki, $vAgi                                                                           
-eor sAka, tmp,  sAka_, ROR #24                  SEP      bcax_m1 $vAma, $vBma, $vBmi, $vBme                                                                           
-bic tmp, sAko_, sAki_, ROR #47                  SEP      eor2    $vC3,  $vAko, $vAgo                                                                           
-eor sAke, tmp,  sAke_, ROR #2                   SEP      bcax_m0 $vAme, $vBme, $vBmo, $vBmi                                                                           
-bic tmp, sAku_, sAko_, ROR #10                  SEP      eor2    $vC4,  $vAku, $vAgu                                                                           
-eor sAki, tmp,  sAki_, ROR #57                  SEP      bcax_m1 $vAmi, $vBmi, $vBmu, $vBmo                                                                           
-bic tmp, sAka_, sAku_, ROR #47                  SEP      eor2    $vC0,  $vC0,  $vAma                                                                           
-eor sAko, tmp,  sAko_, ROR #57                  SEP      bcax_m0 $vAmo, $vBmo, $vBma, $vBmu                                                                           
-bic tmp, sAke_, sAka_, ROR #5                   SEP      eor2    $vC1,  $vC1,  $vAme                                                                           
-eor sAku, tmp,  sAku_, ROR #52                  SEP      bcax_m1 $vAmu, $vBmu, $vBme, $vBma                                                                           
-bic tmp, sAmi_, sAme_, ROR #38                  SEP                                                                           
-eor sAma, tmp,  sAma_, ROR #47                  SEP      eor2    $vC2,  $vC2,  $vAmi                                                                           
-bic tmp, sAmo_, sAmi_, ROR #5                   SEP      bcax_m0 $vAsa, $vBsa, $vBsi, $vBse                                                                           
-eor sAme, tmp,  sAme_, ROR #43                  SEP      eor2    $vC3,  $vC3,  $vAmo                                                                           
-bic tmp, sAmu_, sAmo_, ROR #41                  SEP      bcax_m1 $vAse, $vBse, $vBso, $vBsi                                                                           
-eor sAmi, tmp,  sAmi_, ROR #46                  SEP      eor2    $vC4,  $vC4,  $vAmu                                                                           
-bic tmp, sAma_, sAmu_, ROR #35                  SEP      bcax_m0 $vAsi, $vBsi, $vBsu, $vBso                                                                           
-eor sAmo, tmp,  sAmo_, ROR #12                  SEP      eor2    $vC0,  $vC0,  $vAsa                                                                           
-bic tmp, sAme_, sAma_, ROR #9                   SEP      bcax_m1 $vAso, $vBso, $vBsa, $vBsu                                                                           
-eor sAmu, tmp,  sAmu_, ROR #44                  SEP      eor2    $vC1,  $vC1,  $vAse                                                                           
-bic tmp, sAsi_, sAse_, ROR #48                  SEP      bcax_m0 $vAsu, $vBsu, $vBse, $vBsa                                                                           
-eor sAsa, tmp,  sAsa_, ROR #41                  SEP      eor2    $vC2,  $vC2,  $vAsi                                                                           
-bic tmp, sAso_, sAsi_, ROR #2                   SEP      eor2    $vC3,  $vC3,  $vAso                                                                           
-eor sAse, tmp,  sAse_, ROR #50                  SEP      bcax_m1 $vAba, $vBba, $vBbi, $vBbe                                                                           
-bic tmp, sAsu_, sAso_, ROR #25                  SEP      bcax_m0 $vAbe, $vBbe, $vBbo, $vBbi                                                                           
-eor sAsi, tmp,  sAsi_, ROR #27                  SEP      eor2    $vC1,  $vC1,  $vAbe                                                                           
-bic tmp, sAsa_, sAsu_, ROR #60                  SEP      restore x26, STACK_OFFSET_CONST                                                                           
-eor sAso, tmp,  sAso_, ROR #21                  SEP      ldr vvtmpq, [x26], #16                                                                           
-bic tmp, sAse_, sAsa_, ROR #57                  SEP      save x26, STACK_OFFSET_CONST                                                                           
-eor sAsu, tmp,  sAsu_, ROR #53                  SEP      eor $vAba.16b, $vAba.16b, vvtmp.16b                                                                           
-bic tmp, sAbi_, sAbe_, ROR #63                  SEP      eor2    $vC4,  $vC4,  $vAsu                                                                           
-eor s_Aba, s_Aba_, tmp,  ROR #21                SEP                                                                           
-ldr cur_const, [const_addr, count, UXTW #3]     SEP                                                                           
-bic tmp, sAbo_, sAbi_, ROR #42                  SEP      bcax_m0 $vAbi, $vBbi, $vBbu, $vBbo                                                                           
-eor sAbe, tmp,  sAbe_, ROR #41                  SEP      bcax_m1 $vAbo, $vBbo, $vBba, $vBbu                                                                           
-bic tmp, sAbu_, sAbo_, ROR #57                  SEP      eor2    $vC3,  $vC3,  $vAbo                                                                           
-eor sAbi, tmp,  sAbi_, ROR #35                  SEP      eor2    $vC2,  $vC2,  $vAbi                                                                           
-bic tmp, s_Aba_, sAbu_, ROR #50                 SEP      eor2    $vC0,  $vC0,  $vAba                                                                           
-eor sAbo, tmp,  sAbo_, ROR #43                  SEP      bcax_m0 $vAbu, $vBbu, $vBbe, $vBba                                                                           
-bic tmp, sAbe_, s_Aba_, ROR #44                 SEP      eor2    $vC4,  $vC4,  $vAbu                                                                           
-eor sAbu, tmp,  sAbu_, ROR #30                  SEP      ldr $vAgaq, [sp, #(STACK_BASE_TMP + 16 * vAga_offset)]                                                                          
-add count, count, #1                            SEP      .unreq vvtmp                                                                           
-eor s_Aba, s_Aba, cur_const                     SEP      .unreq vvtmpq                                                                           
+eor sC1, sAme, sAse                             SEP      eor3_m1 $vC0, $vAba, $vAga, $vAka
+eor sC2, sAmi, sAsi                             SEP      eor3_m1 $vC0, $vC0, $vAma,  $vAsa
+eor sC3, sAmo, sAso                             SEP
+eor sC4, sAmu, sAsu                             SEP      eor3_m1 $vC1, $vAbe, $vAge, $vAke
+eor sC0, sAka, sC0                              SEP      eor3_m1 $vC1, $vC1, $vAme,  $vAse
+eor sC1, sAke, sC1                              SEP
+eor sC2, sAki, sC2                              SEP      eor3_m1 $vC2, $vAbi, $vAgi, $vAki
+eor sC3, sAko, sC3                              SEP      eor3_m1 $vC2, $vC2, $vAmi,  $vAsi
+eor sC4, sAku, sC4                              SEP
+eor sC0, sAga, sC0                              SEP      eor3_m1 $vC3, $vAbo, $vAgo, $vAko
+eor sC1, sAge, sC1                              SEP      eor3_m1 $vC3, $vC3, $vAmo,  $vAso
+eor sC2, sAgi, sC2                              SEP
+eor sC3, sAgo, sC3                              SEP      eor3_m1 $vC4, $vAbu, $vAgu, $vAku
+eor sC4, sAgu, sC4                              SEP      eor3_m1 $vC4, $vC4, $vAmu,  $vAsu
+eor sC0, s_Aba, sC0                             SEP
+eor sC1, sAbe, sC1                              SEP      rax1_m1 $vE1, $vC0, $vC2
+eor sC2, sAbi, sC2                              SEP      rax1_m1 $vE3, $vC2, $vC4
+eor sC3, sAbo, sC3                              SEP
+eor sC4, sAbu, sC4                              SEP      rax1_m1 $vE0, $vC4, $vC1
+eor sE1, sC0, sC2, ROR #63                      SEP
+eor sE3, sC2, sC4, ROR #63                      SEP      rax1_m1 $vE2, $vC1, $vC3
+eor sE0, sC4, sC1, ROR #63                      SEP      rax1_m1 $vE4, $vC3, $vC0
+eor sE2, sC1, sC3, ROR #63                      SEP
+eor sE4, sC3, sC0, ROR #63                      SEP      eor $vAba_.16b, $vAba.16b, $vE0.16b
+eor s_Aba_, s_Aba, sE0                          SEP      xar_m1 $vAsa_, $vAbi, $vE2, 2
+eor sAsa_, sAbi, sE2                            SEP
+eor sAbi_, sAki, sE2                            SEP      xar_m1 $vAbi_, $vAki, $vE2, 21
+eor sAki_, sAko, sE3                            SEP      xar_m1 $vAki_, $vAko, $vE3, 39
+eor sAko_, sAmu, sE4                            SEP
+eor sAmu_, sAso, sE3                            SEP      xar_m1 $vAko_, $vAmu, $vE4, 56
+eor sAso_, sAma, sE0                            SEP      xar_m1 $vAmu_, $vAso, $vE3, 8
+eor sAka_, sAbe, sE1                            SEP
+eor sAse_, sAgo, sE3                            SEP      xar_m1 $vAso_, $vAma, $vE0, 23
+eor sAgo_, sAme, sE1                            SEP      xar_m1 $vAka_, $vAbe, $vE1, 63
+eor sAke_, sAgi, sE2                            SEP
+eor sAgi_, sAka, sE0                            SEP      xar_m1 $vAse_, $vAgo, $vE3, 9
+eor sAga_, sAbo, sE3                            SEP
+eor sAbo_, sAmo, sE3                            SEP      xar_m1 $vAgo_, $vAme, $vE1, 19
+eor sAmo_, sAmi, sE2                            SEP      xar_m1 $vAke_, $vAgi, $vE2, 58
+eor sAmi_, sAke, sE1                            SEP
+eor sAge_, sAgu, sE4                            SEP      xar_m1 $vAgi_, $vAka, $vE0, 61
+eor sAgu_, sAsi, sE2                            SEP      xar_m1 $vAga_, $vAbo, $vE3, 36
+eor sAsi_, sAku, sE4                            SEP
+eor sAku_, sAsa, sE0                            SEP      xar_m1 $vAbo_, $vAmo, $vE3, 43
+eor sAma_, sAbu, sE4                            SEP      xar_m1 $vAmo_, $vAmi, $vE2, 49
+eor sAbu_, sAsu, sE4                            SEP
+eor sAsu_, sAse, sE1                            SEP      xar_m1 $vAmi_, $vAke, $vE1, 54
+eor sAme_, sAga, sE0                            SEP      xar_m1 $vAge_, $vAgu, $vE4, 44
+eor sAbe_, sAge, sE1                            SEP
+load_constant_ptr                               SEP      xar_m1 $vAgu_, $vAsi, $vE2, 3
+bic tmp, sAgi_, sAge_, ROR #47                  SEP      xar_m1 $vAsi_, $vAku, $vE4, 25
+eor sAga, tmp,  sAga_, ROR #39                  SEP
+bic tmp, sAgo_, sAgi_, ROR #42                  SEP      xar_m1 $vAku_, $vAsa, $vE0, 46
+eor sAge, tmp,  sAge_, ROR #25                  SEP
+bic tmp, sAgu_, sAgo_, ROR #16                  SEP      xar_m1 $vAma_, $vAbu, $vE4, 37
+eor sAgi, tmp,  sAgi_, ROR #58                  SEP      xar_m1 $vAbu_, $vAsu, $vE4, 50
+bic tmp, sAga_, sAgu_, ROR #31                  SEP
+eor sAgo, tmp,  sAgo_, ROR #47                  SEP      xar_m1 $vAsu_, $vAse, $vE1, 62
+bic tmp, sAge_, sAga_, ROR #56                  SEP      xar_m1 $vAme_, $vAga, $vE0, 28
+eor sAgu, tmp,  sAgu_, ROR #23                  SEP
+bic tmp, sAki_, sAke_, ROR #19                  SEP      xar_m1 $vAbe_, $vAge, $vE1, 20
+eor sAka, tmp,  sAka_, ROR #24                  SEP      bcax_m1 $vAga, $vAga_, $vAgi_, $vAge_
+bic tmp, sAko_, sAki_, ROR #47                  SEP
+eor sAke, tmp,  sAke_, ROR #2                   SEP      bcax_m1 $vAge, $vAge_, $vAgo_, $vAgi_
+bic tmp, sAku_, sAko_, ROR #10                  SEP      bcax_m1 $vAgi, $vAgi_, $vAgu_, $vAgo_
+eor sAki, tmp,  sAki_, ROR #57                  SEP
+bic tmp, sAka_, sAku_, ROR #47                  SEP      bcax_m1 $vAgo, $vAgo_, $vAga_, $vAgu_
+eor sAko, tmp,  sAko_, ROR #57                  SEP      bcax_m1 $vAgu, $vAgu_, $vAge_, $vAga_
+bic tmp, sAke_, sAka_, ROR #5                   SEP
+eor sAku, tmp,  sAku_, ROR #52                  SEP      bcax_m1 $vAka, $vAka_, $vAki_, $vAke_
+bic tmp, sAmi_, sAme_, ROR #38                  SEP
+eor sAma, tmp,  sAma_, ROR #47                  SEP      restore x26, STACK_OFFSET_CONST
+bic tmp, sAmo_, sAmi_, ROR #5                   SEP      ld1r {v28.2d}, [x26], #8
+eor sAme, tmp,  sAme_, ROR #43                  SEP      save x26, STACK_OFFSET_CONST
+bic tmp, sAmu_, sAmo_, ROR #41                  SEP
+eor sAmi, tmp,  sAmi_, ROR #46                  SEP      bcax_m1 $vAke, $vAke_, $vAko_, $vAki_
+ldr cur_const, [const_addr]                     SEP      bcax_m1 $vAki, $vAki_, $vAku_, $vAko_
+mov count, #1                                   SEP
+bic tmp, sAma_, sAmu_, ROR #35                  SEP      bcax_m1 $vAko, $vAko_, $vAka_, $vAku_
+eor sAmo, tmp,  sAmo_, ROR #12                  SEP      bcax_m1 $vAku, $vAku_, $vAke_, $vAka_
+bic tmp, sAme_, sAma_, ROR #9                   SEP
+eor sAmu, tmp,  sAmu_, ROR #44                  SEP
+bic tmp, sAsi_, sAse_, ROR #48                  SEP      bcax_m1 $vAma, $vAma_, $vAmi_, $vAme_
+eor sAsa, tmp,  sAsa_, ROR #41                  SEP      bcax_m1 $vAme, $vAme_, $vAmo_, $vAmi_
+bic tmp, sAso_, sAsi_, ROR #2                   SEP      bcax_m1 $vAmi, $vAmi_, $vAmu_, $vAmo_
+eor sAse, tmp,  sAse_, ROR #50                  SEP
+bic tmp, sAsu_, sAso_, ROR #25                  SEP      bcax_m1 $vAmo, $vAmo_, $vAma_, $vAmu_
+eor sAsi, tmp,  sAsi_, ROR #27                  SEP      bcax_m1 $vAmu, $vAmu_, $vAme_, $vAma_
+bic tmp, sAsa_, sAsu_, ROR #60                  SEP
+eor sAso, tmp,  sAso_, ROR #21                  SEP      bcax_m1 $vAsa, $vAsa_, $vAsi_, $vAse_
+bic tmp, sAse_, sAsa_, ROR #57                  SEP
+eor sAsu, tmp,  sAsu_, ROR #53                  SEP      bcax_m1 $vAse, $vAse_, $vAso_, $vAsi_
+bic tmp, sAbi_, sAbe_, ROR #63                  SEP      bcax_m1 $vAsi, $vAsi_, $vAsu_, $vAso_
+eor s_Aba, s_Aba_, tmp,  ROR #21                SEP
+bic tmp, sAbo_, sAbi_, ROR #42                  SEP      bcax_m1 $vAso, $vAso_, $vAsa_, $vAsu_
+eor sAbe, tmp,  sAbe_, ROR #41                  SEP      bcax_m1 $vAsu, $vAsu_, $vAse_, $vAsa_
+bic tmp, sAbu_, sAbo_, ROR #57                  SEP
+eor sAbi, tmp,  sAbi_, ROR #35                  SEP      bcax_m1 $vAba, $vAba_, $vAbi_, $vAbe_
+bic tmp, s_Aba_, sAbu_, ROR #50                 SEP      bcax_m1 $vAbe, $vAbe_, $vAbo_, $vAbi_
+eor sAbo, tmp,  sAbo_, ROR #43                  SEP
+bic tmp, sAbe_, s_Aba_, ROR #44                 SEP      bcax_m1 $vAbi, $vAbi_, $vAbu_, $vAbo_
+eor sAbu, tmp,  sAbu_, ROR #30                  SEP      bcax_m1 $vAbo, $vAbo_, $vAba_, $vAbu_
+eor s_Aba, s_Aba, cur_const                     SEP
+save count, STACK_OFFSET_COUNT                  SEP      bcax_m1 $vAbu, $vAbu_, $vAbe_, $vAba_
+eor sC0, sAka, sAsa, ROR #50                    SEP      eor $vAba.16b, $vAba.16b, v28.16b
+eor sC1, sAse, sAge, ROR #60                    SEP
+eor sC2, sAmi, sAgi, ROR #59                    SEP      eor3_m1 $vC0, $vAba, $vAga, $vAka
+eor sC3, sAgo, sAso, ROR #30                    SEP
+eor sC4, sAbu, sAsu, ROR #53                    SEP      eor3_m1 $vC0, $vC0, $vAma,  $vAsa
+eor sC0, sAma, sC0, ROR #49                     SEP      eor3_m1 $vC1, $vAbe, $vAge, $vAke
+eor sC1, sAbe, sC1, ROR #44                     SEP
+eor sC2, sAki, sC2, ROR #26                     SEP      eor3_m1 $vC1, $vC1, $vAme,  $vAse
+eor sC3, sAmo, sC3, ROR #63                     SEP      eor3_m1 $vC2, $vAbi, $vAgi, $vAki
+eor sC4, sAmu, sC4, ROR #56                     SEP
+eor sC0, sAga, sC0, ROR #57                     SEP      eor3_m1 $vC2, $vC2, $vAmi,  $vAsi
+eor sC1, sAme, sC1, ROR #58                     SEP      eor3_m1 $vC3, $vAbo, $vAgo, $vAko
+eor sC2, sAbi, sC2, ROR #60                     SEP
+eor sC3, sAko, sC3, ROR #38                     SEP      eor3_m1 $vC3, $vC3, $vAmo,  $vAso
+eor sC4, sAgu, sC4, ROR #48                     SEP      eor3_m1 $vC4, $vAbu, $vAgu, $vAku
+eor sC0, s_Aba, sC0, ROR #61                    SEP
+eor sC1, sAke, sC1, ROR #57                     SEP      eor3_m1 $vC4, $vC4, $vAmu,  $vAsu
+eor sC2, sAsi, sC2, ROR #52                     SEP      rax1_m1 $vE1, $vC0, $vC2
+eor sC3, sAbo, sC3, ROR #63                     SEP
+eor sC4, sAku, sC4, ROR #50                     SEP      rax1_m1 $vE3, $vC2, $vC4
+ror sC1, sC1, 56                                SEP
+ror sC4, sC4, 58                                SEP      rax1_m1 $vE0, $vC4, $vC1
+ror sC2, sC2, 62                                SEP      rax1_m1 $vE2, $vC1, $vC3
+eor sE1, sC0, sC2, ROR #63                      SEP
+eor sE3, sC2, sC4, ROR #63                      SEP      rax1_m1 $vE4, $vC3, $vC0
+eor sE0, sC4, sC1, ROR #63                      SEP      eor $vAba_.16b, $vAba.16b, $vE0.16b
+eor sE2, sC1, sC3, ROR #63                      SEP
+eor sE4, sC3, sC0, ROR #63                      SEP      xar_m1 $vAsa_, $vAbi, $vE2, 2
+eor s_Aba_, sE0, s_Aba                          SEP      xar_m1 $vAbi_, $vAki, $vE2, 21
+eor sAsa_, sE2, sAbi, ROR #50                   SEP
+eor sAbi_, sE2, sAki, ROR #46                   SEP      xar_m1 $vAki_, $vAko, $vE3, 39
+eor sAki_, sE3, sAko, ROR #63                   SEP      xar_m1 $vAko_, $vAmu, $vE4, 56
+eor sAko_, sE4, sAmu, ROR #28                   SEP
+eor sAmu_, sE3, sAso, ROR #2                    SEP      xar_m1 $vAmu_, $vAso, $vE3, 8
+eor sAso_, sE0, sAma, ROR #54                   SEP      xar_m1 $vAso_, $vAma, $vE0, 23
+eor sAka_, sE1, sAbe, ROR #43                   SEP
+eor sAse_, sE3, sAgo, ROR #36                   SEP      xar_m1 $vAka_, $vAbe, $vE1, 63
+eor sAgo_, sE1, sAme, ROR #49                   SEP
+eor sAke_, sE2, sAgi, ROR #3                    SEP      xar_m1 $vAse_, $vAgo, $vE3, 9
+eor sAgi_, sE0, sAka, ROR #39                   SEP      xar_m1 $vAgo_, $vAme, $vE1, 19
+eor sAga_, sE3, sAbo                            SEP
+eor sAbo_, sE3, sAmo, ROR #37                   SEP      xar_m1 $vAke_, $vAgi, $vE2, 58
+eor sAmo_, sE2, sAmi, ROR #8                    SEP      xar_m1 $vAgi_, $vAka, $vE0, 61
+eor sAmi_, sE1, sAke, ROR #56                   SEP
+eor sAge_, sE4, sAgu, ROR #44                   SEP      xar_m1 $vAga_, $vAbo, $vE3, 36
+eor sAgu_, sE2, sAsi, ROR #62                   SEP      xar_m1 $vAbo_, $vAmo, $vE3, 43
+eor sAsi_, sE4, sAku, ROR #58                   SEP
+eor sAku_, sE0, sAsa, ROR #25                   SEP      xar_m1 $vAmo_, $vAmi, $vE2, 49
+eor sAma_, sE4, sAbu, ROR #20                   SEP      xar_m1 $vAmi_, $vAke, $vE1, 54
+eor sAbu_, sE4, sAsu, ROR #9                    SEP
+eor sAsu_, sE1, sAse, ROR #23                   SEP      xar_m1 $vAge_, $vAgu, $vE4, 44
+eor sAme_, sE0, sAga, ROR #61                   SEP      xar_m1 $vAgu_, $vAsi, $vE2, 3
+eor sAbe_, sE1, sAge, ROR #19                   SEP
+load_constant_ptr                               SEP      xar_m1 $vAsi_, $vAku, $vE4, 25
+restore count, STACK_OFFSET_COUNT               SEP      xar_m1 $vAku_, $vAsa, $vE0, 46
+bic tmp, sAgi_, sAge_, ROR #47                  SEP
+eor sAga, tmp,  sAga_, ROR #39                  SEP      xar_m1 $vAma_, $vAbu, $vE4, 37
+bic tmp, sAgo_, sAgi_, ROR #42                  SEP
+eor sAge, tmp,  sAge_, ROR #25                  SEP      xar_m1 $vAbu_, $vAsu, $vE4, 50
+bic tmp, sAgu_, sAgo_, ROR #16                  SEP      xar_m1 $vAsu_, $vAse, $vE1, 62
+eor sAgi, tmp,  sAgi_, ROR #58                  SEP
+bic tmp, sAga_, sAgu_, ROR #31                  SEP      xar_m1 $vAme_, $vAga, $vE0, 28
+eor sAgo, tmp,  sAgo_, ROR #47                  SEP      xar_m1 $vAbe_, $vAge, $vE1, 20
+bic tmp, sAge_, sAga_, ROR #56                  SEP
+eor sAgu, tmp,  sAgu_, ROR #23                  SEP      bcax_m1 $vAga, $vAga_, $vAgi_, $vAge_
+bic tmp, sAki_, sAke_, ROR #19                  SEP      bcax_m1 $vAge, $vAge_, $vAgo_, $vAgi_
+eor sAka, tmp,  sAka_, ROR #24                  SEP
+bic tmp, sAko_, sAki_, ROR #47                  SEP      bcax_m1 $vAgi, $vAgi_, $vAgu_, $vAgo_
+eor sAke, tmp,  sAke_, ROR #2                   SEP      bcax_m1 $vAgo, $vAgo_, $vAga_, $vAgu_
+bic tmp, sAku_, sAko_, ROR #10                  SEP
+eor sAki, tmp,  sAki_, ROR #57                  SEP      bcax_m1 $vAgu, $vAgu_, $vAge_, $vAga_
+bic tmp, sAka_, sAku_, ROR #47                  SEP      bcax_m1 $vAka, $vAka_, $vAki_, $vAke_
+eor sAko, tmp,  sAko_, ROR #57                  SEP
+bic tmp, sAke_, sAka_, ROR #5                   SEP      bcax_m1 $vAke, $vAke_, $vAko_, $vAki_
+eor sAku, tmp,  sAku_, ROR #52                  SEP
+bic tmp, sAmi_, sAme_, ROR #38                  SEP      bcax_m1 $vAki, $vAki_, $vAku_, $vAko_
+eor sAma, tmp,  sAma_, ROR #47                  SEP      bcax_m1 $vAko, $vAko_, $vAka_, $vAku_
+bic tmp, sAmo_, sAmi_, ROR #5                   SEP
+eor sAme, tmp,  sAme_, ROR #43                  SEP      bcax_m1 $vAku, $vAku_, $vAke_, $vAka_
+bic tmp, sAmu_, sAmo_, ROR #41                  SEP      restore x26, STACK_OFFSET_CONST
+eor sAmi, tmp,  sAmi_, ROR #46                  SEP      ld1r {v28.2d}, [x26], #8
+bic tmp, sAma_, sAmu_, ROR #35                  SEP      save x26, STACK_OFFSET_CONST
+ldr cur_const, [const_addr, count, UXTW #3]     SEP      bcax_m1 $vAme, $vAme_, $vAmo_, $vAmi_
+eor sAmo, tmp,  sAmo_, ROR #12                  SEP      bcax_m1 $vAma, $vAma_, $vAmi_, $vAme_
+bic tmp, sAme_, sAma_, ROR #9                   SEP
+eor sAmu, tmp,  sAmu_, ROR #44                  SEP      bcax_m1 $vAmi, $vAmi_, $vAmu_, $vAmo_
+bic tmp, sAsi_, sAse_, ROR #48                  SEP
+eor sAsa, tmp,  sAsa_, ROR #41                  SEP
+bic tmp, sAso_, sAsi_, ROR #2                   SEP      bcax_m1 $vAmo, $vAmo_, $vAma_, $vAmu_
+eor sAse, tmp,  sAse_, ROR #50                  SEP
+bic tmp, sAsu_, sAso_, ROR #25                  SEP      bcax_m1 $vAmu, $vAmu_, $vAme_, $vAma_
+eor sAsi, tmp,  sAsi_, ROR #27                  SEP
+bic tmp, sAsa_, sAsu_, ROR #60                  SEP      bcax_m1 $vAsa, $vAsa_, $vAsi_, $vAse_
+eor sAso, tmp,  sAso_, ROR #21                  SEP      bcax_m1 $vAse, $vAse_, $vAso_, $vAsi_
+bic tmp, sAse_, sAsa_, ROR #57                  SEP
+eor sAsu, tmp,  sAsu_, ROR #53                  SEP      bcax_m1 $vAsi, $vAsi_, $vAsu_, $vAso_
+bic tmp, sAbi_, sAbe_, ROR #63                  SEP      bcax_m1 $vAso, $vAso_, $vAsa_, $vAsu_
+eor s_Aba, s_Aba_, tmp,  ROR #21                SEP
+bic tmp, sAbo_, sAbi_, ROR #42                  SEP      bcax_m1 $vAsu, $vAsu_, $vAse_, $vAsa_
+eor sAbe, tmp,  sAbe_, ROR #41                  SEP      bcax_m1 $vAba, $vAba_, $vAbi_, $vAbe_
+bic tmp, sAbu_, sAbo_, ROR #57                  SEP
+eor sAbi, tmp,  sAbi_, ROR #35                  SEP      bcax_m1 $vAbe, $vAbe_, $vAbo_, $vAbi_
+bic tmp, s_Aba_, sAbu_, ROR #50                 SEP      bcax_m1 $vAbi, $vAbi_, $vAbu_, $vAbo_
+eor sAbo, tmp,  sAbo_, ROR #43                  SEP
+bic tmp, sAbe_, s_Aba_, ROR #44                 SEP      bcax_m1 $vAbo, $vAbo_, $vAba_, $vAbu_
+eor sAbu, tmp,  sAbu_, ROR #30                  SEP      bcax_m1 $vAbu, $vAbu_, $vAbe_, $vAba_
+add count, count, #1                            SEP
+eor s_Aba, s_Aba, cur_const                     SEP      eor $vAba.16b, $vAba.16b, v28.16b
 .endm
+
 
 .macro  hybrid_round_noninitial
 save count, STACK_OFFSET_COUNT                  SEP
-eor sC0, sAka, sAsa, ROR #50                    SEP      vvtmp .req $vBba
-eor sC1, sAse, sAge, ROR #60                    SEP      rax1_m0 $vE2, $vC1, $vC3
-eor sC2, sAmi, sAgi, ROR #59                    SEP      rax1_m1 $vE4, $vC3, $vC0
-eor sC3, sAgo, sAso, ROR #30                    SEP      rax1_m0 $vE1, $vC0, $vC2
-eor sC4, sAbu, sAsu, ROR #53                    SEP      rax1_m1 $vE3, $vC2, $vC4
-eor sC0, sAma, sC0, ROR #49                     SEP      rax1_m0 $vE0, $vC4, $vC1
-eor sC1, sAbe, sC1, ROR #44                     SEP
-eor sC2, sAki, sC2, ROR #26                     SEP      .unreq vvtmp
-eor sC3, sAmo, sC3, ROR #63                     SEP      vvtmp .req $vC1
-eor sC4, sAmu, sC4, ROR #56                     SEP      vvtmpq .req  $C1q
-eor sC0, sAga, sC0, ROR #57                     SEP      eor $vBba.16b, $vAba.16b, $vE0.16b
-eor sC1, sAme, sC1, ROR #58                     SEP      xar_m1 $vBsa, $vAbi, $vE2, 2
-eor sC2, sAbi, sC2, ROR #60                     SEP
-eor sC3, sAko, sC3, ROR #38                     SEP      xar_m1 $vBbi, $vAki, $vE2, 21
-eor sC4, sAgu, sC4, ROR #48                     SEP      xar_m1 $vBki, $vAko, $vE3, 39
-eor sC0, s_Aba, sC0, ROR #61                    SEP      xar_m1 $vBko, $vAmu, $vE4, 56
-eor sC1, sAke, sC1, ROR #57                     SEP      xar_m1 $vBmu, $vAso, $vE3, 8
-eor sC2, sAsi, sC2, ROR #52                     SEP      xar_m1 $vBso, $vAma, $vE0, 23
-eor sC3, sAbo, sC3, ROR #63                     SEP      xar_m1 $vBka, $vAbe, $vE1, 63
+eor sC0, sAka, sAsa, ROR #50                    SEP      eor3_m1 $vC0, $vAba, $vAga, $vAka
+eor sC1, sAse, sAge, ROR #60                    SEP      eor3_m1 $vC0, $vC0, $vAma,  $vAsa
+eor sC2, sAmi, sAgi, ROR #59                    SEP
+eor sC3, sAgo, sAso, ROR #30                    SEP      eor3_m1 $vC1, $vAbe, $vAge, $vAke
+eor sC4, sAbu, sAsu, ROR #53                    SEP      eor3_m1 $vC1, $vC1, $vAme,  $vAse
+eor sC0, sAma, sC0, ROR #49                     SEP
+eor sC1, sAbe, sC1, ROR #44                     SEP      eor3_m1 $vC2, $vAbi, $vAgi, $vAki
+eor sC2, sAki, sC2, ROR #26                     SEP      eor3_m1 $vC2, $vC2, $vAmi,  $vAsi
+eor sC3, sAmo, sC3, ROR #63                     SEP
+eor sC4, sAmu, sC4, ROR #56                     SEP      eor3_m1 $vC3, $vAbo, $vAgo, $vAko
+eor sC0, sAga, sC0, ROR #57                     SEP
+eor sC1, sAme, sC1, ROR #58                     SEP      eor3_m1 $vC3, $vC3, $vAmo,  $vAso
+eor sC2, sAbi, sC2, ROR #60                     SEP      eor3_m1 $vC4, $vAbu, $vAgu, $vAku
+eor sC3, sAko, sC3, ROR #38                     SEP
+eor sC4, sAgu, sC4, ROR #48                     SEP      eor3_m1 $vC4, $vC4, $vAmu,  $vAsu
+eor sC0, s_Aba, sC0, ROR #61                    SEP      rax1_m1 $vE1, $vC0, $vC2
+eor sC1, sAke, sC1, ROR #57                     SEP
+eor sC2, sAsi, sC2, ROR #52                     SEP      rax1_m1 $vE3, $vC2, $vC4
+eor sC3, sAbo, sC3, ROR #63                     SEP      rax1_m1 $vE0, $vC4, $vC1
 eor sC4, sAku, sC4, ROR #50                     SEP
-ror sC1, sC1, 56                                SEP      xar_m1 $vBse, $vAgo, $vE3, 9
-ror sC4, sC4, 58                                SEP      xar_m1 $vBgo, $vAme, $vE1, 19
-ror sC2, sC2, 62                                SEP      xar_m1 $vBke, $vAgi, $vE2, 58
-eor sE1, sC0, sC2, ROR #63                      SEP      xar_m1 $vBgi, $vAka, $vE0, 61
-eor sE3, sC2, sC4, ROR #63                      SEP      xar_m1 $vBga, $vAbo, $vE3, 36
-eor sE0, sC4, sC1, ROR #63                      SEP
-eor sE2, sC1, sC3, ROR #63                      SEP      xar_m1 $vBbo, $vAmo, $vE3, 43
-eor sE4, sC3, sC0, ROR #63                      SEP      xar_m1 $vBmo, $vAmi, $vE2, 49
-eor s_Aba_, sE0, s_Aba                          SEP      xar_m1 $vBmi, $vAke, $vE1, 54
-eor sAsa_, sE2, sAbi, ROR #50                   SEP      xar_m1 $vBge, $vAgu, $vE4, 44
-eor sAbi_, sE2, sAki, ROR #46                   SEP      mov $vE3.16b, $vAga.16b
-eor sAki_, sE3, sAko, ROR #63                   SEP      bcax_m1 $vAga, $vBga, $vBgi, $vBge
+ror sC1, sC1, 56                                SEP      rax1_m1 $vE2, $vC1, $vC3
+ror sC4, sC4, 58                                SEP
+ror sC2, sC2, 62                                SEP      rax1_m1 $vE4, $vC3, $vC0
+eor sE1, sC0, sC2, ROR #63                      SEP      eor $vAba_.16b, $vAba.16b, $vE0.16b
+eor sE3, sC2, sC4, ROR #63                      SEP
+eor sE0, sC4, sC1, ROR #63                      SEP      xar_m1 $vAsa_, $vAbi, $vE2, 2
+eor sE2, sC1, sC3, ROR #63                      SEP      xar_m1 $vAbi_, $vAki, $vE2, 21
+eor sE4, sC3, sC0, ROR #63                      SEP
+eor s_Aba_, sE0, s_Aba                          SEP      xar_m1 $vAki_, $vAko, $vE3, 39
+eor sAsa_, sE2, sAbi, ROR #50                   SEP
+eor sAbi_, sE2, sAki, ROR #46                   SEP      xar_m1 $vAko_, $vAmu, $vE4, 56
+eor sAki_, sE3, sAko, ROR #63                   SEP      xar_m1 $vAmu_, $vAso, $vE3, 8
 eor sAko_, sE4, sAmu, ROR #28                   SEP
-eor sAmu_, sE3, sAso, ROR #2                    SEP      xar_m1 $vBgu, $vAsi, $vE2, 3
-eor sAso_, sE0, sAma, ROR #54                   SEP      xar_m1 $vBsi, $vAku, $vE4, 25
-eor sAka_, sE1, sAbe, ROR #43                   SEP      xar_m1 $vBku, $vAsa, $vE0, 46
-eor sAse_, sE3, sAgo, ROR #36                   SEP      xar_m1 $vBma, $vAbu, $vE4, 37
-eor sAgo_, sE1, sAme, ROR #49                   SEP      xar_m1 $vBbu, $vAsu, $vE4, 50
+eor sAmu_, sE3, sAso, ROR #2                    SEP      xar_m1 $vAso_, $vAma, $vE0, 23
+eor sAso_, sE0, sAma, ROR #54                   SEP      xar_m1 $vAka_, $vAbe, $vE1, 63
+eor sAka_, sE1, sAbe, ROR #43                   SEP
+eor sAse_, sE3, sAgo, ROR #36                   SEP      xar_m1 $vAse_, $vAgo, $vE3, 9
+eor sAgo_, sE1, sAme, ROR #49                   SEP      xar_m1 $vAgo_, $vAme, $vE1, 19
 eor sAke_, sE2, sAgi, ROR #3                    SEP
-eor sAgi_, sE0, sAka, ROR #39                   SEP      xar_m1 $vBsu, $vAse, $vE1, 62
-eor sAga_, sE3, sAbo                            SEP      xar_m1 $vBme, $vE3, $vE0, 28
-eor sAbo_, sE3, sAmo, ROR #37                   SEP      xar_m1 $vBbe, $vAge, $vE1, 20
-eor sAmo_, sE2, sAmi, ROR #8                    SEP      bcax_m1 $vAge, $vBge, $vBgo, $vBgi
-eor sAmi_, sE1, sAke, ROR #56                   SEP      bcax_m0 $vAgi, $vBgi, $vBgu, $vBgo
-eor sAge_, sE4, sAgu, ROR #44                   SEP
-eor sAgu_, sE2, sAsi, ROR #62                   SEP      bcax_m1 $vAgo, $vBgo, $vBga, $vBgu
-eor sAsi_, sE4, sAku, ROR #58                   SEP      bcax_m0 $vAgu, $vBgu, $vBge, $vBga
-eor sAku_, sE0, sAsa, ROR #25                   SEP      bcax_m1 $vAka, $vBka, $vBki, $vBke
-eor sAma_, sE4, sAbu, ROR #20                   SEP      bcax_m0 $vAke, $vBke, $vBko, $vBki
-eor sAbu_, sE4, sAsu, ROR #9                    SEP      .unreq vvtmp
-eor sAsu_, sE1, sAse, ROR #23                   SEP      .unreq vvtmpq
+eor sAgi_, sE0, sAka, ROR #39                   SEP      xar_m1 $vAke_, $vAgi, $vE2, 58
+eor sAga_, sE3, sAbo                            SEP
+eor sAbo_, sE3, sAmo, ROR #37                   SEP      xar_m1 $vAgi_, $vAka, $vE0, 61
+eor sAmo_, sE2, sAmi, ROR #8                    SEP      xar_m1 $vAga_, $vAbo, $vE3, 36
+eor sAmi_, sE1, sAke, ROR #56                   SEP
+eor sAge_, sE4, sAgu, ROR #44                   SEP      xar_m1 $vAbo_, $vAmo, $vE3, 43
+eor sAgu_, sE2, sAsi, ROR #62                   SEP      xar_m1 $vAmo_, $vAmi, $vE2, 49
+eor sAsi_, sE4, sAku, ROR #58                   SEP
+eor sAku_, sE0, sAsa, ROR #25                   SEP      xar_m1 $vAmi_, $vAke, $vE1, 54
+eor sAma_, sE4, sAbu, ROR #20                   SEP      xar_m1 $vAge_, $vAgu, $vE4, 44
+eor sAbu_, sE4, sAsu, ROR #9                    SEP
+eor sAsu_, sE1, sAse, ROR #23                   SEP      xar_m1 $vAgu_, $vAsi, $vE2, 3
 eor sAme_, sE0, sAga, ROR #61                   SEP
-eor sAbe_, sE1, sAge, ROR #19                   SEP      eor2    $vC0,  $vAka, $vAga
-load_constant_ptr                               SEP      str $vAgaq, [sp, #(STACK_BASE_TMP + 16 * vAga_offset)]
-restore count, STACK_OFFSET_COUNT               SEP      vvtmp .req $vAga
-bic tmp, sAgi_, sAge_, ROR #47                  SEP      vvtmpq .req $vAgaq
-eor sAga, tmp,  sAga_, ROR #39                  SEP      bcax_m0 $vAki, $vBki, $vBku, $vBko
+eor sAbe_, sE1, sAge, ROR #19                   SEP      xar_m1 $vAsi_, $vAku, $vE4, 25
+load_constant_ptr                               SEP      xar_m1 $vAku_, $vAsa, $vE0, 46
+restore count, STACK_OFFSET_COUNT               SEP
+bic tmp, sAgi_, sAge_, ROR #47                  SEP      xar_m1 $vAma_, $vAbu, $vE4, 37
+eor sAga, tmp,  sAga_, ROR #39                  SEP      xar_m1 $vAbu_, $vAsu, $vE4, 50
 bic tmp, sAgo_, sAgi_, ROR #42                  SEP
-eor sAge, tmp,  sAge_, ROR #25                  SEP      bcax_m1 $vAko, $vBko, $vBka, $vBku
-bic tmp, sAgu_, sAgo_, ROR #16                  SEP      eor2    $vC1,  $vAke, $vAge
-eor sAgi, tmp,  sAgi_, ROR #58                  SEP      bcax_m0 $vAku, $vBku, $vBke, $vBka
-bic tmp, sAga_, sAgu_, ROR #31                  SEP      eor2    $vC2,  $vAki, $vAgi
-eor sAgo, tmp,  sAgo_, ROR #47                  SEP      bcax_m1 $vAma, $vBma, $vBmi, $vBme
-bic tmp, sAge_, sAga_, ROR #56                  SEP      eor2    $vC3,  $vAko, $vAgo
-eor sAgu, tmp,  sAgu_, ROR #23                  SEP
-bic tmp, sAki_, sAke_, ROR #19                  SEP      bcax_m0 $vAme, $vBme, $vBmo, $vBmi
-eor sAka, tmp,  sAka_, ROR #24                  SEP      eor2    $vC4,  $vAku, $vAgu
-bic tmp, sAko_, sAki_, ROR #47                  SEP      bcax_m1 $vAmi, $vBmi, $vBmu, $vBmo
-eor sAke, tmp,  sAke_, ROR #2                   SEP      eor2    $vC0,  $vC0,  $vAma
-bic tmp, sAku_, sAko_, ROR #10                  SEP      bcax_m0 $vAmo, $vBmo, $vBma, $vBmu
+eor sAge, tmp,  sAge_, ROR #25                  SEP      xar_m1 $vAsu_, $vAse, $vE1, 62
+bic tmp, sAgu_, sAgo_, ROR #16                  SEP
+eor sAgi, tmp,  sAgi_, ROR #58                  SEP      xar_m1 $vAme_, $vAga, $vE0, 28
+bic tmp, sAga_, sAgu_, ROR #31                  SEP      xar_m1 $vAbe_, $vAge, $vE1, 20
+eor sAgo, tmp,  sAgo_, ROR #47                  SEP
+bic tmp, sAge_, sAga_, ROR #56                  SEP      bcax_m1 $vAga, $vAga_, $vAgi_, $vAge_
+eor sAgu, tmp,  sAgu_, ROR #23                  SEP      bcax_m1 $vAge, $vAge_, $vAgo_, $vAgi_
+bic tmp, sAki_, sAke_, ROR #19                  SEP
+eor sAka, tmp,  sAka_, ROR #24                  SEP      bcax_m1 $vAgi, $vAgi_, $vAgu_, $vAgo_
+bic tmp, sAko_, sAki_, ROR #47                  SEP      bcax_m1 $vAgo, $vAgo_, $vAga_, $vAgu_
+eor sAke, tmp,  sAke_, ROR #2                   SEP
+bic tmp, sAku_, sAko_, ROR #10                  SEP      bcax_m1 $vAgu, $vAgu_, $vAge_, $vAga_
 eor sAki, tmp,  sAki_, ROR #57                  SEP
-bic tmp, sAka_, sAku_, ROR #47                  SEP      eor2    $vC1,  $vC1,  $vAme
-eor sAko, tmp,  sAko_, ROR #57                  SEP      bcax_m1 $vAmu, $vBmu, $vBme, $vBma
-bic tmp, sAke_, sAka_, ROR #5                   SEP      eor2    $vC2,  $vC2,  $vAmi
-eor sAku, tmp,  sAku_, ROR #52                  SEP      bcax_m0 $vAsa, $vBsa, $vBsi, $vBse
-bic tmp, sAmi_, sAme_, ROR #38                  SEP      eor2    $vC3,  $vC3,  $vAmo
+bic tmp, sAka_, sAku_, ROR #47                  SEP      bcax_m1 $vAka, $vAka_, $vAki_, $vAke_
+eor sAko, tmp,  sAko_, ROR #57                  SEP      bcax_m1 $vAke, $vAke_, $vAko_, $vAki_
+bic tmp, sAke_, sAka_, ROR #5                   SEP
+eor sAku, tmp,  sAku_, ROR #52                  SEP      bcax_m1 $vAki, $vAki_, $vAku_, $vAko_
+bic tmp, sAmi_, sAme_, ROR #38                  SEP      bcax_m1 $vAko, $vAko_, $vAka_, $vAku_
 eor sAma, tmp,  sAma_, ROR #47                  SEP
-bic tmp, sAmo_, sAmi_, ROR #5                   SEP      bcax_m1 $vAse, $vBse, $vBso, $vBsi
-eor sAme, tmp,  sAme_, ROR #43                  SEP      eor2    $vC4,  $vC4,  $vAmu
-bic tmp, sAmu_, sAmo_, ROR #41                  SEP      bcax_m0 $vAsi, $vBsi, $vBsu, $vBso
-eor sAmi, tmp,  sAmi_, ROR #46                  SEP      eor2    $vC0,  $vC0,  $vAsa
-bic tmp, sAma_, sAmu_, ROR #35                  SEP      bcax_m1 $vAso, $vBso, $vBsa, $vBsu
-ldr cur_const, [const_addr, count, UXTW #3]     SEP      eor2    $vC1,  $vC1,  $vAse
-add count, count, #1                            SEP
-eor sAmo, tmp,  sAmo_, ROR #12                  SEP      bcax_m0 $vAsu, $vBsu, $vBse, $vBsa
-bic tmp, sAme_, sAma_, ROR #9                   SEP      eor2    $vC2,  $vC2,  $vAsi
-eor sAmu, tmp,  sAmu_, ROR #44                  SEP      eor2    $vC3,  $vC3,  $vAso
-bic tmp, sAsi_, sAse_, ROR #48                  SEP      bcax_m1 $vAba, $vBba, $vBbi, $vBbe
-eor sAsa, tmp,  sAsa_, ROR #41                  SEP      bcax_m0 $vAbe, $vBbe, $vBbo, $vBbi
-bic tmp, sAso_, sAsi_, ROR #2                   SEP
-save count, STACK_OFFSET_COUNT                  SEP
-eor sAse, tmp,  sAse_, ROR #50                  SEP      eor2    $vC1,  $vC1,  $vAbe
-bic tmp, sAsu_, sAso_, ROR #25                  SEP      restore x27, STACK_OFFSET_CONST
-eor sAsi, tmp,  sAsi_, ROR #27                  SEP      ldr vvtmpq, [x27], #16
-bic tmp, sAsa_, sAsu_, ROR #60                  SEP      save x27, STACK_OFFSET_CONST
-eor sAso, tmp,  sAso_, ROR #21                  SEP      eor $vAba.16b, $vAba.16b, vvtmp.16b
-bic tmp, sAse_, sAsa_, ROR #57                  SEP      eor2    $vC4,  $vC4,  $vAsu
-eor sAsu, tmp,  sAsu_, ROR #53                  SEP
-bic tmp, sAbi_, sAbe_, ROR #63                  SEP      bcax_m0 $vAbi, $vBbi, $vBbu, $vBbo
-eor s_Aba, s_Aba_, tmp,  ROR #21                SEP      bcax_m1 $vAbo, $vBbo, $vBba, $vBbu
-bic tmp, sAbo_, sAbi_, ROR #42                  SEP      eor2    $vC3,  $vC3,  $vAbo
-eor sAbe, tmp,  sAbe_, ROR #41                  SEP      eor2    $vC2,  $vC2,  $vAbi
-bic tmp, sAbu_, sAbo_, ROR #57                  SEP      eor2    $vC0,  $vC0,  $vAba
-eor sAbi, tmp,  sAbi_, ROR #35                  SEP
-bic tmp, s_Aba_, sAbu_, ROR #50                 SEP      bcax_m0 $vAbu, $vBbu, $vBbe, $vBba
-eor sAbo, tmp,  sAbo_, ROR #43                  SEP      eor2    $vC4,  $vC4,  $vAbu
-bic tmp, sAbe_, s_Aba_, ROR #44                 SEP      ldr $vAgaq, [sp, #(STACK_BASE_TMP + 16 * vAga_offset)]
-eor sAbu, tmp,  sAbu_, ROR #30                  SEP      .unreq vvtmp
-eor s_Aba, s_Aba, cur_const                     SEP      .unreq vvtmpq
-eor sC0, sAka, sAsa, ROR #50                    SEP      vvtmp .req $vBba
-eor sC1, sAse, sAge, ROR #60                    SEP      rax1_m0 $vE2, $vC1, $vC3
-eor sC2, sAmi, sAgi, ROR #59                    SEP      rax1_m1 $vE4, $vC3, $vC0
-eor sC3, sAgo, sAso, ROR #30                    SEP      rax1_m0 $vE1, $vC0, $vC2
-eor sC4, sAbu, sAsu, ROR #53                    SEP      rax1_m1 $vE3, $vC2, $vC4
-eor sC0, sAma, sC0, ROR #49                     SEP      rax1_m0 $vE0, $vC4, $vC1
-eor sC1, sAbe, sC1, ROR #44                     SEP
-eor sC2, sAki, sC2, ROR #26                     SEP      .unreq vvtmp
-eor sC3, sAmo, sC3, ROR #63                     SEP      vvtmp .req $vC1
-eor sC4, sAmu, sC4, ROR #56                     SEP      vvtmpq .req  $C1q
-eor sC0, sAga, sC0, ROR #57                     SEP      eor $vBba.16b, $vAba.16b, $vE0.16b
-eor sC1, sAme, sC1, ROR #58                     SEP      xar_m1 $vBsa, $vAbi, $vE2, 2
-eor sC2, sAbi, sC2, ROR #60                     SEP
-eor sC3, sAko, sC3, ROR #38                     SEP      xar_m1 $vBbi, $vAki, $vE2, 21
-eor sC4, sAgu, sC4, ROR #48                     SEP      xar_m1 $vBki, $vAko, $vE3, 39
-eor sC0, s_Aba, sC0, ROR #61                    SEP      xar_m1 $vBko, $vAmu, $vE4, 56
-eor sC1, sAke, sC1, ROR #57                     SEP      xar_m1 $vBmu, $vAso, $vE3, 8
-eor sC2, sAsi, sC2, ROR #52                     SEP      xar_m1 $vBso, $vAma, $vE0, 23
-eor sC3, sAbo, sC3, ROR #63                     SEP      xar_m1 $vBka, $vAbe, $vE1, 63
-eor sC4, sAku, sC4, ROR #50                     SEP
-ror sC1, sC1, 56                                SEP      xar_m1 $vBse, $vAgo, $vE3, 9
-ror sC4, sC4, 58                                SEP      xar_m1 $vBgo, $vAme, $vE1, 19
-ror sC2, sC2, 62                                SEP      xar_m1 $vBke, $vAgi, $vE2, 58
-eor sE1, sC0, sC2, ROR #63                      SEP      xar_m1 $vBgi, $vAka, $vE0, 61
-eor sE3, sC2, sC4, ROR #63                      SEP      xar_m1 $vBga, $vAbo, $vE3, 36
-eor sE0, sC4, sC1, ROR #63                      SEP 
-eor sE2, sC1, sC3, ROR #63                      SEP      xar_m1 $vBbo, $vAmo, $vE3, 43
-eor sE4, sC3, sC0, ROR #63                      SEP      xar_m1 $vBmo, $vAmi, $vE2, 49
-eor s_Aba_, sE0, s_Aba                          SEP      xar_m1 $vBmi, $vAke, $vE1, 54
-eor sAsa_, sE2, sAbi, ROR #50                   SEP      xar_m1 $vBge, $vAgu, $vE4, 44
-eor sAbi_, sE2, sAki, ROR #46                   SEP      mov $vE3.16b, $vAga.16b
-eor sAki_, sE3, sAko, ROR #63                   SEP      bcax_m1 $vAga, $vBga, $vBgi, $vBge
-eor sAko_, sE4, sAmu, ROR #28                   SEP
-eor sAmu_, sE3, sAso, ROR #2                    SEP      xar_m1 $vBgu, $vAsi, $vE2, 3
-eor sAso_, sE0, sAma, ROR #54                   SEP      xar_m1 $vBsi, $vAku, $vE4, 25
-eor sAka_, sE1, sAbe, ROR #43                   SEP      xar_m1 $vBku, $vAsa, $vE0, 46
-eor sAse_, sE3, sAgo, ROR #36                   SEP      xar_m1 $vBma, $vAbu, $vE4, 37
-eor sAgo_, sE1, sAme, ROR #49                   SEP      xar_m1 $vBbu, $vAsu, $vE4, 50
-eor sAke_, sE2, sAgi, ROR #3                    SEP
-eor sAgi_, sE0, sAka, ROR #39                   SEP      xar_m1 $vBsu, $vAse, $vE1, 62
-eor sAga_, sE3, sAbo                            SEP      xar_m1 $vBme, $vE3, $vE0, 28
-eor sAbo_, sE3, sAmo, ROR #37                   SEP      xar_m1 $vBbe, $vAge, $vE1, 20
-eor sAmo_, sE2, sAmi, ROR #8                    SEP      bcax_m1 $vAge, $vBge, $vBgo, $vBgi
-eor sAmi_, sE1, sAke, ROR #56                   SEP      bcax_m0 $vAgi, $vBgi, $vBgu, $vBgo
-eor sAge_, sE4, sAgu, ROR #44                   SEP
-eor sAgu_, sE2, sAsi, ROR #62                   SEP      bcax_m1 $vAgo, $vBgo, $vBga, $vBgu
-eor sAsi_, sE4, sAku, ROR #58                   SEP      bcax_m0 $vAgu, $vBgu, $vBge, $vBga
-eor sAku_, sE0, sAsa, ROR #25                   SEP      bcax_m1 $vAka, $vBka, $vBki, $vBke
-eor sAma_, sE4, sAbu, ROR #20                   SEP      bcax_m0 $vAke, $vBke, $vBko, $vBki
-eor sAbu_, sE4, sAsu, ROR #9                    SEP      .unreq vvtmp
-eor sAsu_, sE1, sAse, ROR #23                   SEP      .unreq vvtmpq
-eor sAme_, sE0, sAga, ROR #61                   SEP
-eor sAbe_, sE1, sAge, ROR #19                   SEP      eor2    $vC0,  $vAka, $vAga
-load_constant_ptr                               SEP      str $vAgaq, [sp, #(STACK_BASE_TMP + 16 * vAga_offset)]
-restore count, STACK_OFFSET_COUNT               SEP      vvtmp .req $vAga
-bic tmp, sAgi_, sAge_, ROR #47                  SEP      vvtmpq .req $vAgaq
-eor sAga, tmp,  sAga_, ROR #39                  SEP      bcax_m1 $vAki, $vBki, $vBku, $vBko
-bic tmp, sAgo_, sAgi_, ROR #42                  SEP
-eor sAge, tmp,  sAge_, ROR #25                  SEP      bcax_m1 $vAko, $vBko, $vBka, $vBku
-bic tmp, sAgu_, sAgo_, ROR #16                  SEP      eor2    $vC1,  $vAke, $vAge
-eor sAgi, tmp,  sAgi_, ROR #58                  SEP      bcax_m0 $vAku, $vBku, $vBke, $vBka
-bic tmp, sAga_, sAgu_, ROR #31                  SEP      eor2    $vC2,  $vAki, $vAgi
-eor sAgo, tmp,  sAgo_, ROR #47                  SEP      bcax_m1 $vAma, $vBma, $vBmi, $vBme
-bic tmp, sAge_, sAga_, ROR #56                  SEP      eor2    $vC3,  $vAko, $vAgo
-eor sAgu, tmp,  sAgu_, ROR #23                  SEP
-bic tmp, sAki_, sAke_, ROR #19                  SEP      bcax_m0 $vAme, $vBme, $vBmo, $vBmi
-eor sAka, tmp,  sAka_, ROR #24                  SEP      eor2    $vC4,  $vAku, $vAgu
-bic tmp, sAko_, sAki_, ROR #47                  SEP      bcax_m1 $vAmi, $vBmi, $vBmu, $vBmo
-eor sAke, tmp,  sAke_, ROR #2                   SEP      eor2    $vC0,  $vC0,  $vAma
-bic tmp, sAku_, sAko_, ROR #10                  SEP      bcax_m0 $vAmo, $vBmo, $vBma, $vBmu
-eor sAki, tmp,  sAki_, ROR #57                  SEP
-bic tmp, sAka_, sAku_, ROR #47                  SEP      eor2    $vC1,  $vC1,  $vAme
-eor sAko, tmp,  sAko_, ROR #57                  SEP      bcax_m1 $vAmu, $vBmu, $vBme, $vBma
-bic tmp, sAke_, sAka_, ROR #5                   SEP      eor2    $vC2,  $vC2,  $vAmi
-eor sAku, tmp,  sAku_, ROR #52                  SEP      bcax_m0 $vAsa, $vBsa, $vBsi, $vBse
-bic tmp, sAmi_, sAme_, ROR #38                  SEP      eor2    $vC3,  $vC3,  $vAmo
-eor sAma, tmp,  sAma_, ROR #47                  SEP
-bic tmp, sAmo_, sAmi_, ROR #5                   SEP      bcax_m1 $vAse, $vBse, $vBso, $vBsi
-eor sAme, tmp,  sAme_, ROR #43                  SEP      eor2    $vC4,  $vC4,  $vAmu
-bic tmp, sAmu_, sAmo_, ROR #41                  SEP      bcax_m0 $vAsi, $vBsi, $vBsu, $vBso
-eor sAmi, tmp,  sAmi_, ROR #46                  SEP      eor2    $vC0,  $vC0,  $vAsa
-bic tmp, sAma_, sAmu_, ROR #35                  SEP      bcax_m1 $vAso, $vBso, $vBsa, $vBsu
-                                                SEP      eor2    $vC1,  $vC1,  $vAse
-eor sAmo, tmp,  sAmo_, ROR #12                  SEP      bcax_m0 $vAsu, $vBsu, $vBse, $vBsa
-bic tmp, sAme_, sAma_, ROR #9                   SEP      eor2    $vC2,  $vC2,  $vAsi
-eor sAmu, tmp,  sAmu_, ROR #44                  SEP      eor2    $vC3,  $vC3,  $vAso
-bic tmp, sAsi_, sAse_, ROR #48                  SEP      bcax_m1 $vAba, $vBba, $vBbi, $vBbe
-eor sAsa, tmp,  sAsa_, ROR #41                  SEP      bcax_m0 $vAbe, $vBbe, $vBbo, $vBbi
-bic tmp, sAso_, sAsi_, ROR #2                   SEP
-eor sAse, tmp,  sAse_, ROR #50                  SEP      eor2    $vC1,  $vC1,  $vAbe
-bic tmp, sAsu_, sAso_, ROR #25                  SEP      restore x26, STACK_OFFSET_CONST
-eor sAsi, tmp,  sAsi_, ROR #27                  SEP      ldr vvtmpq, [x26], #16
-bic tmp, sAsa_, sAsu_, ROR #60                  SEP      save x26, STACK_OFFSET_CONST
-eor sAso, tmp,  sAso_, ROR #21                  SEP      eor $vAba.16b, $vAba.16b, vvtmp.16b
-bic tmp, sAse_, sAsa_, ROR #57                  SEP      eor2    $vC4,  $vC4,  $vAsu
-eor sAsu, tmp,  sAsu_, ROR #53                  SEP
+bic tmp, sAmo_, sAmi_, ROR #5                   SEP      bcax_m1 $vAku, $vAku_, $vAke_, $vAka_
+eor sAme, tmp,  sAme_, ROR #43                  SEP      bcax_m1 $vAma, $vAma_, $vAmi_, $vAme_
+bic tmp, sAmu_, sAmo_, ROR #41                  SEP      restore x26, STACK_OFFSET_CONST
+eor sAmi, tmp,  sAmi_, ROR #46                  SEP      ld1r {v28.2d}, [x26], #8
+bic tmp, sAma_, sAmu_, ROR #35                  SEP      save x26, STACK_OFFSET_CONST
 ldr cur_const, [const_addr, count, UXTW #3]     SEP
 add count, count, #1                            SEP
-bic tmp, sAbi_, sAbe_, ROR #63                  SEP      bcax_m0 $vAbi, $vBbi, $vBbu, $vBbo
-eor s_Aba, s_Aba_, tmp,  ROR #21                SEP      bcax_m1 $vAbo, $vBbo, $vBba, $vBbu
-bic tmp, sAbo_, sAbi_, ROR #42                  SEP      eor2    $vC3,  $vC3,  $vAbo
-eor sAbe, tmp,  sAbe_, ROR #41                  SEP      eor2    $vC2,  $vC2,  $vAbi
-bic tmp, sAbu_, sAbo_, ROR #57                  SEP      eor2    $vC0,  $vC0,  $vAba
-eor sAbi, tmp,  sAbi_, ROR #35                  SEP
-bic tmp, s_Aba_, sAbu_, ROR #50                 SEP      bcax_m0 $vAbu, $vBbu, $vBbe, $vBba
-eor sAbo, tmp,  sAbo_, ROR #43                  SEP      eor2    $vC4,  $vC4,  $vAbu
-bic tmp, sAbe_, s_Aba_, ROR #44                 SEP      ldr $vAgaq, [sp, #(STACK_BASE_TMP + 16 * vAga_offset)]
-eor sAbu, tmp,  sAbu_, ROR #30                  SEP      .unreq vvtmp
-eor s_Aba, s_Aba, cur_const                     SEP      .unreq vvtmpq
+eor sAmo, tmp,  sAmo_, ROR #12                  SEP      bcax_m1 $vAme, $vAme_, $vAmo_, $vAmi_
+bic tmp, sAme_, sAma_, ROR #9                   SEP      bcax_m1 $vAmi, $vAmi_, $vAmu_, $vAmo_
+eor sAmu, tmp,  sAmu_, ROR #44                  SEP
+bic tmp, sAsi_, sAse_, ROR #48                  SEP
+eor sAsa, tmp,  sAsa_, ROR #41                  SEP      bcax_m1 $vAmo, $vAmo_, $vAma_, $vAmu_
+bic tmp, sAso_, sAsi_, ROR #2                   SEP
+eor sAse, tmp,  sAse_, ROR #50                  SEP      bcax_m1 $vAmu, $vAmu_, $vAme_, $vAma_
+bic tmp, sAsu_, sAso_, ROR #25                  SEP      bcax_m1 $vAsa, $vAsa_, $vAsi_, $vAse_
+eor sAsi, tmp,  sAsi_, ROR #27                  SEP
+bic tmp, sAsa_, sAsu_, ROR #60                  SEP      bcax_m1 $vAse, $vAse_, $vAso_, $vAsi_
+eor sAso, tmp,  sAso_, ROR #21                  SEP      bcax_m1 $vAsi, $vAsi_, $vAsu_, $vAso_
+bic tmp, sAse_, sAsa_, ROR #57                  SEP
+eor sAsu, tmp,  sAsu_, ROR #53                  SEP      bcax_m1 $vAso, $vAso_, $vAsa_, $vAsu_
+bic tmp, sAbi_, sAbe_, ROR #63                  SEP      bcax_m1 $vAsu, $vAsu_, $vAse_, $vAsa_
+eor s_Aba, s_Aba_, tmp,  ROR #21                SEP
+bic tmp, sAbo_, sAbi_, ROR #42                  SEP      bcax_m1 $vAba, $vAba_, $vAbi_, $vAbe_
+eor sAbe, tmp,  sAbe_, ROR #41                  SEP
+bic tmp, sAbu_, sAbo_, ROR #57                  SEP      bcax_m1 $vAbe, $vAbe_, $vAbo_, $vAbi_
+eor sAbi, tmp,  sAbi_, ROR #35                  SEP      bcax_m1 $vAbi, $vAbi_, $vAbu_, $vAbo_
+bic tmp, s_Aba_, sAbu_, ROR #50                 SEP
+eor sAbo, tmp,  sAbo_, ROR #43                  SEP      bcax_m1 $vAbo, $vAbo_, $vAba_, $vAbu_
+bic tmp, sAbe_, s_Aba_, ROR #44                 SEP      bcax_m1 $vAbu, $vAbu_, $vAbe_, $vAba_
+eor sAbu, tmp,  sAbu_, ROR #30                  SEP
+eor s_Aba, s_Aba, cur_const                     SEP      eor $vAba.16b, $vAba.16b, v28.16b
+save count, STACK_OFFSET_COUNT                  SEP
+eor sC0, sAka, sAsa, ROR #50                    SEP      eor3_m1 $vC0, $vAba, $vAga, $vAka
+eor sC1, sAse, sAge, ROR #60                    SEP      eor3_m1 $vC0, $vC0, $vAma,  $vAsa
+eor sC2, sAmi, sAgi, ROR #59                    SEP
+eor sC3, sAgo, sAso, ROR #30                    SEP      eor3_m1 $vC1, $vAbe, $vAge, $vAke
+eor sC4, sAbu, sAsu, ROR #53                    SEP      eor3_m1 $vC1, $vC1, $vAme,  $vAse
+eor sC0, sAma, sC0, ROR #49                     SEP
+eor sC1, sAbe, sC1, ROR #44                     SEP      eor3_m1 $vC2, $vAbi, $vAgi, $vAki
+eor sC2, sAki, sC2, ROR #26                     SEP      eor3_m1 $vC2, $vC2, $vAmi,  $vAsi
+eor sC3, sAmo, sC3, ROR #63                     SEP
+eor sC4, sAmu, sC4, ROR #56                     SEP      eor3_m1 $vC3, $vAbo, $vAgo, $vAko
+eor sC0, sAga, sC0, ROR #57                     SEP
+eor sC1, sAme, sC1, ROR #58                     SEP      eor3_m1 $vC3, $vC3, $vAmo,  $vAso
+eor sC2, sAbi, sC2, ROR #60                     SEP      eor3_m1 $vC4, $vAbu, $vAgu, $vAku
+eor sC3, sAko, sC3, ROR #38                     SEP
+eor sC4, sAgu, sC4, ROR #48                     SEP      eor3_m1 $vC4, $vC4, $vAmu,  $vAsu
+eor sC0, s_Aba, sC0, ROR #61                    SEP      rax1_m1 $vE1, $vC0, $vC2
+eor sC1, sAke, sC1, ROR #57                     SEP
+eor sC2, sAsi, sC2, ROR #52                     SEP      rax1_m1 $vE3, $vC2, $vC4
+eor sC3, sAbo, sC3, ROR #63                     SEP      rax1_m1 $vE0, $vC4, $vC1
+eor sC4, sAku, sC4, ROR #50                     SEP
+ror sC1, sC1, 56                                SEP      rax1_m1 $vE2, $vC1, $vC3
+ror sC4, sC4, 58                                SEP
+ror sC2, sC2, 62                                SEP      rax1_m1 $vE4, $vC3, $vC0
+eor sE1, sC0, sC2, ROR #63                      SEP      eor $vAba_.16b, $vAba.16b, $vE0.16b
+eor sE3, sC2, sC4, ROR #63                      SEP
+eor sE0, sC4, sC1, ROR #63                      SEP      xar_m1 $vAsa_, $vAbi, $vE2, 2
+eor sE2, sC1, sC3, ROR #63                      SEP      xar_m1 $vAbi_, $vAki, $vE2, 21
+eor sE4, sC3, sC0, ROR #63                      SEP
+eor s_Aba_, sE0, s_Aba                          SEP      xar_m1 $vAki_, $vAko, $vE3, 39
+eor sAsa_, sE2, sAbi, ROR #50                   SEP
+eor sAbi_, sE2, sAki, ROR #46                   SEP      xar_m1 $vAko_, $vAmu, $vE4, 56
+eor sAki_, sE3, sAko, ROR #63                   SEP      xar_m1 $vAmu_, $vAso, $vE3, 8
+eor sAko_, sE4, sAmu, ROR #28                   SEP
+eor sAmu_, sE3, sAso, ROR #2                    SEP      xar_m1 $vAso_, $vAma, $vE0, 23
+eor sAso_, sE0, sAma, ROR #54                   SEP      xar_m1 $vAka_, $vAbe, $vE1, 63
+eor sAka_, sE1, sAbe, ROR #43                   SEP
+eor sAse_, sE3, sAgo, ROR #36                   SEP      xar_m1 $vAse_, $vAgo, $vE3, 9
+eor sAgo_, sE1, sAme, ROR #49                   SEP      xar_m1 $vAgo_, $vAme, $vE1, 19
+eor sAke_, sE2, sAgi, ROR #3                    SEP
+eor sAgi_, sE0, sAka, ROR #39                   SEP      xar_m1 $vAke_, $vAgi, $vE2, 58
+eor sAga_, sE3, sAbo                            SEP
+eor sAbo_, sE3, sAmo, ROR #37                   SEP      xar_m1 $vAgi_, $vAka, $vE0, 61
+eor sAmo_, sE2, sAmi, ROR #8                    SEP      xar_m1 $vAga_, $vAbo, $vE3, 36
+eor sAmi_, sE1, sAke, ROR #56                   SEP
+eor sAge_, sE4, sAgu, ROR #44                   SEP      xar_m1 $vAbo_, $vAmo, $vE3, 43
+eor sAgu_, sE2, sAsi, ROR #62                   SEP      xar_m1 $vAmo_, $vAmi, $vE2, 49
+eor sAsi_, sE4, sAku, ROR #58                   SEP
+eor sAku_, sE0, sAsa, ROR #25                   SEP      xar_m1 $vAmi_, $vAke, $vE1, 54
+eor sAma_, sE4, sAbu, ROR #20                   SEP      xar_m1 $vAge_, $vAgu, $vE4, 44
+eor sAbu_, sE4, sAsu, ROR #9                    SEP
+eor sAsu_, sE1, sAse, ROR #23                   SEP      xar_m1 $vAgu_, $vAsi, $vE2, 3
+eor sAme_, sE0, sAga, ROR #61                   SEP
+eor sAbe_, sE1, sAge, ROR #19                   SEP      xar_m1 $vAsi_, $vAku, $vE4, 25
+load_constant_ptr                               SEP      xar_m1 $vAku_, $vAsa, $vE0, 46
+restore count, STACK_OFFSET_COUNT               SEP
+bic tmp, sAgi_, sAge_, ROR #47                  SEP      xar_m1 $vAma_, $vAbu, $vE4, 37
+eor sAga, tmp,  sAga_, ROR #39                  SEP      xar_m1 $vAbu_, $vAsu, $vE4, 50
+bic tmp, sAgo_, sAgi_, ROR #42                  SEP
+eor sAge, tmp,  sAge_, ROR #25                  SEP      xar_m1 $vAsu_, $vAse, $vE1, 62
+bic tmp, sAgu_, sAgo_, ROR #16                  SEP
+eor sAgi, tmp,  sAgi_, ROR #58                  SEP      xar_m1 $vAme_, $vAga, $vE0, 28
+bic tmp, sAga_, sAgu_, ROR #31                  SEP      xar_m1 $vAbe_, $vAge, $vE1, 20
+eor sAgo, tmp,  sAgo_, ROR #47                  SEP
+bic tmp, sAge_, sAga_, ROR #56                  SEP      bcax_m1 $vAga, $vAga_, $vAgi_, $vAge_
+eor sAgu, tmp,  sAgu_, ROR #23                  SEP      bcax_m1 $vAge, $vAge_, $vAgo_, $vAgi_
+bic tmp, sAki_, sAke_, ROR #19                  SEP
+eor sAka, tmp,  sAka_, ROR #24                  SEP      bcax_m1 $vAgi, $vAgi_, $vAgu_, $vAgo_
+bic tmp, sAko_, sAki_, ROR #47                  SEP      bcax_m1 $vAgo, $vAgo_, $vAga_, $vAgu_
+eor sAke, tmp,  sAke_, ROR #2                   SEP
+bic tmp, sAku_, sAko_, ROR #10                  SEP      bcax_m1 $vAgu, $vAgu_, $vAge_, $vAga_
+eor sAki, tmp,  sAki_, ROR #57                  SEP
+bic tmp, sAka_, sAku_, ROR #47                  SEP      bcax_m1 $vAka, $vAka_, $vAki_, $vAke_
+eor sAko, tmp,  sAko_, ROR #57                  SEP      bcax_m1 $vAke, $vAke_, $vAko_, $vAki_
+bic tmp, sAke_, sAka_, ROR #5                   SEP
+eor sAku, tmp,  sAku_, ROR #52                  SEP      bcax_m1 $vAki, $vAki_, $vAku_, $vAko_
+bic tmp, sAmi_, sAme_, ROR #38                  SEP      bcax_m1 $vAko, $vAko_, $vAka_, $vAku_
+eor sAma, tmp,  sAma_, ROR #47                  SEP
+bic tmp, sAmo_, sAmi_, ROR #5                   SEP      bcax_m1 $vAku, $vAku_, $vAke_, $vAka_
+eor sAme, tmp,  sAme_, ROR #43                  SEP      bcax_m1 $vAma, $vAma_, $vAmi_, $vAme_
+bic tmp, sAmu_, sAmo_, ROR #41                  SEP      restore x26, STACK_OFFSET_CONST
+eor sAmi, tmp,  sAmi_, ROR #46                  SEP      ld1r {v28.2d}, [x26], #8
+bic tmp, sAma_, sAmu_, ROR #35                  SEP      save x26, STACK_OFFSET_CONST
+ldr cur_const, [const_addr, count, UXTW #3]     SEP
+add count, count, #1                            SEP      bcax_m1 $vAme, $vAme_, $vAmo_, $vAmi_
+eor sAmo, tmp,  sAmo_, ROR #12                  SEP
+bic tmp, sAme_, sAma_, ROR #9                   SEP      bcax_m1 $vAmi, $vAmi_, $vAmu_, $vAmo_
+eor sAmu, tmp,  sAmu_, ROR #44                  SEP
+bic tmp, sAsi_, sAse_, ROR #48                  SEP
+eor sAsa, tmp,  sAsa_, ROR #41                  SEP      bcax_m1 $vAmo, $vAmo_, $vAma_, $vAmu_
+bic tmp, sAso_, sAsi_, ROR #2                   SEP
+eor sAse, tmp,  sAse_, ROR #50                  SEP      bcax_m1 $vAmu, $vAmu_, $vAme_, $vAma_
+bic tmp, sAsu_, sAso_, ROR #25                  SEP      bcax_m1 $vAsa, $vAsa_, $vAsi_, $vAse_
+eor sAsi, tmp,  sAsi_, ROR #27                  SEP
+bic tmp, sAsa_, sAsu_, ROR #60                  SEP      bcax_m1 $vAse, $vAse_, $vAso_, $vAsi_
+eor sAso, tmp,  sAso_, ROR #21                  SEP      bcax_m1 $vAsi, $vAsi_, $vAsu_, $vAso_
+bic tmp, sAse_, sAsa_, ROR #57                  SEP
+eor sAsu, tmp,  sAsu_, ROR #53                  SEP      bcax_m1 $vAso, $vAso_, $vAsa_, $vAsu_
+bic tmp, sAbi_, sAbe_, ROR #63                  SEP      bcax_m1 $vAsu, $vAsu_, $vAse_, $vAsa_
+eor s_Aba, s_Aba_, tmp,  ROR #21                SEP
+bic tmp, sAbo_, sAbi_, ROR #42                  SEP      bcax_m1 $vAba, $vAba_, $vAbi_, $vAbe_
+eor sAbe, tmp,  sAbe_, ROR #41                  SEP
+bic tmp, sAbu_, sAbo_, ROR #57                  SEP      bcax_m1 $vAbe, $vAbe_, $vAbo_, $vAbi_
+eor sAbi, tmp,  sAbi_, ROR #35                  SEP      bcax_m1 $vAbi, $vAbi_, $vAbu_, $vAbo_
+bic tmp, s_Aba_, sAbu_, ROR #50                 SEP
+eor sAbo, tmp,  sAbo_, ROR #43                  SEP      bcax_m1 $vAbo, $vAbo_, $vAba_, $vAbu_
+bic tmp, sAbe_, s_Aba_, ROR #44                 SEP      bcax_m1 $vAbu, $vAbu_, $vAbe_, $vAba_
+eor sAbu, tmp,  sAbu_, ROR #30                  SEP
+eor s_Aba, s_Aba, cur_const                     SEP      eor $vAba.16b, $vAba.16b, v28.16b
 .endm
 
-
-.macro  hybrid_round_final
-save count, STACK_OFFSET_COUNT                  SEP
-eor sC0, sAka, sAsa, ROR #50                    SEP      vvtmp .req $vBba
-eor sC1, sAse, sAge, ROR #60                    SEP      rax1_m0 $vE2, $vC1, $vC3
-eor sC2, sAmi, sAgi, ROR #59                    SEP
-eor sC3, sAgo, sAso, ROR #30                    SEP      rax1_m1 $vE4, $vC3, $vC0
-eor sC4, sAbu, sAsu, ROR #53                    SEP      rax1_m0 $vE1, $vC0, $vC2
-eor sC0, sAma, sC0, ROR #49                     SEP
-eor sC1, sAbe, sC1, ROR #44                     SEP      rax1_m1 $vE3, $vC2, $vC4
-eor sC2, sAki, sC2, ROR #26                     SEP      rax1_m0 $vE0, $vC4, $vC1
-eor sC3, sAmo, sC3, ROR #63                     SEP
-eor sC4, sAmu, sC4, ROR #56                     SEP      .unreq vvtmp
-eor sC0, sAga, sC0, ROR #57                     SEP      vvtmp .req $vC1
-eor sC1, sAme, sC1, ROR #58                     SEP
-eor sC2, sAbi, sC2, ROR #60                     SEP      vvtmpq .req  $C1q
-eor sC3, sAko, sC3, ROR #38                     SEP      eor $vBba.16b, $vAba.16b, $vE0.16b
-eor sC4, sAgu, sC4, ROR #48                     SEP
-eor sC0, s_Aba, sC0, ROR #61                    SEP      xar_m1 $vBsa, $vAbi, $vE2, 2
-eor sC1, sAke, sC1, ROR #57                     SEP      xar_m1 $vBbi, $vAki, $vE2, 21
-eor sC2, sAsi, sC2, ROR #52                     SEP
-eor sC3, sAbo, sC3, ROR #63                     SEP      xar_m1 $vBki, $vAko, $vE3, 39
-eor sC4, sAku, sC4, ROR #50                     SEP      xar_m1 $vBko, $vAmu, $vE4, 56
-ror sC1, sC1, 56                                SEP
-ror sC4, sC4, 58                                SEP      xar_m1 $vBmu, $vAso, $vE3, 8
-ror sC2, sC2, 62                                SEP      xar_m1 $vBso, $vAma, $vE0, 23
-eor sE1, sC0, sC2, ROR #63                      SEP
-eor sE3, sC2, sC4, ROR #63                      SEP      xar_m1 $vBka, $vAbe, $vE1, 63
-eor sE0, sC4, sC1, ROR #63                      SEP      xar_m1 $vBse, $vAgo, $vE3, 9
-eor sE2, sC1, sC3, ROR #63                      SEP
-eor sE4, sC3, sC0, ROR #63                      SEP      xar_m1 $vBgo, $vAme, $vE1, 19
-eor s_Aba_, sE0, s_Aba                          SEP      xar_m1 $vBke, $vAgi, $vE2, 58
-eor sAsa_, sE2, sAbi, ROR #50                   SEP
-eor sAbi_, sE2, sAki, ROR #46                   SEP      xar_m1 $vBgi, $vAka, $vE0, 61
-eor sAki_, sE3, sAko, ROR #63                   SEP
-eor sAko_, sE4, sAmu, ROR #28                   SEP      xar_m1 $vBga, $vAbo, $vE3, 36
-eor sAmu_, sE3, sAso, ROR #2                    SEP      xar_m1 $vBbo, $vAmo, $vE3, 43
-eor sAso_, sE0, sAma, ROR #54                   SEP
-eor sAka_, sE1, sAbe, ROR #43                   SEP      xar_m1 $vBmo, $vAmi, $vE2, 49
-eor sAse_, sE3, sAgo, ROR #36                   SEP      xar_m1 $vBmi, $vAke, $vE1, 54
-eor sAgo_, sE1, sAme, ROR #49                   SEP
-eor sAke_, sE2, sAgi, ROR #3                    SEP      xar_m1 $vBge, $vAgu, $vE4, 44
-eor sAgi_, sE0, sAka, ROR #39                   SEP      mov $vE3.16b, $vAga.16b
-eor sAga_, sE3, sAbo                            SEP
-eor sAbo_, sE3, sAmo, ROR #37                   SEP      bcax_m1 $vAga, $vBga, $vBgi, $vBge
-eor sAmo_, sE2, sAmi, ROR #8                    SEP      xar_m1 $vBgu, $vAsi, $vE2, 3
-eor sAmi_, sE1, sAke, ROR #56                   SEP
-eor sAge_, sE4, sAgu, ROR #44                   SEP      xar_m1 $vBsi, $vAku, $vE4, 25
-eor sAgu_, sE2, sAsi, ROR #62                   SEP      xar_m1 $vBku, $vAsa, $vE0, 46
-eor sAsi_, sE4, sAku, ROR #58                   SEP
-eor sAku_, sE0, sAsa, ROR #25                   SEP      xar_m1 $vBma, $vAbu, $vE4, 37
-eor sAma_, sE4, sAbu, ROR #20                   SEP      xar_m1 $vBbu, $vAsu, $vE4, 50
-eor sAbu_, sE4, sAsu, ROR #9                    SEP
-eor sAsu_, sE1, sAse, ROR #23                   SEP      xar_m1 $vBsu, $vAse, $vE1, 62
-eor sAme_, sE0, sAga, ROR #61                   SEP      xar_m1 $vBme, $vE3, $vE0, 28
-eor sAbe_, sE1, sAge, ROR #19                   SEP
-load_constant_ptr                               SEP      xar_m1 $vBbe, $vAge, $vE1, 20
-restore count, STACK_OFFSET_COUNT               SEP      bcax_m1 $vAge, $vBge, $vBgo, $vBgi
-bic tmp, sAgi_, sAge_, ROR #47                  SEP
-eor sAga, tmp,  sAga_, ROR #39                  SEP      bcax_m0 $vAgi, $vBgi, $vBgu, $vBgo
-bic tmp, sAgo_, sAgi_, ROR #42                  SEP      bcax_m1 $vAgo, $vBgo, $vBga, $vBgu
-eor sAge, tmp,  sAge_, ROR #25                  SEP
-bic tmp, sAgu_, sAgo_, ROR #16                  SEP      bcax_m0 $vAgu, $vBgu, $vBge, $vBga
-eor sAgi, tmp,  sAgi_, ROR #58                  SEP
-bic tmp, sAga_, sAgu_, ROR #31                  SEP      bcax_m1 $vAka, $vBka, $vBki, $vBke
-eor sAgo, tmp,  sAgo_, ROR #47                  SEP      bcax_m0 $vAke, $vBke, $vBko, $vBki
-bic tmp, sAge_, sAga_, ROR #56                  SEP
-eor sAgu, tmp,  sAgu_, ROR #23                  SEP      .unreq vvtmp
-bic tmp, sAki_, sAke_, ROR #19                  SEP      .unreq vvtmpq
-eor sAka, tmp,  sAka_, ROR #24                  SEP
-bic tmp, sAko_, sAki_, ROR #47                  SEP      eor2    $vC0,  $vAka, $vAga
-eor sAke, tmp,  sAke_, ROR #2                   SEP      str $vAgaq, [sp, #(STACK_BASE_TMP + 16 * vAga_offset)]
-bic tmp, sAku_, sAko_, ROR #10                  SEP
-eor sAki, tmp,  sAki_, ROR #57                  SEP      vvtmp .req $vAga
-bic tmp, sAka_, sAku_, ROR #47                  SEP      vvtmpq .req $vAgaq
-eor sAko, tmp,  sAko_, ROR #57                  SEP
-bic tmp, sAke_, sAka_, ROR #5                   SEP      bcax_m0 $vAki, $vBki, $vBku, $vBko
-eor sAku, tmp,  sAku_, ROR #52                  SEP      bcax_m1 $vAko, $vBko, $vBka, $vBku
-bic tmp, sAmi_, sAme_, ROR #38                  SEP
-eor sAma, tmp,  sAma_, ROR #47                  SEP      eor2    $vC1,  $vAke, $vAge
-bic tmp, sAmo_, sAmi_, ROR #5                   SEP      bcax_m0 $vAku, $vBku, $vBke, $vBka
-eor sAme, tmp,  sAme_, ROR #43                  SEP
-bic tmp, sAmu_, sAmo_, ROR #41                  SEP      eor2    $vC2,  $vAki, $vAgi
-eor sAmi, tmp,  sAmi_, ROR #46                  SEP      bcax_m1 $vAma, $vBma, $vBmi, $vBme
-bic tmp, sAma_, sAmu_, ROR #35                  SEP
-ldr cur_const, [const_addr, count, UXTW #3]     SEP      eor2    $vC3,  $vAko, $vAgo
-add count, count, #1                            SEP      bcax_m0 $vAme, $vBme, $vBmo, $vBmi
-eor sAmo, tmp,  sAmo_, ROR #12                  SEP
-bic tmp, sAme_, sAma_, ROR #9                   SEP      eor2    $vC4,  $vAku, $vAgu
-eor sAmu, tmp,  sAmu_, ROR #44                  SEP      bcax_m1 $vAmi, $vBmi, $vBmu, $vBmo
-bic tmp, sAsi_, sAse_, ROR #48                  SEP
-eor sAsa, tmp,  sAsa_, ROR #41                  SEP      eor2    $vC0,  $vC0,  $vAma
-bic tmp, sAso_, sAsi_, ROR #2                   SEP      bcax_m0 $vAmo, $vBmo, $vBma, $vBmu
-eor sAse, tmp,  sAse_, ROR #50                  SEP
-bic tmp, sAsu_, sAso_, ROR #25                  SEP      eor2    $vC1,  $vC1,  $vAme
-eor sAsi, tmp,  sAsi_, ROR #27                  SEP
-bic tmp, sAsa_, sAsu_, ROR #60                  SEP      bcax_m1 $vAmu, $vBmu, $vBme, $vBma
-eor sAso, tmp,  sAso_, ROR #21                  SEP      eor2    $vC2,  $vC2,  $vAmi
-bic tmp, sAse_, sAsa_, ROR #57                  SEP
-eor sAsu, tmp,  sAsu_, ROR #53                  SEP      bcax_m0 $vAsa, $vBsa, $vBsi, $vBse
-bic tmp, sAbi_, sAbe_, ROR #63                  SEP      eor2    $vC3,  $vC3,  $vAmo
-eor s_Aba, s_Aba_, tmp,  ROR #21                SEP
-bic tmp, sAbo_, sAbi_, ROR #42                  SEP      bcax_m1 $vAse, $vBse, $vBso, $vBsi
-eor sAbe, tmp,  sAbe_, ROR #41                  SEP      eor2    $vC4,  $vC4,  $vAmu
-bic tmp, sAbu_, sAbo_, ROR #57                  SEP
-eor sAbi, tmp,  sAbi_, ROR #35                  SEP      bcax_m0 $vAsi, $vBsi, $vBsu, $vBso
-bic tmp, s_Aba_, sAbu_, ROR #50                 SEP      eor2    $vC0,  $vC0,  $vAsa
-eor sAbo, tmp,  sAbo_, ROR #43                  SEP
-bic tmp, sAbe_, s_Aba_, ROR #44                 SEP      bcax_m1 $vAso, $vBso, $vBsa, $vBsu
-eor sAbu, tmp,  sAbu_, ROR #30                  SEP      eor2    $vC1,  $vC1,  $vAse
-eor s_Aba, s_Aba, cur_const                     SEP
-save count, STACK_OFFSET_COUNT                  SEP      bcax_m0 $vAsu, $vBsu, $vBse, $vBsa
-eor sC0, sAka, sAsa, ROR #50                    SEP      eor2    $vC2,  $vC2,  $vAsi
-eor sC1, sAse, sAge, ROR #60                    SEP
-eor sC2, sAmi, sAgi, ROR #59                    SEP      eor2    $vC3,  $vC3,  $vAso
-eor sC3, sAgo, sAso, ROR #30                    SEP      bcax_m1 $vAba, $vBba, $vBbi, $vBbe
-eor sC4, sAbu, sAsu, ROR #53                    SEP
-eor sC0, sAma, sC0, ROR #49                     SEP      bcax_m0 $vAbe, $vBbe, $vBbo, $vBbi
-eor sC1, sAbe, sC1, ROR #44                     SEP      eor2    $vC1,  $vC1,  $vAbe
-eor sC2, sAki, sC2, ROR #26                     SEP
-eor sC3, sAmo, sC3, ROR #63                     SEP      restore x30, STACK_OFFSET_CONST
-eor sC4, sAmu, sC4, ROR #56                     SEP      ldr vvtmpq, [x30], #16
-eor sC0, sAga, sC0, ROR #57                     SEP
-eor sC1, sAme, sC1, ROR #58                     SEP      save x30, STACK_OFFSET_CONST
-eor sC2, sAbi, sC2, ROR #60                     SEP
-eor sC3, sAko, sC3, ROR #38                     SEP      eor $vAba.16b, $vAba.16b, vvtmp.16b
-eor sC4, sAgu, sC4, ROR #48                     SEP      eor2    $vC4,  $vC4,  $vAsu
-eor sC0, s_Aba, sC0, ROR #61                    SEP
-eor sC1, sAke, sC1, ROR #57                     SEP      bcax_m0 $vAbi, $vBbi, $vBbu, $vBbo
-eor sC2, sAsi, sC2, ROR #52                     SEP      bcax_m1 $vAbo, $vBbo, $vBba, $vBbu
-eor sC3, sAbo, sC3, ROR #63                     SEP
-eor sC4, sAku, sC4, ROR #50                     SEP      eor2    $vC3,  $vC3,  $vAbo
-ror sC1, sC1, 56                                SEP      eor2    $vC2,  $vC2,  $vAbi
-ror sC4, sC4, 58                                SEP
-ror sC2, sC2, 62                                SEP      eor2    $vC0,  $vC0,  $vAba
-eor sE1, sC0, sC2, ROR #63                      SEP      bcax_m0 $vAbu, $vBbu, $vBbe, $vBba
-eor sE3, sC2, sC4, ROR #63                      SEP
-eor sE0, sC4, sC1, ROR #63                      SEP      eor2    $vC4,  $vC4,  $vAbu
-eor sE2, sC1, sC3, ROR #63                      SEP      ldr $vAgaq, [sp, #(STACK_BASE_TMP + 16 * vAga_offset)]
-eor sE4, sC3, sC0, ROR #63                      SEP
-eor s_Aba_, sE0, s_Aba                          SEP      .unreq vvtmp
-eor sAsa_, sE2, sAbi, ROR #50                   SEP      .unreq vvtmpq
-eor sAbi_, sE2, sAki, ROR #46                   SEP
-eor sAki_, sE3, sAko, ROR #63                   SEP      vvtmp .req $vBba
-eor sAko_, sE4, sAmu, ROR #28                   SEP      rax1_m0 $vE2, $vC1, $vC3
-eor sAmu_, sE3, sAso, ROR #2                    SEP
-eor sAso_, sE0, sAma, ROR #54                   SEP      rax1_m1 $vE4, $vC3, $vC0
-eor sAka_, sE1, sAbe, ROR #43                   SEP      rax1_m0 $vE1, $vC0, $vC2
-eor sAse_, sE3, sAgo, ROR #36                   SEP
-eor sAgo_, sE1, sAme, ROR #49                   SEP      rax1_m1 $vE3, $vC2, $vC4
-eor sAke_, sE2, sAgi, ROR #3                    SEP      rax1_m0 $vE0, $vC4, $vC1
-eor sAgi_, sE0, sAka, ROR #39                   SEP
-eor sAga_, sE3, sAbo                            SEP      .unreq vvtmp
-eor sAbo_, sE3, sAmo, ROR #37                   SEP
-eor sAmo_, sE2, sAmi, ROR #8                    SEP      vvtmp .req $vC1
-eor sAmi_, sE1, sAke, ROR #56                   SEP      vvtmpq .req  $C1q
-eor sAge_, sE4, sAgu, ROR #44                   SEP
-eor sAgu_, sE2, sAsi, ROR #62                   SEP      eor $vBba.16b, $vAba.16b, $vE0.16b
-eor sAsi_, sE4, sAku, ROR #58                   SEP      xar_m1 $vBsa, $vAbi, $vE2, 2
-eor sAku_, sE0, sAsa, ROR #25                   SEP
-eor sAma_, sE4, sAbu, ROR #20                   SEP      xar_m1 $vBbi, $vAki, $vE2, 21
-eor sAbu_, sE4, sAsu, ROR #9                    SEP      xar_m1 $vBki, $vAko, $vE3, 39
-eor sAsu_, sE1, sAse, ROR #23                   SEP
-eor sAme_, sE0, sAga, ROR #61                   SEP      xar_m1 $vBko, $vAmu, $vE4, 56
-eor sAbe_, sE1, sAge, ROR #19                   SEP      xar_m1 $vBmu, $vAso, $vE3, 8
-load_constant_ptr                               SEP
-restore count, STACK_OFFSET_COUNT               SEP      xar_m1 $vBso, $vAma, $vE0, 23
-bic tmp, sAgi_, sAge_, ROR #47                  SEP      xar_m1 $vBka, $vAbe, $vE1, 63
-eor sAga, tmp,  sAga_, ROR #39                  SEP
-bic tmp, sAgo_, sAgi_, ROR #42                  SEP      xar_m1 $vBse, $vAgo, $vE3, 9
-eor sAge, tmp,  sAge_, ROR #25                  SEP      xar_m1 $vBgo, $vAme, $vE1, 19
-bic tmp, sAgu_, sAgo_, ROR #16                  SEP
-eor sAgi, tmp,  sAgi_, ROR #58                  SEP      xar_m1 $vBke, $vAgi, $vE2, 58
-bic tmp, sAga_, sAgu_, ROR #31                  SEP      xar_m1 $vBgi, $vAka, $vE0, 61
-eor sAgo, tmp,  sAgo_, ROR #47                  SEP
-bic tmp, sAge_, sAga_, ROR #56                  SEP      xar_m1 $vBga, $vAbo, $vE3, 36
-eor sAgu, tmp,  sAgu_, ROR #23                  SEP      xar_m1 $vBbo, $vAmo, $vE3, 43
-bic tmp, sAki_, sAke_, ROR #19                  SEP
-eor sAka, tmp,  sAka_, ROR #24                  SEP      xar_m1 $vBmo, $vAmi, $vE2, 49
-bic tmp, sAko_, sAki_, ROR #47                  SEP      xar_m1 $vBmi, $vAke, $vE1, 54
-eor sAke, tmp,  sAke_, ROR #2                   SEP
-bic tmp, sAku_, sAko_, ROR #10                  SEP      xar_m1 $vBge, $vAgu, $vE4, 44
-eor sAki, tmp,  sAki_, ROR #57                  SEP      mov $vE3.16b, $vAga.16b
-bic tmp, sAka_, sAku_, ROR #47                  SEP
-eor sAko, tmp,  sAko_, ROR #57                  SEP      bcax_m1 $vAga, $vBga, $vBgi, $vBge
-bic tmp, sAke_, sAka_, ROR #5                   SEP
-eor sAku, tmp,  sAku_, ROR #52                  SEP      xar_m1 $vBgu, $vAsi, $vE2, 3
-bic tmp, sAmi_, sAme_, ROR #38                  SEP      xar $vBsi, $vAku, $vE4, #25
-eor sAma, tmp,  sAma_, ROR #47                  SEP
-bic tmp, sAmo_, sAmi_, ROR #5                   SEP      xar_m0 $vBku, $vAsa, $vE0, #46
-eor sAme, tmp,  sAme_, ROR #43                  SEP      xar $vBma, $vAbu, $vE4, #37
-bic tmp, sAmu_, sAmo_, ROR #41                  SEP
-eor sAmi, tmp,  sAmi_, ROR #46                  SEP      xar $vBbu, $vAsu, $vE4, #50
-bic tmp, sAma_, sAmu_, ROR #35                  SEP      xar_m1 $vBsu, $vAse, $vE1, 62
-ldr cur_const, [const_addr, count, UXTW #3]     SEP
-add count, count, #1                            SEP      xar $vBme, $vE3, $vE0, #28
-eor sAmo, tmp,  sAmo_, ROR #12                  SEP      xar $vBbe, $vAge, $vE1, #20
-bic tmp, sAme_, sAma_, ROR #9                   SEP
-eor sAmu, tmp,  sAmu_, ROR #44                  SEP      bcax_m0 $vAge, $vBge, $vBgo, $vBgi
-bic tmp, sAsi_, sAse_, ROR #48                  SEP      bcax_m1 $vAgi, $vBgi, $vBgu, $vBgo
-eor sAsa, tmp,  sAsa_, ROR #41                  SEP
-bic tmp, sAso_, sAsi_, ROR #2                   SEP      bcax_m0 $vAgo, $vBgo, $vBga, $vBgu
-eor sAse, tmp,  sAse_, ROR #50                  SEP      bcax_m1 $vAgu, $vBgu, $vBge, $vBga
-bic tmp, sAsu_, sAso_, ROR #25                  SEP
-eor sAsi, tmp,  sAsi_, ROR #27                  SEP      bcax_m0 $vAka, $vBka, $vBki, $vBke
-bic tmp, sAsa_, sAsu_, ROR #60                  SEP      bcax_m1 $vAke, $vBke, $vBko, $vBki
-eor sAso, tmp,  sAso_, ROR #21                  SEP
-bic tmp, sAse_, sAsa_, ROR #57                  SEP      bcax_m0 $vAki, $vBki, $vBku, $vBko
-eor sAsu, tmp,  sAsu_, ROR #53                  SEP      bcax_m1 $vAko, $vBko, $vBka, $vBku
-bic tmp, sAbi_, sAbe_, ROR #63                  SEP
-eor s_Aba, s_Aba_, tmp,  ROR #21                SEP      bcax_m0 $vAku, $vBku, $vBke, $vBka
-bic tmp, sAbo_, sAbi_, ROR #42                  SEP      bcax_m1 $vAma, $vBma, $vBmi, $vBme
-eor sAbe, tmp,  sAbe_, ROR #41                  SEP
-bic tmp, sAbu_, sAbo_, ROR #57                  SEP      bcax_m0 $vAme, $vBme, $vBmo, $vBmi
-eor sAbi, tmp,  sAbi_, ROR #35                  SEP
-bic tmp, s_Aba_, sAbu_, ROR #50                 SEP      bcax_m1 $vAmi, $vBmi, $vBmu, $vBmo
-eor sAbo, tmp,  sAbo_, ROR #43                  SEP      bcax_m0 $vAmo, $vBmo, $vBma, $vBmu
-bic tmp, sAbe_, s_Aba_, ROR #44                 SEP
-eor sAbu, tmp,  sAbu_, ROR #30                  SEP      bcax_m1 $vAmu, $vBmu, $vBme, $vBma
-eor s_Aba, s_Aba, cur_const                     SEP      bcax_m0 $vAsa, $vBsa, $vBsi, $vBse
-ror sAga, sAga,(64-3)                           SEP
-ror sAka, sAka,(64-25)                          SEP      bcax_m1 $vAse, $vBse, $vBso, $vBsi
-ror sAma, sAma,(64-10)                          SEP      bcax_m0 $vAsi, $vBsi, $vBsu, $vBso
-ror sAsa, sAsa,(64-39)                          SEP
-ror sAbe, sAbe,(64-21)                          SEP      bcax_m1 $vAso, $vBso, $vBsa, $vBsu
-ror sAge, sAge,(64-45)                          SEP      bcax_m0 $vAsu, $vBsu, $vBse, $vBsa
-ror sAke, sAke,(64-8)                           SEP
-ror sAme, sAme,(64-15)                          SEP      bcax_m1 $vAba, $vBba, $vBbi, $vBbe
-ror sAse, sAse,(64-41)                          SEP      bcax_m0 $vAbe, $vBbe, $vBbo, $vBbi
-ror sAbi, sAbi,(64-14)                          SEP
-ror sAgi, sAgi,(64-61)                          SEP      bcax_m1 $vAbi, $vBbi, $vBbu, $vBbo
-ror sAki, sAki,(64-18)                          SEP      bcax_m0 $vAbo, $vBbo, $vBba, $vBbu
-ror sAmi, sAmi,(64-56)                          SEP      
-ror sAsi, sAsi,(64-2)                           SEP      bcax_m1 $vAbu, $vBbu, $vBbe, $vBba
-ror sAgo, sAgo,(64-28)                          SEP
-ror sAko, sAko,(64-1)                           SEP
-ror sAmo, sAmo,(64-27)                          SEP      restore x26, STACK_OFFSET_CONST
-ror sAso, sAso,(64-62)                          SEP      ldr vvtmpq, [x26], #16
-ror sAbu, sAbu,(64-44)                          SEP
-ror sAgu, sAgu,(64-20)                          SEP      save x26, STACK_OFFSET_CONST
-ror sAku, sAku,(64-6)                           SEP      eor $vAba.16b, $vAba.16b, vvtmp.16b
-                                                SEP   //movi v0.4s, #0
-                                                SEP   //movi v1.4s, #1
-                                                SEP   //xar v0.2d, v1.2d, v0.2d, 2
-                                                SEP   //xar v0.2d, v0.2d, v0.2d, 2
-                                                SEP   //movi v24.4s, #0
-
-                                                SEP   //xar $vBsa, $vAbi, $vE2, 2
-ror sAmu, sAmu,(64-36)                          SEP      .unreq vvtmp
-ror sAsu, sAsu,(64-55)                          SEP      .unreq vvtmpq
+.macro final_rotate
+    ror sAga, sAga,#(64-3)
+    ror sAka, sAka,#(64-25)
+    ror sAma, sAma,#(64-10)
+    ror sAsa, sAsa,#(64-39)
+    ror sAbe, sAbe,#(64-21)
+    ror sAge, sAge,#(64-45)
+    ror sAke, sAke,#(64-8)
+    ror sAme, sAme,#(64-15)
+    ror sAse, sAse,#(64-41)
+    ror sAbi, sAbi,#(64-14)
+    ror sAgi, sAgi,#(64-61)
+    ror sAki, sAki,#(64-18)
+    ror sAmi, sAmi,#(64-56)
+    ror sAsi, sAsi,#(64-2)
+    ror sAgo, sAgo,#(64-28)
+    ror sAko, sAko,#(64-1)
+    ror sAmo, sAmo,#(64-27)
+    ror sAso, sAso,#(64-62)
+    ror sAbu, sAbu,#(64-44)
+    ror sAgu, sAgu,#(64-20)
+    ror sAku, sAku,#(64-6)
+    ror sAmu, sAmu,#(64-36)
+    ror sAsu, sAsu,#(64-55)
 .endm
 
 #define KECCAK_F1600_ROUNDS 24
 
+
+.global keccak_f1600_x3_hybrid_asm_v3p
+.global _keccak_f1600_x3_hybrid_asm_v3p
 .text
 .align 4
-.global keccak_f1600_x3_hybrid_asm_v6
-.global _keccak_f1600_x3_hybrid_asm_v6
 
-keccak_f1600_x3_hybrid_asm_v6:
-_keccak_f1600_x3_hybrid_asm_v6:
-     alloc_stack
+keccak_f1600_x3_hybrid_asm_v3p:
+_keccak_f1600_x3_hybrid_asm_v3p:
+    alloc_stack
     save_gprs
     save_vregs
     save input_addr, STACK_OFFSET_INPUT
 
-
-     adr const_addr, round_constants_vec
-
-     save const_addr, STACK_OFFSET_CONST
      load_input_vector 1,0
 
+     load_constant_ptr
+
+     save const_addr, STACK_OFFSET_CONST
+
      add input_addr, input_addr, #16
-     load_input_scalar 1,0  
+     load_input_scalar 1,0
      hybrid_round_initial
-    loop_0:
-        hybrid_round_noninitial
-        cmp count, #(KECCAK_F1600_ROUNDS-3)
-        ble loop_0
-
-        hybrid_round_final
-
+ loop_0:
+     hybrid_round_noninitial
+     cmp count, #(KECCAK_F1600_ROUNDS)
+     blt loop_0
+     final_rotate
      restore input_addr, STACK_OFFSET_INPUT
      store_input_vector 1,0
      add input_addr, input_addr, #16
@@ -1410,12 +1054,11 @@ _keccak_f1600_x3_hybrid_asm_v6:
     restore_vregs
     restore_gprs
     free_stack
-    ret	
+    ret
 ___
 					}}}
 					
 $code.=<<___;
-//1100 1110 10 0 11111 000000 11101 10101
 .asciz	"Keccak-1600 absorb and squeeze for ARMv8, CRYPTOGAMS by <appro\@openssl.org>"
 ___
 
