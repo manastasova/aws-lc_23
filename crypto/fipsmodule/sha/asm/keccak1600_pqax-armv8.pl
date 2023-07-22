@@ -118,7 +118,7 @@ $inp_adr       =  "x26";
 $bitstate_adr  =  "x29";
 $const_addr    =  "x26";
 $cur_const     =  "x26";
-$count         =  "w27";
+$count         =  "w29";
 
 $code.=<<___;
 
@@ -133,7 +133,6 @@ $code.=<<___;
 #define STACK_OFFSET_CONST (0*8)
 #define STACK_OFFSET_COUNT (1*8)
 #define STACK_OFFSET_x27_A44 (2*8)
-#define STACK_OFFSET_x27_C2_E3 (3*8)
 
  # Define the macros
 .macro alloc_stack_save_GPRs_absorb
@@ -364,9 +363,6 @@ ldr x27, [sp, STACK_OFFSET_x27_A44]
     eor $A[4][3], $tmp0, $A_[4][3], ROR #21
     bic $tmp0, $A_[0][2], $A_[0][1], ROR #63
     eor $A[4][4], $tmp1, $A_[4][4], ROR #53
-
-str x27, [sp, STACK_OFFSET_x27_A44]
-
     bic $tmp1, $A_[0][3], $A_[0][2], ROR #42
     eor $A[0][0], $A_[0][0], $tmp0, ROR #21
     bic $tmp0, $A_[0][4], $A_[0][3], ROR #57
@@ -378,42 +374,37 @@ str x27, [sp, STACK_OFFSET_x27_A44]
     eor $A[0][4], $tmp0, $A_[0][4], ROR #30
 
     mov $count, #1
-
+    str $count, [sp, #STACK_OFFSET_COUNT]
     eor $A[0][0], $A[0][0], $cur_const
-	str $count, [sp, #STACK_OFFSET_COUNT]
+	
 	
 .endm
 
 .macro keccak_f1600_round_noninitial
 
-    eor $C[2], $A[4][2], $A[0][2], ROR #52
-    eor $C[0], $A[0][0], $A[1][0], ROR #61
     eor $C[4], $A[2][4], $A[1][4], ROR #50
+    eor $C[4], $C[4], $A[3][4], ROR #34
     eor $C[1], $A[2][1], $A[3][1], ROR #57
+    eor $C[4], $C[4], $A[0][4], ROR #26
+    eor $C[0], $A[0][0], $A[1][0], ROR #61
+    eor $C[4], $C[4], $A[4][4], ROR #15
+
+str x27, [sp, STACK_OFFSET_x27_A44]
+
+    eor $C[2], $A[4][2], $A[0][2], ROR #52
     eor $C[3], $A[0][3], $A[2][3], ROR #63
     eor $C[2], $C[2], $A[2][2], ROR #48
     eor $C[0], $C[0], $A[3][0], ROR #54
-    eor $C[4], $C[4], $A[3][4], ROR #34
     eor $C[1], $C[1], $A[0][1], ROR #51
     eor $C[3], $C[3], $A[3][3], ROR #37
     eor $C[2], $C[2], $A[3][2], ROR #10
     eor $C[0], $C[0], $A[2][0], ROR #39
-    eor $C[4], $C[4], $A[0][4], ROR #26
     eor $C[1], $C[1], $A[4][1], ROR #31
     eor $C[3], $C[3], $A[1][3], ROR #36
     eor $C[2], $C[2], $A[1][2], ROR #5
-
-str x27, [sp, STACK_OFFSET_x27_C2_E3]
-
     eor $C[0], $C[0], $A[4][0], ROR #25
-
-ldr x27, [sp, STACK_OFFSET_x27_A44]
-
-    eor $C[4], $C[4], $A[4][4], ROR #15
     eor $C[1], $C[1], $A[1][1], ROR #27
     eor $C[3], $C[3], $A[4][3], ROR #2
-
-ldr x27, [sp, STACK_OFFSET_x27_C2_E3]
 
     eor $E[1], $C[0], $C[2], ROR #61
     ror $C[2], $C[2], 62
@@ -453,6 +444,9 @@ ldr x27, [sp, #STACK_OFFSET_x27_A44]
     eor $A_[3][1], $E[0], $A[1][0], ROR #61
     eor $A_[0][1], $E[1], $A[1][1], ROR #19
 	
+    tmp0 .req x0
+    tmp1 .req x29
+
     bic $tmp0, $A_[1][2], $A_[1][1], ROR #47
     bic $tmp1, $A_[1][3], $A_[1][2], ROR #42
     eor $A[1][0], $tmp0, $A_[1][0], ROR #39
@@ -494,16 +488,6 @@ ldr x27, [sp, #STACK_OFFSET_x27_A44]
     eor $A[4][3], $tmp0, $A_[4][3], ROR #21
     bic $tmp0, $A_[0][2], $A_[0][1], ROR #63
     eor $A[4][4], $tmp1, $A_[4][4], ROR #53
-
-str x27, [sp, #STACK_OFFSET_x27_A44]
-
-    ldr $count, [sp, #STACK_OFFSET_COUNT]
-
-    load_constant_ptr_stack
-    ldr $cur_const, [$const_addr, $count, UXTW #3]
-    add $count, $count, #1
-	str $count , [sp , #STACK_OFFSET_COUNT]
-
     bic $tmp1, $A_[0][3], $A_[0][2], ROR #42
     eor $A[0][0], $A_[0][0], $tmp0, ROR #21
     bic $tmp0, $A_[0][4], $A_[0][3], ROR #57
@@ -514,12 +498,18 @@ str x27, [sp, #STACK_OFFSET_x27_A44]
     eor $A[0][3], $tmp1, $A_[0][3], ROR #43
     eor $A[0][4], $tmp0, $A_[0][4], ROR #30
 
+.unreq tmp1
+    ldr $count, [sp, #STACK_OFFSET_COUNT]
+    load_constant_ptr_stack
+    ldr $cur_const, [$const_addr, $count, UXTW #3]
+    add $count, $count, #1
+	str $count , [sp , #STACK_OFFSET_COUNT]
+
     eor $A[0][0], $A[0][0], $cur_const
 
 .endm
 
 .macro final_rotate_store
-ldr x27, [sp, #STACK_OFFSET_x27_A44] // load A[2][3]
     ror $A[1][0], $A[1][0], #(64-3)
     ror $A[0][4], $A[0][4], #(64-44)
     ror $A[2][0], $A[2][0], #(64-25)
