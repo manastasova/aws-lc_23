@@ -163,8 +163,8 @@ $tmp1          =  "x29";
 
 $input_addr         =  "x0";
 $const_addr         =  "x26";
-$count              =  "w27";
-$out_count          =  "w27";
+$count              =  "w29";
+$out_count          =  "w29";
 $cur_const          =  "x26";
 
 $code.=<<___;
@@ -590,12 +590,11 @@ $code.=<<___;
 
 .macro hybrid_round_initial
 eor $C[4], $A[3][4], $A[4][4]
-str x27, [sp, #STACK_OFFSET_x27_A44]
+str x27, [sp, #(STACK_BASE_TMP_GPRS + STACK_OFFSET_x27_A44)]
 eor $C[0], $A[3][0], $A[4][0]                                               SEP      eor3_m1_0 C1,vAbe,vAge,vAke
-eor $C[1], $A[3][1], $A[4][1]                                               SEP
+eor $C[1], $A[3][1], $A[4][1]                                               SEP                                     
 eor $C[2], $A[3][2], $A[4][2]                                               SEP      eor3_m1_0 C3,vAbo,vAgo,vAko
-eor $C[3], $A[3][3], $A[4][3]                                               SEP
-                                                                            SEP      eor3_m1_0 C0,vAba,vAga,vAka
+eor $C[3], $A[3][3], $A[4][3]                                               SEP      eor3_m1_0 C0,vAba,vAga,vAka
 eor $C[0], $A[2][0], $C[0]                                                  SEP
 eor $C[1], $A[2][1], $C[1]                                                  SEP      eor3_m1_0 C2,vAbi,vAgi,vAki
 eor $C[2], $A[2][2], $C[2]                                                  SEP
@@ -637,7 +636,7 @@ eor $A_[1][4], $A[4][2], $E[2]                                              SEP 
 eor $A_[4][2], $A[2][4], $E[4]                                              SEP
 eor $A_[2][4], $A[4][0], $E[0]                                              SEP      rax1_m1 E3, C2, C4
 eor $A_[3][0], $A[0][4], $E[4]                                              SEP
-ldr x27, [sp, STACK_OFFSET_x27_A44]
+ldr x27, [sp, #(STACK_BASE_TMP_GPRS + STACK_OFFSET_x27_A44)]                                         SEP
 eor $A_[0][4], $A[4][4], $E[4]                                              SEP      str vAgiq, [sp, #(STACK_BASE_TMP_VREGS + 16 * vAgi_offset)]
 eor $A_[4][4], $A[4][1], $E[1]                                              SEP      rax1_m1 E0, C4, C1
 eor $A_[3][1], $A[1][0], $E[0]                                              SEP
@@ -685,9 +684,8 @@ eor $A[4][2], $tmp1, $A_[4][2], ROR #27                                     SEP 
 bic $tmp1, $A_[4][1], $A_[4][0], ROR #57                                    SEP
 eor $A[4][3], $tmp0, $A_[4][3], ROR #21                                     SEP      bcax_m1 vAge, vBge, vBgo, vBgi
 bic $tmp0, $A_[0][2], $A_[0][1], ROR #63                                    SEP
-eor $A[4][4], $tmp1, $A_[4][4], ROR #53                                     SEP      ldr vvtmpq, [sp, #(STACK_BASE_TMP_VREGS + 16 * vAgi_offset)]
-str x27, [sp, #(STACK_BASE_TMP_GPRS + STACK_OFFSET_x27_A44)]                SEP      xar_m1 vBke, vvtmp, E2, 58
-bic $tmp1, $A_[0][3], $A_[0][2], ROR #42                                    SEP
+eor $A[4][4], $tmp1, $A_[4][4], ROR #53                                     SEP      ldr vvtmpq, [sp, #(STACK_BASE_TMP_VREGS + 16 * vAgi_offset)]                                        
+bic $tmp1, $A_[0][3], $A_[0][2], ROR #42                                    SEP      xar_m1 vBke, vvtmp, E2, 58
 eor $A[0][0], $A_[0][0], $tmp0, ROR #21                                     SEP      xar_m1 vBgu, vAsi, E2, 3
 bic $tmp0, $A_[0][4], $A_[0][3], ROR #57                                    SEP
 eor $A[0][1], $tmp1, $A_[0][1], ROR #41                                     SEP      bcax_m1 vAgi, vBgi, vBgu, vBgo
@@ -697,32 +695,30 @@ bic $tmp0, $A_[0][1], $A_[0][0], ROR #44                                    SEP
 eor $A[0][3], $tmp1, $A_[0][3], ROR #43                                     SEP      xar_m1 vBku, vAsa, E0, 46
 eor $A[0][4], $tmp0, $A_[0][4], ROR #30                                     SEP      xar_m1 vBma, vAbu, E4, 37
 mov $count, #1                                                              SEP
+str $count, [sp, #(STACK_BASE_TMP_GPRS + STACK_OFFSET_COUNT)]               SEP  
 eor $A[0][0], $A[0][0], $cur_const                                          SEP
-str $count, [sp, #(STACK_BASE_TMP_GPRS + STACK_OFFSET_COUNT)]               SEP              
-eor $C[2], $A[4][2], $A[0][2], ROR #52                                      SEP      xar_m1 vBbu, vAsu, E4, 50
-eor $C[0], $A[0][0], $A[1][0], ROR #61                                      SEP
-eor $C[4], $A[2][4], $A[1][4], ROR #50                                      SEP      xar_m1 vBsu, vAse, E1, 62
-eor $C[1], $A[2][1], $A[3][1], ROR #57                                      SEP
-eor $C[3], $A[0][3], $A[2][3], ROR #63                                      SEP      ldp vvtmpq, E3q, [sp, #(STACK_BASE_TMP_VREGS + 16*vAga_offset)]
-eor $C[2], $C[2], $A[2][2], ROR #48                                         SEP
-eor $C[0], $C[0], $A[3][0], ROR #54                                         SEP      xar_m1 vBme, vvtmp, E0, 28
-eor $C[4], $C[4], $A[3][4], ROR #34                                         SEP      xar_m1 vBbe, E3,  E1, 20
-eor $C[1], $C[1], $A[0][1], ROR #51                                         SEP
-eor $C[3], $C[3], $A[3][3], ROR #37                                         SEP      /* 25x BCAX, 50 in total */
-eor $C[2], $C[2], $A[3][2], ROR #10                                         SEP
-eor $C[0], $C[0], $A[2][0], ROR #39                                         SEP      bcax_m1 vAgo, vBgo, vBga, vBgu
-eor $C[4], $C[4], $A[0][4], ROR #26                                         SEP
-eor $C[1], $C[1], $A[4][1], ROR #31                                         SEP      bcax_m1 vAgu, vBgu, vBge, vBga
-eor $C[3], $C[3], $A[1][3], ROR #36                                         SEP
-eor $C[2], $C[2], $A[1][2], ROR #5                                          SEP      bcax_m1 vAka, vBka, vBki, vBke
-str x27, [sp, #(STACK_BASE_TMP_GPRS + STACK_OFFSET_x27_C2_E3)]              SEP      bcax_m1 vAke, vBke, vBko, vBki
-eor $C[0], $C[0], $A[4][0], ROR #25                                         SEP
-ldr x27, [sp, #(STACK_BASE_TMP_GPRS + STACK_OFFSET_x27_A44)]                SEP      .unreq vvtmp
-eor $C[4], $C[4], $A[4][4], ROR #15                                         SEP
+eor $C[4], $A[2][4], $A[1][4], ROR #50                          SEP      xar_m1 vBbu, vAsu, E4, 50
+eor $C[4], $C[4], $A[3][4], ROR #34                             SEP
+eor $C[1], $A[2][1], $A[3][1], ROR #57                          SEP      xar_m1 vBsu, vAse, E1, 62
+eor $C[4], $C[4], $A[0][4], ROR #26                             SEP
+eor $C[0], $A[0][0], $A[1][0], ROR #61                          SEP      ldp vvtmpq, E3q, [sp, #(STACK_BASE_TMP_VREGS + 16*vAga_offset)]
+eor $C[4], $C[4], $A[4][4], ROR #15                             SEP
+str x27, [sp, #(STACK_BASE_TMP_GPRS + STACK_OFFSET_x27_A44)]    SEP      xar_m1 vBme, vvtmp, E0, 28
+eor $C[2], $A[4][2], $A[0][2], ROR #52                          SEP      xar_m1 vBbe, E3,  E1, 20
+eor $C[3], $A[0][3], $A[2][3], ROR #63                          SEP
+eor $C[2], $C[2], $A[2][2], ROR #48                             SEP      /* 25x BCAX, 50 in total */
+eor $C[0], $C[0], $A[3][0], ROR #54                             SEP
+eor $C[1], $C[1], $A[0][1], ROR #51                             SEP      bcax_m1 vAgo, vBgo, vBga, vBgu                                                  
+eor $C[3], $C[3], $A[3][3], ROR #37                             SEP      bcax_m1 vAgu, vBgu, vBge, vBga  
+eor $C[2], $C[2], $A[3][2], ROR #10                             SEP            
+eor $C[0], $C[0], $A[2][0], ROR #39                             SEP      bcax_m1 vAka, vBka, vBki, vBke            
+eor $C[1], $C[1], $A[4][1], ROR #31                             SEP      bcax_m1 vAke, vBke, vBko, vBki            
+eor $C[3], $C[3], $A[1][3], ROR #36                             SEP            
+eor $C[2], $C[2], $A[1][2], ROR #5                              SEP      .unreq vvtmp                   
+eor $C[0], $C[0], $A[4][0], ROR #25                             SEP            
 eor $C[1], $C[1], $A[1][1], ROR #27                                         SEP      .unreq vvtmpq
 eor $C[3], $C[3], $A[4][3], ROR #2                                          SEP
-ldr x27, [sp, #(STACK_BASE_TMP_GPRS + STACK_OFFSET_x27_C2_E3)]              SEP      eor2    C0,  vAka, vAga
-eor $E[1], $C[0], $C[2], ROR #61                                            SEP
+eor $E[1], $C[0], $C[2], ROR #61                                            SEP      eor2    C0,  vAka, vAga
 ror $C[2], $C[2], 62                                                        SEP      str vAgaq, [sp, #(STACK_BASE_TMP_VREGS + 16 * vAga_offset)]
 eor $E[3], $C[2], $C[4], ROR #57                                            SEP      vvtmp .req vAga
 ror $C[4], $C[4], 58                                                        SEP
@@ -756,7 +752,7 @@ eor $A_[0][4], $E[4], $A[4][4], ROR #9                                      SEP 
 eor $A_[4][4], $E[1], $A[4][1], ROR #23                                     SEP
 eor $A_[3][1], $E[0], $A[1][0], ROR #61                                     SEP      eor2    C1,  C1,  vAme
 eor $A_[0][1], $E[1], $A[1][1], ROR #19                                     SEP
-                                                                            SEP      bcax_m1 vAmu, vBmu, vBme, vBma
+tmp1 .req x29                                                               SEP      bcax_m1 vAmu, vBmu, vBme, vBma
 bic $tmp0, $A_[1][2], $A_[1][1], ROR #47                                    SEP      eor2    C2,  C2,  vAmi
 bic $tmp1, $A_[1][3], $A_[1][2], ROR #42                                    SEP
 eor $A[1][0], $tmp0, $A_[1][0], ROR #39                                     SEP      bcax_m1 vAsa, vBsa, vBsi, vBse
@@ -799,12 +795,6 @@ bic $tmp1, $A_[4][1], $A_[4][0], ROR #57                                    SEP
 eor $A[4][3], $tmp0, $A_[4][3], ROR #21                                     SEP      eor2    C3,  C3,  vAbo
 bic $tmp0, $A_[0][2], $A_[0][1], ROR #63                                    SEP
 eor $A[4][4], $tmp1, $A_[4][4], ROR #53                                     SEP      eor2    C2,  C2,  vAbi
-str x27, [sp,(STACK_BASE_TMP_GPRS + STACK_OFFSET_x27_A44)]                  SEP
-ldr $count, [sp, #(STACK_BASE_TMP_GPRS + STACK_OFFSET_COUNT)]
-load_constant_ptr_stack
-ldr $cur_const, [$const_addr, $count, UXTW #3]
-add $count, $count, #1
-str $count, [sp, #(STACK_BASE_TMP_GPRS + STACK_OFFSET_COUNT)]
 bic $tmp1, $A_[0][3], $A_[0][2], ROR #42                                    SEP      eor2    C0,  C0,  vAba
 eor $A[0][0], $A_[0][0], $tmp0, ROR #21                                     SEP      bcax_m1 vAbu, vBbu, vBbe, vBba
 bic $tmp0, $A_[0][4], $A_[0][3], ROR #57                                    SEP
@@ -814,36 +804,39 @@ eor $A[0][2], $tmp0, $A_[0][2], ROR #35                                     SEP 
 bic $tmp0, $A_[0][1], $A_[0][0], ROR #44                                    SEP
 eor $A[0][3], $tmp1, $A_[0][3], ROR #43                                     SEP      .unreq vvtmp
 eor $A[0][4], $tmp0, $A_[0][4], ROR #30                                     SEP
+.unreq tmp1
+ldr $count, [sp, #(STACK_BASE_TMP_GPRS + STACK_OFFSET_COUNT)]               SEP                                                                     
+load_constant_ptr_stack                                                     SEP
+ldr $cur_const, [$const_addr, $count, UXTW #3]                              SEP
+add $count, $count, #1                                                      SEP
+str $count, [sp, #(STACK_BASE_TMP_GPRS + STACK_OFFSET_COUNT)]               SEP
 eor $A[0][0], $A[0][0], $cur_const                                          SEP      .unreq vvtmpq
   
 .endm
 
 
 .macro  hybrid_round_noninitial
-                                                                             SEP
-eor $C[2], $A[4][2], $A[0][2], ROR #52                                       SEP      vvtmp .req vBba
-eor $C[0], $A[0][0], $A[1][0], ROR #61                                       SEP      rax1_m1 E2, C1, C3
-eor $C[4], $A[2][4], $A[1][4], ROR #50                                       SEP      rax1_m1 E4, C3, C0
-eor $C[1], $A[2][1], $A[3][1], ROR #57                                       SEP
-eor $C[3], $A[0][3], $A[2][3], ROR #63                                       SEP
-eor $C[2], $C[2], $A[2][2], ROR #48                                          SEP
-eor $C[0], $C[0], $A[3][0], ROR #54                                          SEP      rax1_m1 E1, C0, C2
-eor $C[4], $C[4], $A[3][4], ROR #34                                          SEP
-eor $C[1], $C[1], $A[0][1], ROR #51                                          SEP
-eor $C[3], $C[3], $A[3][3], ROR #37                                          SEP      rax1_m1 E3, C2, C4
-eor $C[2], $C[2], $A[3][2], ROR #10                                          SEP
-eor $C[0], $C[0], $A[2][0], ROR #39                                          SEP      str vAgiq, [sp, #(STACK_BASE_TMP_VREGS + 16 * vAgi_offset)]
-eor $C[4], $C[4], $A[0][4], ROR #26                                          SEP
-eor $C[1], $C[1], $A[4][1], ROR #31                                          SEP      rax1_m1 E0, C4, C1
-eor $C[3], $C[3], $A[1][3], ROR #36                                          SEP
-eor $C[2], $C[2], $A[1][2], ROR #5                                           SEP      .unreq vvtmp
-str x27, [sp, #(STACK_BASE_TMP_GPRS + STACK_OFFSET_x27_C2_E3)]               SEP
-eor $C[0], $C[0], $A[4][0], ROR #25                                          SEP
-ldr x27, [sp, #(STACK_BASE_TMP_GPRS + STACK_OFFSET_x27_A44)]                 SEP      vvtmp .req C1
-eor $C[4], $C[4], $A[4][4], ROR #15                                          SEP
-eor $C[1], $C[1], $A[1][1], ROR #27                                          SEP      vvtmpq .req C1q
-eor $C[3], $C[3], $A[4][3], ROR #2                                           SEP
-ldr x27, [sp, #(STACK_BASE_TMP_GPRS + STACK_OFFSET_x27_C2_E3)]               SEP      xar_m1 vBgi, vAka, E0, 61
+eor $C[4], $A[2][4], $A[1][4], ROR #50 SEP
+eor $C[4], $C[4], $A[3][4], ROR #34 SEP      vvtmp .req vBba
+eor $C[1], $A[2][1], $A[3][1], ROR #57 SEP      rax1_m1 E2, C1, C3
+eor $C[4], $C[4], $A[0][4], ROR #26  SEP      rax1_m1 E4, C3, C0
+eor $C[0], $A[0][0], $A[1][0], ROR #61 SEP
+eor $C[4], $C[4], $A[4][4], ROR #15  SEP      rax1_m1 E1, C0, C2
+str x27, [sp, #(STACK_BASE_TMP_GPRS + STACK_OFFSET_x27_A44)] SEP                                   
+eor $C[2], $A[4][2], $A[0][2], ROR #52                       SEP                                          
+eor $C[3], $A[0][3], $A[2][3], ROR #63                       SEP      rax1_m1 E3, C2, C4               
+eor $C[2], $C[2], $A[2][2], ROR #48                          SEP                
+eor $C[0], $C[0], $A[3][0], ROR #54                          SEP      str vAgiq, [sp, #(STACK_BASE_TMP_VREGS + 16 * vAgi_offset)]                 
+eor $C[1], $C[1], $A[0][1], ROR #51                          SEP                
+eor $C[3], $C[3], $A[3][3], ROR #37                          SEP      rax1_m1 E0, C4, C1                
+eor $C[2], $C[2], $A[3][2], ROR #10                          SEP                
+eor $C[0], $C[0], $A[2][0], ROR #39                          SEP      .unreq vvtmp                                      
+eor $C[1], $C[1], $A[4][1], ROR #31                          SEP                
+eor $C[3], $C[3], $A[1][3], ROR #36                          SEP      vvtmp .req C1                
+eor $C[2], $C[2], $A[1][2], ROR #5                           SEP               
+eor $C[0], $C[0], $A[4][0], ROR #25                          SEP      vvtmpq .req C1q                                                            
+eor $C[1], $C[1], $A[1][1], ROR #27                          SEP       
+eor $C[3], $C[3], $A[4][3], ROR #2                           SEP      xar_m1 vBgi, vAka, E0, 61                           
 eor $E[1], $C[0], $C[2], ROR #61                                             SEP
 ror $C[2], $C[2], 62                                                         SEP      xar_m1 vBga, vAbo, E3, 36
 eor $E[3], $C[2], $C[4], ROR #57                                             SEP
@@ -877,7 +870,8 @@ ldr x27, [sp, #(STACK_BASE_TMP_GPRS + STACK_OFFSET_x27_A44)]
 eor $A_[0][4], $E[4], $A[4][4], ROR #9                                       SEP      xar_m1 vBki, vAko, E3, 39
 eor $A_[4][4], $E[1], $A[4][1], ROR #23                                      SEP
 eor $A_[3][1], $E[0], $A[1][0], ROR #61                                      SEP
-eor $A_[0][1], $E[1], $A[1][1], ROR #19                                      SEP      xar_m1 vBko, vAmu, E4, 56
+eor $A_[0][1], $E[1], $A[1][1], ROR #19                                      SEP      xar_m1 vBko, vAmu, E4, 56                      
+tmp1 .req x29                                                                SEP
 bic $tmp0, $A_[1][2], $A_[1][1], ROR #47                                     SEP      xar_m1 vBmu, vAso, E3, 8
 bic $tmp1, $A_[1][3], $A_[1][2], ROR #42                                     SEP
 eor $A[1][0], $tmp0, $A_[1][0], ROR #39                                      SEP      xar_m1 vBso, vAma, E0, 23
@@ -919,12 +913,7 @@ bic $tmp1, $A_[4][1], $A_[4][0], ROR #57                                     SEP
 eor $A[4][3], $tmp0, $A_[4][3], ROR #21                                      SEP
 bic $tmp0, $A_[0][2], $A_[0][1], ROR #63                                     SEP      bcax_m1 vAgo, vBgo, vBga, vBgu
 eor $A[4][4], $tmp1, $A_[4][4], ROR #53                                      SEP
-str x27, [sp, #(STACK_BASE_TMP_GPRS + STACK_OFFSET_x27_A44)]                 SEP      bcax_m1 vAgu, vBgu, vBge, vBga
-ldr $count, [sp, #(STACK_BASE_TMP_GPRS + STACK_OFFSET_COUNT)]
-load_constant_ptr_stack
-ldr $cur_const, [$const_addr, $count, UXTW #3]
-add $count, $count, #1
-str $count, [sp, #(STACK_BASE_TMP_GPRS + STACK_OFFSET_COUNT)]
+                                                                             SEP      bcax_m1 vAgu, vBgu, vBge, vBga
 bic $tmp1, $A_[0][3], $A_[0][2], ROR #42                                     SEP
 eor $A[0][0], $A_[0][0], $tmp0, ROR #21                                      SEP      bcax_m1 vAka, vBka, vBki, vBke
 bic $tmp0, $A_[0][4], $A_[0][3], ROR #57                                     SEP
@@ -934,31 +923,36 @@ eor $A[0][2], $tmp0, $A_[0][2], ROR #35                                      SEP
 bic $tmp0, $A_[0][1], $A_[0][0], ROR #44                                     SEP      .unreq vvtmp
 eor $A[0][3], $tmp1, $A_[0][3], ROR #43                                      SEP
 eor $A[0][4], $tmp0, $A_[0][4], ROR #30                                      SEP      .unreq vvtmpq
-eor $A[0][0], $A[0][0], $cur_const                                           SEP
-eor $C[2], $A[4][2], $A[0][2], ROR #52                                       SEP      eor2    C0,  vAka, vAga
-eor $C[0], $A[0][0], $A[1][0], ROR #61                                       SEP
-eor $C[4], $A[2][4], $A[1][4], ROR #50                                       SEP      str vAgaq, [sp, #(STACK_BASE_TMP_VREGS + 16 * vAga_offset)]
-eor $C[1], $A[2][1], $A[3][1], ROR #57                                       SEP
-eor $C[3], $A[0][3], $A[2][3], ROR #63                                       SEP      vvtmp .req vAga
-eor $C[2], $C[2], $A[2][2], ROR #48                                          SEP
-eor $C[0], $C[0], $A[3][0], ROR #54                                          SEP      vvtmpq .req vAgaq
-eor $C[4], $C[4], $A[3][4], ROR #34                                          SEP
-eor $C[1], $C[1], $A[0][1], ROR #51                                          SEP
-eor $C[3], $C[3], $A[3][3], ROR #37                                          SEP      bcax_m1 vAki, vBki, vBku, vBko
-eor $C[2], $C[2], $A[3][2], ROR #10                                          SEP
-eor $C[0], $C[0], $A[2][0], ROR #39                                          SEP      bcax_m1 vAko, vBko, vBka, vBku
-eor $C[4], $C[4], $A[0][4], ROR #26                                          SEP
-eor $C[1], $C[1], $A[4][1], ROR #31                                          SEP      eor2    C1,  vAke, vAge
-eor $C[3], $C[3], $A[1][3], ROR #36                                          SEP
-eor $C[2], $C[2], $A[1][2], ROR #5                                           SEP      bcax_m1 vAku, vBku, vBke, vBka
-str x27, [sp, #(STACK_BASE_TMP_GPRS + STACK_OFFSET_x27_C2_E3)]               SEP
-eor $C[0], $C[0], $A[4][0], ROR #25                                          SEP
-ldr x27, [sp, #(STACK_BASE_TMP_GPRS + STACK_OFFSET_x27_A44)]                 SEP      eor2    C2,  vAki, vAgi
-eor $C[4], $C[4], $A[4][4], ROR #15                                          SEP
-eor $C[1], $C[1], $A[1][1], ROR #27                                          SEP      bcax_m1 vAma, vBma, vBmi, vBme
-eor $C[3], $C[3], $A[4][3], ROR #2                                           SEP
-ldr x27, [sp, #(STACK_BASE_TMP_GPRS + STACK_OFFSET_x27_C2_E3)]               SEP      eor2    C3,  vAko, vAgo
-eor $E[1], $C[0], $C[2], ROR #61                                             SEP
+.unreq tmp1
+ldr $count, [sp, #(STACK_BASE_TMP_GPRS + STACK_OFFSET_COUNT)]
+load_constant_ptr_stack
+ldr $cur_const, [$const_addr, $count, UXTW #3]
+add $count, $count, #1
+str $count , [sp , #(STACK_BASE_TMP_GPRS + STACK_OFFSET_COUNT)]
+eor $A[0][0], $A[0][0], $cur_const
+eor $C[4], $A[2][4], $A[1][4], ROR #50                                     SEP      eor2    C0,  vAka, vAga
+eor $C[4], $C[4], $A[3][4], ROR #34                                        SEP
+eor $C[1], $A[2][1], $A[3][1], ROR #57                                     SEP      str vAgaq, [sp, #(STACK_BASE_TMP_VREGS + 16 * vAga_offset)]
+eor $C[4], $C[4], $A[0][4], ROR #26                                        SEP
+eor $C[0], $A[0][0], $A[1][0], ROR #61                                     SEP      vvtmp .req vAga
+eor $C[4], $C[4], $A[4][4], ROR #15                                        SEP
+str x27, [sp, #(STACK_BASE_TMP_GPRS + STACK_OFFSET_x27_A44)]               SEP      vvtmpq .req vAgaq
+eor $C[2], $A[4][2], $A[0][2], ROR #52                                     SEP
+eor $C[3], $A[0][3], $A[2][3], ROR #63                                     SEP
+eor $C[2], $C[2], $A[2][2], ROR #48                                        SEP      bcax_m1 vAki, vBki, vBku, vBko
+eor $C[0], $C[0], $A[3][0], ROR #54                                        SEP
+eor $C[1], $C[1], $A[0][1], ROR #51                                        SEP      bcax_m1 vAko, vBko, vBka, vBku
+eor $C[3], $C[3], $A[3][3], ROR #37                                        SEP
+eor $C[2], $C[2], $A[3][2], ROR #10                                        SEP      eor2    C1,  vAke, vAge
+eor $C[0], $C[0], $A[2][0], ROR #39                                        SEP
+eor $C[1], $C[1], $A[4][1], ROR #31                                        SEP      bcax_m1 vAku, vBku, vBke, vBka
+eor $C[3], $C[3], $A[1][3], ROR #36                                        SEP
+eor $C[2], $C[2], $A[1][2], ROR #5                                         SEP
+eor $C[0], $C[0], $A[4][0], ROR #25                                        SEP      eor2    C2,  vAki, vAgi
+eor $C[1], $C[1], $A[1][1], ROR #27                                        SEP
+eor $C[3], $C[3], $A[4][3], ROR #2                                         SEP      bcax_m1 vAma, vBma, vBmi, vBme
+eor $E[1], $C[0], $C[2], ROR #61                                           SEP
+                                                                           SEP      eor2    C3,  vAko, vAgo
 ror $C[2], $C[2], 62                                                         SEP      bcax_m1 vAme, vBme, vBmo, vBmi
 eor $E[3], $C[2], $C[4], ROR #57                                             SEP
 ror $C[4], $C[4], 58                                                         SEP
@@ -992,6 +986,7 @@ eor $A_[0][4], $E[4], $A[4][4], ROR #9                                       SEP
 eor $A_[4][4], $E[1], $A[4][1], ROR #23                                      SEP
 eor $A_[3][1], $E[0], $A[1][0], ROR #61                                      SEP
 eor $A_[0][1], $E[1], $A[1][1], ROR #19                                      SEP      bcax_m1 vAsi, vBsi, vBsu, vBso
+tmp1 .req x29
 bic $tmp0, $A_[1][2], $A_[1][1], ROR #47                                     SEP      eor2    C0,  C0,  vAsa
 bic $tmp1, $A_[1][3], $A_[1][2], ROR #42                                     SEP
 eor $A[1][0], $tmp0, $A_[1][0], ROR #39                                      SEP      bcax_m1 vAso, vBso, vBsa, vBsu
@@ -1033,13 +1028,7 @@ bic $tmp1, $A_[4][1], $A_[4][0], ROR #57                                     SEP
 eor $A[4][3], $tmp0, $A_[4][3], ROR #21                                      SEP
 bic $tmp0, $A_[0][2], $A_[0][1], ROR #63                                     SEP      eor2    C0,  C0,  vAba
 eor $A[4][4], $tmp1, $A_[4][4], ROR #53                                      SEP
-str x27, [sp, #(STACK_BASE_TMP_GPRS + STACK_OFFSET_x27_A44)]                 SEP      bcax_m1 vAbu, vBbu, vBbe, vBba
-ldr $count, [sp, #(STACK_BASE_TMP_GPRS + STACK_OFFSET_COUNT)]
-load_constant_ptr_stack
-ldr $cur_const, [$const_addr, $count, UXTW #3]
-add $count, $count, #1
-str $count, [sp, #(STACK_BASE_TMP_GPRS + STACK_OFFSET_COUNT)]
-bic $tmp1, $A_[0][3], $A_[0][2], ROR #42                                     SEP
+bic $tmp1, $A_[0][3], $A_[0][2], ROR #42                                     SEP      bcax_m1 vAbu, vBbu, vBbe, vBba
 eor $A[0][0], $A_[0][0], $tmp0, ROR #21                                      SEP      eor2    C4,  C4,  vAbu
 bic $tmp0, $A_[0][4], $A_[0][3], ROR #57                                     SEP
 eor $A[0][1], $tmp1, $A_[0][1], ROR #41                                      SEP
@@ -1048,36 +1037,40 @@ eor $A[0][2], $tmp0, $A_[0][2], ROR #35                                      SEP
 bic $tmp0, $A_[0][1], $A_[0][0], ROR #44                                     SEP      .unreq vvtmp
 eor $A[0][3], $tmp1, $A_[0][3], ROR #43                                      SEP
 eor $A[0][4], $tmp0, $A_[0][4], ROR #30                                      SEP      .unreq vvtmpq
+.unreq tmp1                                                                 
+ldr $count, [sp, #(STACK_BASE_TMP_GPRS + STACK_OFFSET_COUNT)]
+load_constant_ptr_stack                                                     
+ldr $cur_const, [$const_addr, $count, UXTW #3]                              
+add $count, $count, #1                                                      
+str $count, [sp, #(STACK_BASE_TMP_GPRS + STACK_OFFSET_COUNT)]               
 eor $A[0][0], $A[0][0], $cur_const                                           SEP
 .endm
 
 .macro  hybrid_round_final
                                                                              SEP      vvtmp .req vBba
                                                                              SEP      rax1_m1 E2, C1, C3
-eor $C[2], $A[4][2], $A[0][2], ROR #52                                       SEP
-eor $C[0], $A[0][0], $A[1][0], ROR #61                                       SEP      rax1_m1 E4, C3, C0
-eor $C[4], $A[2][4], $A[1][4], ROR #50                                       SEP
-eor $C[1], $A[2][1], $A[3][1], ROR #57                                       SEP      rax1_m1 E1, C0, C2
-eor $C[3], $A[0][3], $A[2][3], ROR #63                                       SEP
-eor $C[2], $C[2], $A[2][2], ROR #48                                          SEP
-eor $C[0], $C[0], $A[3][0], ROR #54                                          SEP
-eor $C[4], $C[4], $A[3][4], ROR #34                                          SEP
-eor $C[1], $C[1], $A[0][1], ROR #51                                          SEP
-eor $C[3], $C[3], $A[3][3], ROR #37                                          SEP
-eor $C[2], $C[2], $A[3][2], ROR #10                                          SEP
-eor $C[0], $C[0], $A[2][0], ROR #39                                          SEP
-eor $C[4], $C[4], $A[0][4], ROR #26                                          SEP
-eor $C[1], $C[1], $A[4][1], ROR #31                                          SEP      rax1_m1 E3, C2, C4
-eor $C[3], $C[3], $A[1][3], ROR #36                                          SEP
-eor $C[2], $C[2], $A[1][2], ROR #5                                           SEP
-str x27, [sp, #(STACK_BASE_TMP_GPRS + STACK_OFFSET_x27_C2_E3)]               SEP
-eor $C[0], $C[0], $A[4][0], ROR #25                                          SEP      str vAgiq, [sp, #(STACK_BASE_TMP_VREGS + 16 * vAgi_offset)]
-ldr x27, [sp, #(STACK_BASE_TMP_GPRS + STACK_OFFSET_x27_A44)]                 SEP
-eor $C[4], $C[4], $A[4][4], ROR #15                                          SEP
-eor $C[1], $C[1], $A[1][1], ROR #27                                          SEP      rax1_m1 E0, C4, C1
-eor $C[3], $C[3], $A[4][3], ROR #2                                           SEP
-ldr x27, [sp, #(STACK_BASE_TMP_GPRS + STACK_OFFSET_x27_C2_E3)]               SEP
-eor $E[1], $C[0], $C[2], ROR #61                                             SEP
+eor $C[4], $A[2][4], $A[1][4], ROR #50                                     SEP
+eor $C[4], $C[4], $A[3][4], ROR #34                                        SEP      rax1_m1 E4, C3, C0
+eor $C[1], $A[2][1], $A[3][1], ROR #57                                     SEP
+eor $C[4], $C[4], $A[0][4], ROR #26                                        SEP      rax1_m1 E1, C0, C2
+eor $C[0], $A[0][0], $A[1][0], ROR #61                                     SEP
+eor $C[4], $C[4], $A[4][4], ROR #15                                        SEP
+str x27, [sp, #(STACK_BASE_TMP_GPRS + STACK_OFFSET_x27_A44)]               SEP
+eor $C[2], $A[4][2], $A[0][2], ROR #52                                     SEP
+eor $C[3], $A[0][3], $A[2][3], ROR #63                                     SEP
+eor $C[2], $C[2], $A[2][2], ROR #48                                        SEP
+eor $C[0], $C[0], $A[3][0], ROR #54                                        SEP
+eor $C[1], $C[1], $A[0][1], ROR #51                                        SEP
+eor $C[3], $C[3], $A[3][3], ROR #37                                        SEP
+eor $C[2], $C[2], $A[3][2], ROR #10                                        SEP      rax1_m1 E3, C2, C4
+eor $C[0], $C[0], $A[2][0], ROR #39                                        SEP
+eor $C[1], $C[1], $A[4][1], ROR #31                                        SEP
+eor $C[3], $C[3], $A[1][3], ROR #36                                        SEP
+eor $C[2], $C[2], $A[1][2], ROR #5                                         SEP      str vAgiq, [sp, #(STACK_BASE_TMP_VREGS + 16 * vAgi_offset)]
+eor $C[0], $C[0], $A[4][0], ROR #25                                        SEP
+eor $C[1], $C[1], $A[1][1], ROR #27                                        SEP
+eor $C[3], $C[3], $A[4][3], ROR #2                                         SEP      rax1_m1 E0, C4, C1
+eor $E[1], $C[0], $C[2], ROR #61                                           SEP
 ror $C[2], $C[2], 62                                                         SEP      .unreq vvtmp
 eor $E[3], $C[2], $C[4], ROR #57                                             SEP
 ror $C[4], $C[4], 58                                                         SEP
@@ -1111,6 +1104,7 @@ eor $A_[0][4], $E[4], $A[4][4], ROR #9                                       SEP
 eor $A_[4][4], $E[1], $A[4][1], ROR #23                                      SEP
 eor $A_[3][1], $E[0], $A[1][0], ROR #61                                      SEP      str vAgeq, [sp, #(STACK_BASE_TMP_VREGS + 16 * vAge_offset)]
 eor $A_[0][1], $E[1], $A[1][1], ROR #19                                      SEP
+tmp1 .req x29
 bic $tmp0, $A_[1][2], $A_[1][1], ROR #47                                     SEP
 bic $tmp1, $A_[1][3], $A_[1][2], ROR #42                                     SEP      xar_m1 vBmi, vAke, E1, 54
 eor $A[1][0], $tmp0, $A_[1][0], ROR #39                                      SEP
@@ -1154,12 +1148,6 @@ bic $tmp1, $A_[4][1], $A_[4][0], ROR #57                                     SEP
 eor $A[4][3], $tmp0, $A_[4][3], ROR #21                                      SEP
 bic $tmp0, $A_[0][2], $A_[0][1], ROR #63                                     SEP
 eor $A[4][4], $tmp1, $A_[4][4], ROR #53                                      SEP      xar_m1 vBgo, vAme, E1, 19
-str x27, [sp, #(STACK_BASE_TMP_GPRS + STACK_OFFSET_x27_A44)]                 SEP
-ldr $count, [sp, #(STACK_BASE_TMP_GPRS + STACK_OFFSET_COUNT)]
-load_constant_ptr_stack
-ldr $cur_const, [$const_addr, $count, UXTW #3]
-add $count, $count, #1
-str $count, [sp, #(STACK_BASE_TMP_GPRS + STACK_OFFSET_COUNT)]
 bic $tmp1, $A_[0][3], $A_[0][2], ROR #42                                     SEP
 eor $A[0][0], $A_[0][0], $tmp0, ROR #21                                      SEP      bcax_m1 vAge, vBge, vBgo, vBgi
 bic $tmp0, $A_[0][4], $A_[0][3], ROR #57                                     SEP
@@ -1169,31 +1157,35 @@ eor $A[0][2], $tmp0, $A_[0][2], ROR #35                                      SEP
 bic $tmp0, $A_[0][1], $A_[0][0], ROR #44                                     SEP
 eor $A[0][3], $tmp1, $A_[0][3], ROR #43                                      SEP
 eor $A[0][4], $tmp0, $A_[0][4], ROR #30                                      SEP      xar_m1 vBke, vvtmp, E2, 58
+.unreq tmp1                                                                 
+ldr $count, [sp, #(STACK_BASE_TMP_GPRS + STACK_OFFSET_COUNT)]
+load_constant_ptr_stack                                                     
+ldr $cur_const, [$const_addr, $count, UXTW #3]                              
+add $count, $count, #1                                                      
+str $count, [sp, #(STACK_BASE_TMP_GPRS + STACK_OFFSET_COUNT)]                                                       
 eor $A[0][0], $A[0][0], $cur_const                                           SEP
-eor $C[2], $A[4][2], $A[0][2], ROR #52                                       SEP
-eor $C[0], $A[0][0], $A[1][0], ROR #61                                       SEP      xar_m1 vBgu, vAsi, E2, 3
-eor $C[4], $A[2][4], $A[1][4], ROR #50                                       SEP
-eor $C[1], $A[2][1], $A[3][1], ROR #57                                       SEP
-eor $C[3], $A[0][3], $A[2][3], ROR #63                                       SEP      bcax_m1 vAgi, vBgi, vBgu, vBgo
-eor $C[2], $C[2], $A[2][2], ROR #48                                          SEP
-eor $C[0], $C[0], $A[3][0], ROR #54                                          SEP
-eor $C[4], $C[4], $A[3][4], ROR #34                                          SEP
-eor $C[1], $C[1], $A[0][1], ROR #51                                          SEP      xar_m1 vBsi, vAku, E4, 25
-eor $C[3], $C[3], $A[3][3], ROR #37                                          SEP
-eor $C[2], $C[2], $A[3][2], ROR #10                                          SEP
-eor $C[0], $C[0], $A[2][0], ROR #39                                          SEP      xar_m1 vBku, vAsa, E0, 46
-eor $C[4], $C[4], $A[0][4], ROR #26                                          SEP
-eor $C[1], $C[1], $A[4][1], ROR #31                                          SEP
-eor $C[3], $C[3], $A[1][3], ROR #36                                          SEP      xar_m1 vBma, vAbu, E4, 37
-eor $C[2], $C[2], $A[1][2], ROR #5                                           SEP
-str x27, [sp, #(STACK_BASE_TMP_GPRS + STACK_OFFSET_x27_C2_E3)]               SEP
-eor $C[0], $C[0], $A[4][0], ROR #25                                          SEP
-ldr x27, [sp, #(STACK_BASE_TMP_GPRS + STACK_OFFSET_x27_A44)]                 SEP      xar_m1 vBbu, vAsu, E4, 50
-eor $C[4], $C[4], $A[4][4], ROR #15                                          SEP
-eor $C[1], $C[1], $A[1][1], ROR #27                                          SEP
-eor $C[3], $C[3], $A[4][3], ROR #2                                           SEP      xar_m1 vBsu, vAse, E1, 62
-ldr x27, [sp, #(STACK_BASE_TMP_GPRS + STACK_OFFSET_x27_C2_E3)]               SEP
-eor $E[1], $C[0], $C[2], ROR #61                                             SEP
+eor $C[4], $A[2][4], $A[1][4], ROR #50                                     SEP
+eor $C[4], $C[4], $A[3][4], ROR #34                                        SEP      xar_m1 vBgu, vAsi, E2, 3
+eor $C[1], $A[2][1], $A[3][1], ROR #57                                     SEP
+eor $C[4], $C[4], $A[0][4], ROR #26                                        SEP
+eor $C[0], $A[0][0], $A[1][0], ROR #61                                     SEP      bcax_m1 vAgi, vBgi, vBgu, vBgo
+eor $C[4], $C[4], $A[4][4], ROR #15                                        SEP
+str x27, [sp, #(STACK_BASE_TMP_GPRS + STACK_OFFSET_x27_A44)]               SEP
+eor $C[2], $A[4][2], $A[0][2], ROR #52                                     SEP
+eor $C[3], $A[0][3], $A[2][3], ROR #63                                     SEP      xar_m1 vBsi, vAku, E4, 25
+eor $C[2], $C[2], $A[2][2], ROR #48                                        SEP
+eor $C[0], $C[0], $A[3][0], ROR #54                                        SEP
+eor $C[1], $C[1], $A[0][1], ROR #51                                        SEP      xar_m1 vBku, vAsa, E0, 46
+eor $C[3], $C[3], $A[3][3], ROR #37                                        SEP
+eor $C[2], $C[2], $A[3][2], ROR #10                                        SEP
+eor $C[0], $C[0], $A[2][0], ROR #39                                        SEP      xar_m1 vBma, vAbu, E4, 37
+eor $C[1], $C[1], $A[4][1], ROR #31                                        SEP
+eor $C[3], $C[3], $A[1][3], ROR #36                                        SEP
+eor $C[2], $C[2], $A[1][2], ROR #5                                         SEP
+eor $C[0], $C[0], $A[4][0], ROR #25                                        SEP      xar_m1 vBbu, vAsu, E4, 50
+eor $C[1], $C[1], $A[1][1], ROR #27                                        SEP
+eor $C[3], $C[3], $A[4][3], ROR #2                                         SEP
+eor $E[1], $C[0], $C[2], ROR #61                                           SEP      xar_m1 vBsu, vAse, E1, 62
 ror $C[2], $C[2], 62                                                         SEP
 eor $E[3], $C[2], $C[4], ROR #57                                             SEP      ldp vvtmpq, E3q, [sp, #(STACK_BASE_TMP_VREGS + 16*vAga_offset)]
 ror $C[4], $C[4], 58                                                         SEP
@@ -1227,6 +1219,7 @@ eor $A_[0][4], $E[4], $A[4][4], ROR #9                                       SEP
 eor $A_[4][4], $E[1], $A[4][1], ROR #23                                      SEP
 eor $A_[3][1], $E[0], $A[1][0], ROR #61                                      SEP
 eor $A_[0][1], $E[1], $A[1][1], ROR #19                                      SEP      bcax_m1 vAko, vBko, vBka, vBku
+tmp1 .req x29
 bic $tmp0, $A_[1][2], $A_[1][1], ROR #47                                     SEP
 bic $tmp1, $A_[1][3], $A_[1][2], ROR #42                                     SEP
 eor $A[1][0], $tmp0, $A_[1][0], ROR #39                                      SEP      bcax_m1 vAku, vBku, vBke, vBka
@@ -1268,13 +1261,7 @@ eor $A[4][2], $tmp1, $A_[4][2], ROR #27                                      SEP
 bic $tmp1, $A_[4][1], $A_[4][0], ROR #57                                     SEP
 eor $A[4][3], $tmp0, $A_[4][3], ROR #21                                      SEP      bcax_m1 vAba, vBba, vBbi, vBbe
 bic $tmp0, $A_[0][2], $A_[0][1], ROR #63                                     SEP
-eor $A[4][4], $tmp1, $A_[4][4], ROR #53                                      SEP
-str x27, [sp, #(STACK_BASE_TMP_GPRS + STACK_OFFSET_x27_A44)]                 SEP      bcax_m1 vAbe, vBbe, vBbo, vBbi
-ldr $count, [sp, #(STACK_BASE_TMP_GPRS + STACK_OFFSET_COUNT)]
-load_constant_ptr_stack
-ldr $cur_const, [$const_addr, $count, UXTW #3]
-add $count, $count, #1
-str $count, [sp, #(STACK_BASE_TMP_GPRS + STACK_OFFSET_COUNT)]
+eor $A[4][4], $tmp1, $A_[4][4], ROR #53                                      SEP      bcax_m1 vAbe, vBbe, vBbo, vBbi
 bic $tmp1, $A_[0][3], $A_[0][2], ROR #42                                     SEP
 eor $A[0][0], $A_[0][0], $tmp0, ROR #21                                      SEP
 bic $tmp0, $A_[0][4], $A_[0][3], ROR #57                                     SEP
@@ -1284,8 +1271,13 @@ eor $A[0][2], $tmp0, $A_[0][2], ROR #35                                      SEP
 bic $tmp0, $A_[0][1], $A_[0][0], ROR #44                                     SEP      bcax_m1 vAbo, vBbo, vBba, vBbu
 eor $A[0][3], $tmp1, $A_[0][3], ROR #43                                      SEP
 eor $A[0][4], $tmp0, $A_[0][4], ROR #30                                      SEP
+.unreq tmp1                                                                 
+ldr $count, [sp, #(STACK_BASE_TMP_GPRS + STACK_OFFSET_COUNT)]
+load_constant_ptr_stack                                                     
+ldr $cur_const, [$const_addr, $count, UXTW #3]                              
+add $count, $count, #1                                                      
+str $count, [sp, #(STACK_BASE_TMP_GPRS + STACK_OFFSET_COUNT)]                                                         
 eor $A[0][0], $A[0][0], $cur_const                                           SEP      bcax_m1 vAbu, vBbu, vBbe, vBba
-ldr x27, [sp, #(STACK_BASE_TMP_GPRS + STACK_OFFSET_x27_A44)] // load A[2][3]
 ror $A[1][0], $A[1][0], #(64-3)                                              SEP
 ror $A[0][4], $A[0][4], #(64-44)                                             SEP
 ror $A[2][0], $A[2][0], #(64-25)                                             SEP
