@@ -52,7 +52,7 @@ if ($flavour && $flavour ne "void") {
 }
 
 $code.=<<___;
-#include <openssl/arm_arch.h>
+# include <openssl/arm_arch.h>
 
 #define SEP ;
 #define KECCAK_F1600_ROUNDS 24
@@ -172,33 +172,30 @@ $vA[0][0] = "v0"; $vA[1][0] = "v5"; $vA[2][0] = "v10"; $vA[3][0] = "v15"; $vA[4]
 $vA_[0][4] = "v4";  $vA_[1][4] = "v9";  $vA_[2][4] = "v14"; $vA_[3][4] = "v19"; $vA_[4][4] = "v24";
 $vA_[0][3] = "v3";  $vA_[1][3] = "v8";  $vA_[2][3] = "v13"; $vA_[3][3] = "v18"; $vA_[4][3] = "v23";
 $vA_[0][2] = "v2";  $vA_[1][2] = "v7";  $vA_[2][2] = "v12"; $vA_[3][2] = "v17"; $vA_[4][2] = "v22";
-$vA_[0][1] = "v27"; $vA_[1][1] = "v11"; $vA_[2][1] = "v16"; $vA_[3][1] = "v21"; $vA_[4][1] = "v1";
-$vA_[0][0] = "v30"; $vA_[1][0] = "v10"; $vA_[2][0] = "v15"; $vA_[3][0] = "v20"; $vA_[4][0] = "v0";  
+$vA_[0][1] = "v26"; $vA_[1][1] = "v11"; $vA_[2][1] = "v16"; $vA_[3][1] = "v21"; $vA_[4][1] = "v1";
+$vA_[0][0] = "v25"; $vA_[1][0] = "v10"; $vA_[2][0] = "v15"; $vA_[3][0] = "v20"; $vA_[4][0] = "v0";  
  
  # Alias symbol vC and vE with vector registers
- # vC[x] = vA[x, 0] xor vA[x, 1] xor A[x, 2] xor vA[x, 3] xor vA[x, 4],   for x in 0..4
- # vE[x] = vC[x-1] xor rot(vC[x+1], 1), for x in 0..4
+ # C[x] = A[x, 0] xor A[x, 1] xor A[x, 2] xor A[x, 3] xor A[x, 4],   for x in 0..4
+ # E[x] = C[x-1] xor rot(C[x+1], 1), for x in 0..4
 my @vC = map("v$_", (27, 28, 29, 30, 31));
 my @vE = map("v$_", (31, 27, 26, 29, 30));
  
- # Alias symbol vAq (the bit-state matrix) with vector registers
+ # Alias symbol vA (the bit-state matrix) with vector registers
 $vAq[0][4] = "q4"; $vAq[1][4] = "q9"; $vAq[2][4] = "q14"; $vAq[3][4] = "q19"; $vAq[4][4] = "q24";
 $vAq[0][3] = "q3"; $vAq[1][3] = "q8"; $vAq[2][3] = "q13"; $vAq[3][3] = "q18"; $vAq[4][3] = "q23";
 $vAq[0][2] = "q2"; $vAq[1][2] = "q7"; $vAq[2][2] = "q12"; $vAq[3][2] = "q17"; $vAq[4][2] = "q22";
 $vAq[0][1] = "q1"; $vAq[1][1] = "q6"; $vAq[2][1] = "q11"; $vAq[3][1] = "q16"; $vAq[4][1] = "q21";
 $vAq[0][0] = "q0"; $vAq[1][0] = "q5"; $vAq[2][0] = "q10"; $vAq[3][0] = "q15"; $vAq[4][0] = "q20";
     
- # Alias symbol vAq_ (the permuted bit-state matrix) with vector registers
- # vAq_[y, 2*x+3*y] = rot(vAq[x, y])
+ # Alias symbol vA_ (the permuted bit-state matrix) with vector registers
+ # vA_[y, 2*x+3*y] = rot(vA[x, y])
 $vAq_[0][4] = "q4";  $vAq_[1][4] = "q9";  $vAq_[2][4] = "q14"; $vAq_[3][4] = "q19"; $vAq_[4][4] = "q24";
 $vAq_[0][3] = "q3";  $vAq_[1][3] = "q8";  $vAq_[2][3] = "q13"; $vAq_[3][3] = "q18"; $vAq_[4][3] = "q23";
 $vAq_[0][2] = "q2";  $vAq_[1][2] = "q7";  $vAq_[2][2] = "q12"; $vAq_[3][2] = "q17"; $vAq_[4][2] = "q22";
 $vAq_[0][1] = "q26"; $vAq_[1][1] = "q11"; $vAq_[2][1] = "q16"; $vAq_[3][1] = "q21"; $vAq_[4][1] = "q1";
 $vAq_[0][0] = "q25"; $vAq_[1][0] = "q10"; $vAq_[2][0] = "q15"; $vAq_[3][0] = "q20"; $vAq_[4][0] = "q0";
 
- # Alias symbol vCq and vEq with vector registers
- # vCq[x] = vAq[x, 0] xor vAq[x, 1] xor vAq[x, 2] xor vAq[x, 3] xor vAq[x, 4],   for x in 0..4
- # vEq[x] = vCq[x-1] xor rot(vCq[x+1], 1), for x in 0..4
 my @vCq = map("q$_", (27, 28, 29, 30, 31));
 my @vEq = map("q$_", (31, 27, 26, 29, 30));
    
@@ -383,22 +380,6 @@ $code.=<<___;
     add sp, sp, #(STACK_SIZE)
 .endm
 
-.macro save reg, offset
-    str \\reg, [sp, #\\offset]
-.endm
-
-.macro restore reg, offset
-    ldr \\reg, [sp, #\\offset]
-.endm
-
-.macro load_constant_ptr
-	adr $const_addr, round_constants
-.endm
-
-.macro load_constant_ptr_stack
-    ldr $const_addr, [sp, #(STACK_OFFSET_CONST)]
-.endm
-
 /****************** SHA3 NEON and Feat_SHA3 MACROS *******************/
 .macro eor3_m0 d s0 s1 s2
     eor3 \\d\\().16b, \\s0\\().16b, \\s1\\().16b, \\s2\\().16b
@@ -463,6 +444,22 @@ $code.=<<___;
     eor \\d\\().16b, vvtmp.16b, \\s0\\().16b
 .endm
 
+.macro save reg, offset
+    str \\reg, [sp, #\\offset]
+.endm
+
+.macro restore reg, offset
+    ldr \\reg, [sp, #\\offset]
+.endm
+
+.macro load_constant_ptr
+	adr $const_addr, round_constants
+.endm
+
+.macro load_constant_ptr_stack
+    ldr $const_addr, [sp, #(STACK_OFFSET_CONST)]
+.endm
+
 .macro hybrid_round_initial
 eor $C[4], $A[3][4], $A[4][4]                               SEP
 str x27, [sp, #STACK_OFFSET_x27_A44]                        SEP      eor3_m0 $vC[1],$vA[0][1],$vA[1][1],$vA[2][1]                                                                           
@@ -525,7 +522,7 @@ bic $tmp1, $A_[1][0], $A_[1][4], ROR #31                    SEP
 eor $A[1][2], $tmp0, $A_[1][2], ROR #58                     SEP      .unreq vvtmp                                                                                               
 bic $tmp0, $A_[1][1], $A_[1][0], ROR #56                    SEP      .unreq vvtmpq                                                                                               
 eor $A[1][3], $tmp1, $A_[1][3], ROR #47                     SEP      eor2    $vC[0],  $vA[2][0], $vA[1][0]                                                                                    
-bic $tmp1, $A_[2][2], $A_[2][1], ROR #19                    SEP      str $vAq[1][0], [sp, #(STACK_BASE_TMP + 16 * vAga_offset)]                                                                                                    
+bic $tmp1, $A_[2][2], $A_[2][1], ROR #19                    SEP      str $vAq[1][0], [sp, #(vAga_offset)]                                                                                                    
 eor $A[1][4], $tmp0, $A_[1][4], ROR #23                     SEP      vvtmp .req $vA[1][0]                                                                                                   
 bic $tmp0, $A_[2][3], $A_[2][2], ROR #47                    SEP      vvtmpq .req $vAq[1][0]                                                                                                    
 eor $A[2][0], $tmp1, $A_[2][0], ROR #24                     SEP      bcax_m0 $vA[2][2], $vA_[2][2], $vA_[2][4], $vA_[2][3]                                                                                  
@@ -574,7 +571,7 @@ str $count, [sp, #STACK_OFFSET_COUNT]                       SEP      eor2    $vC
 eor $A[0][0], $A[0][0], $cur_const                          SEP      eor2    $vC[0],  $vC[0],  $vA[0][0]                                                                           
 eor $C[4], $A[2][4], $A[1][4], ROR #50                      SEP      bcax_m0 $vA[0][4], $vA_[0][4], $vA_[0][1], $vA_[0][0]                                                                           
 eor $C[4], $C[4], $A[3][4], ROR #34                         SEP      eor2    $vC[4],  $vC[4],  $vA[0][4]                                                                           
-eor $C[1], $A[2][1], $A[3][1], ROR #57                      SEP      ldr $vAq[1][0], [sp, #(STACK_BASE_TMP + 16 * vAga_offset)]                                                                          
+eor $C[1], $A[2][1], $A[3][1], ROR #57                      SEP      ldr $vAq[1][0], [sp, #(vAga_offset)]                                                                          
 eor $C[4], $C[4], $A[0][4], ROR #26                         SEP      .unreq vvtmp                                                                           
 eor $C[0], $A[0][0], $A[1][0], ROR #61                      SEP      .unreq vvtmpq                                                                           
 eor $C[4], $C[4], $A[4][4], ROR #15                         SEP      vvtmp .req $vA_[0][0]                                                                            
@@ -627,7 +624,7 @@ eor $A_[0][4], $E[4], $A[4][4], ROR #9                      SEP      bcax_m0 $vA
 eor $A_[4][4], $E[1], $A[4][1], ROR #23                     SEP      .unreq vvtmp                                                                           
 eor $A_[3][1], $E[0], $A[1][0], ROR #61                     SEP      .unreq vvtmpq                                                                           
 eor $A_[0][1], $E[1], $A[1][1], ROR #19                     SEP      eor2    $vC[0],  $vA[2][0], $vA[1][0]                                                                           
-bic $tmp0, $A_[1][2], $A_[1][1], ROR #47                    SEP      str $vAq[1][0], [sp, #(STACK_BASE_TMP + 16 * vAga_offset)]                                                                        
+bic $tmp0, $A_[1][2], $A_[1][1], ROR #47                    SEP      str $vAq[1][0], [sp, #(vAga_offset)]                                                                        
 bic $tmp1, $A_[1][3], $A_[1][2], ROR #42                    SEP      vvtmp .req $vA[1][0]                                                                           
 eor $A[1][0], $tmp0, $A_[1][0], ROR #39                     SEP      vvtmpq .req $vAq[1][0]                                                                           
 bic $tmp0, $A_[1][4], $A_[1][3], ROR #16                    SEP      bcax_m0 $vA[2][2], $vA_[2][2], $vA_[2][4], $vA_[2][3]                                                                           
@@ -675,7 +672,7 @@ eor $A[0][1], $tmp1, $A_[0][1], ROR #41                     SEP      eor2    $vC
 bic $tmp1, $A_[0][0], $A_[0][4], ROR #50                    SEP      eor2    $vC[0],  $vC[0],  $vA[0][0]                                                                           
 eor $A[0][2], $tmp0, $A_[0][2], ROR #35                     SEP      bcax_m0 $vA[0][4], $vA_[0][4], $vA_[0][1], $vA_[0][0]                                                                           
 bic $tmp0, $A_[0][1], $A_[0][0], ROR #44                    SEP      eor2    $vC[4],  $vC[4],  $vA[0][4]                                                                           
-eor $A[0][3], $tmp1, $A_[0][3], ROR #43                     SEP      ldr $vAq[1][0], [sp, #(STACK_BASE_TMP + 16 * vAga_offset)]                                                                          
+eor $A[0][3], $tmp1, $A_[0][3], ROR #43                     SEP      ldr $vAq[1][0], [sp, #(vAga_offset)]                                                                          
 eor $A[0][4], $tmp0, $A_[0][4], ROR #30                     SEP      .unreq vvtmp                                                                           
 ldr $count, [sp, #STACK_OFFSET_COUNT]                       SEP      .unreq vvtmpq                                                                           
 load_constant_ptr_stack                                     SEP    
@@ -740,7 +737,7 @@ ldr x27, [sp, #STACK_OFFSET_x27_A44]                        SEP      .unreq vvtm
 eor $A_[0][4], $E[4], $A[4][4], ROR #9                      SEP      .unreq vvtmpq
 eor $A_[4][4], $E[1], $A[4][1], ROR #23                     SEP
 eor $A_[3][1], $E[0], $A[1][0], ROR #61                     SEP      eor2    $vC[0],  $vA[2][0], $vA[1][0]
-eor $A_[0][1], $E[1], $A[1][1], ROR #19                     SEP      str $vAq[1][0], [sp, #(STACK_BASE_TMP + 16 * vAga_offset)]
+eor $A_[0][1], $E[1], $A[1][1], ROR #19                     SEP      str $vAq[1][0], [sp, #(vAga_offset)]
 bic $tmp0, $A_[1][2], $A_[1][1], ROR #47                    SEP      vvtmp .req $vA[1][0]
 bic $tmp1, $A_[1][3], $A_[1][2], ROR #42                    SEP      vvtmpq .req $vAq[1][0]
 eor $A[1][0], $tmp0, $A_[1][0], ROR #39                     SEP      bcax_m0 $vA[2][2], $vA_[2][2], $vA_[2][4], $vA_[2][3]
@@ -793,7 +790,7 @@ eor $A[0][3], $tmp1, $A_[0][3], ROR #43                     SEP      eor2    $vC
 eor $A[0][4], $tmp0, $A_[0][4], ROR #30                     SEP
 ldr $count, [sp, #STACK_OFFSET_COUNT]                       SEP      bcax_m0 $vA[0][4], $vA_[0][4], $vA_[0][1], $vA_[0][0]
 load_constant_ptr_stack                                     SEP      eor2    $vC[4],  $vC[4],  $vA[0][4]
-ldr $cur_const, [$const_addr, $count, UXTW #3]              SEP      ldr $vAq[1][0], [sp, #(STACK_BASE_TMP + 16 * vAga_offset)]
+ldr $cur_const, [$const_addr, $count, UXTW #3]              SEP      ldr $vAq[1][0], [sp, #(vAga_offset)]
 add $count, $count, #1                                      SEP      .unreq vvtmp
 str $count , [sp , #STACK_OFFSET_COUNT]                     SEP      .unreq vvtmpq
 eor $A[0][0], $A[0][0], $cur_const                          SEP      vvtmp .req $vA_[0][0]
@@ -849,7 +846,7 @@ eor $A_[2][4], $E[0], $A[4][0], ROR #25                     SEP      .unreq vvtm
 eor $A_[3][0], $E[4], $A[0][4], ROR #20                     SEP      .unreq vvtmpq
 ldr x27, [sp, #STACK_OFFSET_x27_A44]                        SEP
 eor $A_[0][4], $E[4], $A[4][4], ROR #9                      SEP      eor2    $vC[0],  $vA[2][0], $vA[1][0]
-eor $A_[4][4], $E[1], $A[4][1], ROR #23                     SEP      str $vAq[1][0], [sp, #(STACK_BASE_TMP + 16 * vAga_offset)]
+eor $A_[4][4], $E[1], $A[4][1], ROR #23                     SEP      str $vAq[1][0], [sp, #(vAga_offset)]
 eor $A_[3][1], $E[0], $A[1][0], ROR #61                     SEP      vvtmp .req $vA[1][0]
 eor $A_[0][1], $E[1], $A[1][1], ROR #19                     SEP      vvtmpq .req $vAq[1][0]
 bic $tmp0, $A_[1][2], $A_[1][1], ROR #47                    SEP      bcax_m1 $vA[2][2], $vA_[2][2], $vA_[2][4], $vA_[2][3]
@@ -902,13 +899,14 @@ eor $A[0][2], $tmp0, $A_[0][2], ROR #35                     SEP      eor2    $vC
 bic $tmp0, $A_[0][1], $A_[0][0], ROR #44                    SEP
 eor $A[0][3], $tmp1, $A_[0][3], ROR #43                     SEP      bcax_m0 $vA[0][4], $vA_[0][4], $vA_[0][1], $vA_[0][0]
 eor $A[0][4], $tmp0, $A_[0][4], ROR #30                     SEP      eor2    $vC[4],  $vC[4],  $vA[0][4]
-ldr $count, [sp, #STACK_OFFSET_COUNT]                       SEP      ldr $vAq[1][0], [sp, #(STACK_BASE_TMP + 16 * vAga_offset)]
+ldr $count, [sp, #STACK_OFFSET_COUNT]                       SEP      ldr $vAq[1][0], [sp, #(vAga_offset)]
 load_constant_ptr_stack                                     SEP      .unreq vvtmp
 ldr $cur_const, [$const_addr, $count, UXTW #3]              SEP      .unreq vvtmpq
 add $count, $count, #1                                    
 str $count , [sp , #STACK_OFFSET_COUNT]                
 eor $A[0][0], $A[0][0], $cur_const                     
 .endm
+
 
 .macro  hybrid_round_final
 eor $C[4], $A[2][4], $A[1][4], ROR #50                      SEP
@@ -980,7 +978,7 @@ eor $A[1][4], $tmp0, $A_[1][4], ROR #23                     SEP      .unreq vvtm
 bic $tmp0, $A_[2][3], $A_[2][2], ROR #47                    SEP      .unreq vvtmpq
 eor $A[2][0], $tmp1, $A_[2][0], ROR #24                     SEP
 bic $tmp1, $A_[2][4], $A_[2][3], ROR #10                    SEP      eor2    $vC[0],  $vA[2][0], $vA[1][0]
-eor $A[2][1], $tmp0, $A_[2][1], ROR #2                      SEP      str $vAq[1][0], [sp, #(STACK_BASE_TMP + 16 * vAga_offset)]
+eor $A[2][1], $tmp0, $A_[2][1], ROR #2                      SEP      str $vAq[1][0], [sp, #(vAga_offset)]
 bic $tmp0, $A_[2][0], $A_[2][4], ROR #47                    SEP
 eor $A[2][2], $tmp1, $A_[2][2], ROR #57                     SEP      vvtmp .req $vA[1][0]
 bic $tmp1, $A_[2][1], $A_[2][0], ROR #5                     SEP      vvtmpq .req $vAq[1][0]
@@ -1047,7 +1045,7 @@ eor $E[1], $C[0], $C[2], ROR #61                            SEP      eor2    $vC
 ror $C[2], $C[2], 62                                        SEP      bcax_m0 $vA[0][4], $vA_[0][4], $vA_[0][1], $vA_[0][0]
 eor $E[3], $C[2], $C[4], ROR #57                            SEP
 ror $C[4], $C[4], 58                                        SEP      eor2    $vC[4],  $vC[4],  $vA[0][4]
-eor $E[0], $C[4], $C[1], ROR #55                            SEP      ldr $vAq[1][0], [sp, #(STACK_BASE_TMP + 16 * vAga_offset)]
+eor $E[0], $C[4], $C[1], ROR #55                            SEP      ldr $vAq[1][0], [sp, #(vAga_offset)]
 ror $C[1], $C[1], 56                                        SEP
 eor $E[2], $C[1], $C[3], ROR #63                            SEP      .unreq vvtmp
 eor $E[4], $C[3], $C[0], ROR #63                            SEP      .unreq vvtmpq
@@ -1162,6 +1160,7 @@ ror $A[4][4], $A[4][4], #(64-55)                            SEP
 .align 4
 .global keccak_f1600_x3_hybrid_asm_v6
 .global _keccak_f1600_x3_hybrid_asm_v6
+
 keccak_f1600_x3_hybrid_asm_v6:
 _keccak_f1600_x3_hybrid_asm_v6:
     alloc_stack
@@ -1195,7 +1194,8 @@ loop_0:
     free_stack
     ret	
 ___
-									
+					
+					
 $code.=<<___;
 .asciz	"Keccak-1600 absorb and squeeze for ARMv8, CRYPTOGAMS by <appro\@openssl.org>"
 ___
@@ -1206,6 +1206,7 @@ ___
 
     sub unsha3 {
          my ($mnemonic,$arg)=@_;
+
          $arg =~ m/[qv]([0-9]+)[^,]*,\s*[qv]([0-9]+)[^,]*(?:,\s*[qv]([0-9]+)[^,]*(?:,\s*[qv#]([0-9\-]+))?)?/
          &&
          sprintf ".inst\t0x%08x\t//%s %s",
@@ -1215,6 +1216,7 @@ ___
 
     sub unvmov {
         my $arg=shift;
+
         $arg =~ m/q([0-9]+)#(lo|hi),\s*q([0-9]+)#(lo|hi)/o &&
         sprintf "ins    v%d.d[%d],v%d.d[%d]",$1<8?$1:$1+8,($2 eq "lo")?0:1,
                              $3<8?$3:$3+8,($4 eq "lo")?0:1;
@@ -1223,6 +1225,7 @@ ___
      foreach(split("\n",$code)) {
         s/@\s/\/\//o;               # old->new style commentary
         s/\`([^\`]*)\`/eval($1)/ge;
+
         m/\bld1r\b/ and s/\.16b/.2d/g    or
         s/\b(eor3_m0|xar_m0|rax1_m0|bcax_m0)\s+(v.*)/unsha3($1,$2)/ge;
         print $_,"\n";
