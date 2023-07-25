@@ -20,7 +20,7 @@ extern "C" {
 #endif
 
 // EXPERIMENTAL_AWS_LC_HYBRID_KECCAK
- #define EXPERIMENTAL_AWS_LC_HYBRID_KECCAK
+#define EXPERIMENTAL_AWS_LC_HYBRID_KECCAK
 
 // SHA3 constants, from NIST FIPS202.
 // https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.202.pdf
@@ -160,7 +160,7 @@ OPENSSL_EXPORT void keccak_f1600_x2_hybrid_asm_v2pp2(uint64_t state[2*25]); // F
 OPENSSL_EXPORT void keccak_f1600_x2_v84a_asm_v2pp2(uint64_t state[2*25]);
 OPENSSL_EXPORT void keccak_f1600_x3_hybrid_asm_v6(uint64_t state[3*25]); // Feat_SHA3
 OPENSSL_EXPORT void keccak_f1600_x3_hybrid_asm_v3p(uint64_t state[3*25]);
-OPENSSL_EXPORT void keccak_f1600_x4_hybrid_asm_v5p_opt(uint64_t state[4*25]);
+OPENSSL_EXPORT void keccak_f1600_x4_hybrid_asm_v5p(uint64_t state[4*25]);
 
 size_t SHA3_Absorb_hybrid(uint64_t *A, const uint8_t *inp, size_t len,
                    size_t r, uint8_t par_fac);
@@ -170,7 +170,6 @@ void SHA3_Squeeze_hybrid(uint64_t *A, uint8_t *out, size_t len, size_t r, uint8_
 // validate_keccak_f1600_x4_hybrid_asm_v5p{_new} tests the x4 parallel implementation 
 // of Keccakf1600 and returns 1.
 OPENSSL_EXPORT int validate_keccak_f1600_x4_hybrid_asm_v5p(void);
-OPENSSL_EXPORT int validate_keccak_f1600_x4_hybrid_asm_v5p_opt(void);
 
 OPENSSL_EXPORT int validate_keccak_f1600_x2_v84a_asm_v2pp2(void);
 OPENSSL_EXPORT int validate_keccak_f1600_x3_hybrid_asm_v6(void);
