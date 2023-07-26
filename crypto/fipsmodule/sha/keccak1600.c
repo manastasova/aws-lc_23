@@ -8,6 +8,7 @@
  */
 
 #include <assert.h>
+#include "../cpucap/internal.h"
 
  // Uncomment to use keccak1600_pqax-armv8 implementation of Keccakf1600
  // keccak1600_pqax-armv8 design is based on lazy rotation implementation
@@ -402,6 +403,7 @@ void SHA3_Squeeze(uint64_t A[SHA3_ROWS][SHA3_ROWS], uint8_t *out, size_t len, si
     }
 }
 #else
+
 #ifdef EXPERIMENTAL_AWS_LC_HYBRID_KECCAK
  // SHA3_Absorb_hybrid can be called multiple times; at each invocation the
  // largest multiple of |r| out of |len| bytes are processed. The
@@ -429,14 +431,23 @@ size_t SHA3_Absorb_hybrid(uint64_t *A, const uint8_t *inp, size_t len,
 
             A_flat[i] ^= BitInterleave(Ai);
         }
-        if(par_fac == 4) {
-            keccak_f1600_x4_neon((uint64_t *)A);
-        } else if(par_fac == 2) {
+        if(par_fac == 2) {
+            if (CRYPTO_is_ARMv8_SHA3_capable() == 1) {
+            keccak_f1600_x2_v84a((uint64_t *)A);
+            } else {
             keccak_f1600_x2_neon((uint64_t *)A);
+            } /* __ARM_FEATURE_SHA3 */
         } else if(par_fac == 3) {
+            if (CRYPTO_is_ARMv8_SHA3_capable() == 1) {
             keccak_f1600_x3_v84a((uint64_t *)A);
+            } else {
+            keccak_f1600_x3_neon((uint64_t *)A);
+            } /* __ARM_FEATURE_SHA3 */
+        }else if(par_fac == 4) {
+            keccak_f1600_x4_neon((uint64_t *)A);
+        } else {
+            return -1;
         }
-        //TODO:: Throug error when else
         
         len -= r;
     }
@@ -482,14 +493,23 @@ void SHA3_Squeeze_hybrid(uint64_t *A, uint8_t *out, size_t len, size_t r, uint8_
             len -= 8;
         }
         if (len != 0) {
-            if(par_fac == 4) {
-                keccak_f1600_x4_neon((uint64_t *)A);
-            } else if(par_fac == 2) {
+            if(par_fac == 2) {
+                if (CRYPTO_is_ARMv8_SHA3_capable() == 1) {
+                keccak_f1600_x2_v84a((uint64_t *)A);
+                } else {
                 keccak_f1600_x2_neon((uint64_t *)A);
+                } /* __ARM_FEATURE_SHA3 */
             } else if(par_fac == 3) {
+                if (CRYPTO_is_ARMv8_SHA3_capable() == 1) {
                 keccak_f1600_x3_v84a((uint64_t *)A);
-            }
-            
+                } else {
+                keccak_f1600_x3_neon((uint64_t *)A);
+                } /* __ARM_FEATURE_SHA3 */
+            }else if(par_fac == 4) {
+                keccak_f1600_x4_neon((uint64_t *)A);
+            } else {
+                return;
+            } 
         }
     }
 }

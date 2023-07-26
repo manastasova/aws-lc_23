@@ -37,7 +37,6 @@
 #include "keccak_f1600_variants.h"
 #include "hal.h"
 
-#define __ARM_FEATURE_SHA3
 int compare_buf_u8(uint8_t const *src_a, uint8_t const *src_b, unsigned len) {                                                                    
     uint8_t res = 0;                                               
     for(; len; src_a++, src_b++, len--) {                           

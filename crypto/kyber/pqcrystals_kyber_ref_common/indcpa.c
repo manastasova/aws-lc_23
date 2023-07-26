@@ -401,10 +401,14 @@ void indcpa_keypair(uint8_t pk[KYBER_INDCPA_PUBLICKEYBYTES],
     poly_getnoise_eta1_x4_hybrid(&skpv.vec[0], &skpv.vec[1], &e.vec[0], &e.vec[1], noiseseed, nonce);
   }
   if (KYBER_K == 3) { // Kyber768
+    #ifdef KECCAK_X4_ONLY
+    
+    #else
     gen_a_hybrid_Kyber768(a, publicseed);
     poly_getnoise_eta1_x3_hybrid(&skpv.vec[0], &skpv.vec[1], &skpv.vec[2], noiseseed, nonce);
     nonce+=KYBER_K;
     poly_getnoise_eta1_x3_hybrid(&e.vec[0], &e.vec[1], &e.vec[2], noiseseed, nonce);
+    #endif /* KECCAK_X4_ONLY */
   }
   if (KYBER_K == 4) { // Kyber1024
     gen_a_hybrid_Kyber1024(a, publicseed);
