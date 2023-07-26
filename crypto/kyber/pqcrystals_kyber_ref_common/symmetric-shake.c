@@ -133,32 +133,105 @@ void kyber_shake128_absorb_hybrid(keccak_state_x4_hybrid *state,
     extseed[KYBER_SYMBYTES * par_fac + 6] = 1;
     extseed[KYBER_SYMBYTES * par_fac + 7] = 1;
   }
-  if (KYBER_K == 3 || KYBER_K == 4) {
+
+  #ifdef KECCAK_X4_ONLY
+  if (KYBER_K == 3) {
     if (transposed == 1) {
-          extseed[KYBER_SYMBYTES * par_fac + 0] = x;
-          extseed[KYBER_SYMBYTES * par_fac + 1] = 0;
-          extseed[KYBER_SYMBYTES * par_fac + 2] = x;
-          extseed[KYBER_SYMBYTES * par_fac + 3] = 1;
-          extseed[KYBER_SYMBYTES * par_fac + 4] = x;
-          extseed[KYBER_SYMBYTES * par_fac + 5] = 2;
-          if(KYBER_K == 4) {
-            extseed[KYBER_SYMBYTES * 4 + 6] = x;
-            extseed[KYBER_SYMBYTES * 4 + 7] = 3;
+          if (x == 0) {
+                extseed[KYBER_SYMBYTES * par_fac + 0] = 0;
+                extseed[KYBER_SYMBYTES * par_fac + 1] = 0;
+                extseed[KYBER_SYMBYTES * par_fac + 2] = 0;
+                extseed[KYBER_SYMBYTES * par_fac + 3] = 1;
+                extseed[KYBER_SYMBYTES * par_fac + 4] = 0;
+                extseed[KYBER_SYMBYTES * par_fac + 5] = 2;
+                  extseed[KYBER_SYMBYTES * 4 + 6] = 1;
+                  extseed[KYBER_SYMBYTES * 4 + 7] = 0;
+          } else {
+                extseed[KYBER_SYMBYTES * par_fac + 0] = 1;
+                extseed[KYBER_SYMBYTES * par_fac + 1] = 1;
+                extseed[KYBER_SYMBYTES * par_fac + 2] = 1;
+                extseed[KYBER_SYMBYTES * par_fac + 3] = 2;
+                extseed[KYBER_SYMBYTES * par_fac + 4] = 2;
+                extseed[KYBER_SYMBYTES * par_fac + 5] = 0;
+                  extseed[KYBER_SYMBYTES * 4 + 6] = 2;
+                  extseed[KYBER_SYMBYTES * 4 + 7] = 1;
           }
-      }
-      else {
-          extseed[KYBER_SYMBYTES * par_fac + 0] = 0;
-          extseed[KYBER_SYMBYTES * par_fac + 1] = x;
-          extseed[KYBER_SYMBYTES * par_fac + 2] = 1;
-          extseed[KYBER_SYMBYTES * par_fac + 3] = x;
-          extseed[KYBER_SYMBYTES * par_fac + 4] = 2;
-          extseed[KYBER_SYMBYTES * par_fac + 5] = x;
-          if(KYBER_K == 4) {
-            extseed[KYBER_SYMBYTES * 4 + 6] = 3;
-            extseed[KYBER_SYMBYTES * 4 + 7] = x;
+      } else {
+          if (x == 0) {
+                extseed[KYBER_SYMBYTES * par_fac + 0] = 0;
+                extseed[KYBER_SYMBYTES * par_fac + 1] = 0;
+                extseed[KYBER_SYMBYTES * par_fac + 2] = 1;
+                extseed[KYBER_SYMBYTES * par_fac + 3] = 0;
+                extseed[KYBER_SYMBYTES * par_fac + 4] = 2;
+                extseed[KYBER_SYMBYTES * par_fac + 5] = 0;
+                  extseed[KYBER_SYMBYTES * 4 + 6] = 0;
+                  extseed[KYBER_SYMBYTES * 4 + 7] = 1;
+          } else {
+            extseed[KYBER_SYMBYTES * par_fac + 0] = 1;
+            extseed[KYBER_SYMBYTES * par_fac + 1] = 1;
+            extseed[KYBER_SYMBYTES * par_fac + 2] = 2;
+            extseed[KYBER_SYMBYTES * par_fac + 3] = 1;
+            extseed[KYBER_SYMBYTES * par_fac + 4] = 0;
+            extseed[KYBER_SYMBYTES * par_fac + 5] = 2;
+              extseed[KYBER_SYMBYTES * 4 + 6] = 1;
+              extseed[KYBER_SYMBYTES * 4 + 7] = 2;
           }
       }
   }
+  if (KYBER_K == 4) {
+      if (transposed == 1) {
+            extseed[KYBER_SYMBYTES * par_fac + 0] = x;
+            extseed[KYBER_SYMBYTES * par_fac + 1] = 0;
+            extseed[KYBER_SYMBYTES * par_fac + 2] = x;
+            extseed[KYBER_SYMBYTES * par_fac + 3] = 1;
+            extseed[KYBER_SYMBYTES * par_fac + 4] = x;
+            extseed[KYBER_SYMBYTES * par_fac + 5] = 2;
+            if(KYBER_K == 4) {
+              extseed[KYBER_SYMBYTES * 4 + 6] = x;
+              extseed[KYBER_SYMBYTES * 4 + 7] = 3;
+            }
+        }
+        else {
+            extseed[KYBER_SYMBYTES * par_fac + 0] = 0;
+            extseed[KYBER_SYMBYTES * par_fac + 1] = x;
+            extseed[KYBER_SYMBYTES * par_fac + 2] = 1;
+            extseed[KYBER_SYMBYTES * par_fac + 3] = x;
+            extseed[KYBER_SYMBYTES * par_fac + 4] = 2;
+            extseed[KYBER_SYMBYTES * par_fac + 5] = x;
+            if(KYBER_K == 4) {
+              extseed[KYBER_SYMBYTES * 4 + 6] = 3;
+              extseed[KYBER_SYMBYTES * 4 + 7] = x;
+            }
+        }
+    }
+  #else 
+    if (KYBER_K == 3 || KYBER_K == 4) {
+      if (transposed == 1) {
+            extseed[KYBER_SYMBYTES * par_fac + 0] = x;
+            extseed[KYBER_SYMBYTES * par_fac + 1] = 0;
+            extseed[KYBER_SYMBYTES * par_fac + 2] = x;
+            extseed[KYBER_SYMBYTES * par_fac + 3] = 1;
+            extseed[KYBER_SYMBYTES * par_fac + 4] = x;
+            extseed[KYBER_SYMBYTES * par_fac + 5] = 2;
+            if(KYBER_K == 4) {
+              extseed[KYBER_SYMBYTES * 4 + 6] = x;
+              extseed[KYBER_SYMBYTES * 4 + 7] = 3;
+            }
+        }
+        else {
+            extseed[KYBER_SYMBYTES * par_fac + 0] = 0;
+            extseed[KYBER_SYMBYTES * par_fac + 1] = x;
+            extseed[KYBER_SYMBYTES * par_fac + 2] = 1;
+            extseed[KYBER_SYMBYTES * par_fac + 3] = x;
+            extseed[KYBER_SYMBYTES * par_fac + 4] = 2;
+            extseed[KYBER_SYMBYTES * par_fac + 5] = x;
+            if(KYBER_K == 4) {
+              extseed[KYBER_SYMBYTES * 4 + 6] = 3;
+              extseed[KYBER_SYMBYTES * 4 + 7] = x;
+            }
+        }
+    }
+  #endif 
 
   int p = 0x1F; 
 
@@ -220,9 +293,9 @@ void kyber_shake128_squeeze_x2_hybrid(uint8_t *out, int nblocks, keccak_state_x2
 void kyber_shake128_squeeze_x3_hybrid(uint8_t *out, int nblocks, keccak_state_x3_hybrid *state)
 {
   if (CRYPTO_is_ARMv8_SHA3_capable() == 1) {
-  keccak_f1600_x3_v84a((uint64_t *)state->s);
+    keccak_f1600_x3_v84a((uint64_t *)state->s);
   } else {
-  keccak_f1600_x3_neon((uint64_t *)state->s);
+    keccak_f1600_x3_neon((uint64_t *)state->s);
   } /* __ARM_FEATURE_SHA3 */
 
   SHA3_Squeeze_hybrid((uint64_t *)state->s, out, (nblocks) * SHAKE128_RATE  , SHAKE128_RATE, 3);

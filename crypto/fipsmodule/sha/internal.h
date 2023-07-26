@@ -21,6 +21,9 @@ extern "C" {
 
 // EXPERIMENTAL_AWS_LC_HYBRID_KECCAK
 #define EXPERIMENTAL_AWS_LC_HYBRID_KECCAK
+// Uncomment to enable only support for x4 parallel KeccakF1600 
+// When commented x2 and x3 parallel Keccaks are also suported
+// #define KECCAK_X4_ONLY
 
 // SHA3 constants, from NIST FIPS202.
 // https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.202.pdf

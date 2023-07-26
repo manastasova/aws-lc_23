@@ -274,8 +274,69 @@ void gen_matrix_hybrid_Kyber768(polyvec *a, const uint8_t seed[KYBER_SYMBYTES], 
   if (KYBER_K != 3) {
     return;
   }
-    
-  unsigned int ctr[3], ctr_total, i, j, k;
+
+  #ifdef KECCAK_X4_ONLY
+  unsigned int ctr[4] = {0}, ctr_total, i, j, k;
+  unsigned int buflen, off;
+  xof_state_x4_hybrid state_hybrid;
+  uint8_t buf[(KYBER_K+1)*(GEN_MATRIX_NBLOCKS*XOF_BLOCKBYTES+2)];
+  
+
+  for(i=0;i<2;i++) {
+  ctr_total = 0;
+  xof_absorb_x4_hybrid(&state_hybrid, seed, transposed, i, 4);
+  xof_squeezeblocks_x4_hybrid(buf, GEN_MATRIX_NBLOCKS, &state_hybrid);
+
+  buflen = GEN_MATRIX_NBLOCKS*XOF_BLOCKBYTES;
+    for(j = 0; j < 4; j++) {
+      if (i == 0) { // First iteration
+        ctr[j] = rej_uniform(a[j/3].vec[j%3].coeffs, KYBER_N, buf + (j*buflen), buflen);
+      } else {
+        ctr[j] = rej_uniform(a[((j+1)/3)+1].vec[(j+1) % 3].coeffs, KYBER_N, buf + (j*buflen), buflen);
+      }
+      ctr_total += ctr[j];
+    }
+          while(ctr_total < (KYBER_K + 1) * KYBER_N) {
+            off = buflen % 3;
+            for(k = 0; k < off; k++) {
+              for(j = 0 ; j < (KYBER_K + 1) ; j++) {
+                (buf + (j*buflen))[k] = (buf + (j*buflen))[buflen - off + k];
+              }
+            }
+
+            xof_squeezeblocks_x4_hybrid(buf + off, 1, &state_hybrid);
+            buflen = off + XOF_BLOCKBYTES;
+            
+            for(j = 0; j < 4; j++) {
+              if (ctr[j] < KYBER_N) {
+                if (i == 0) { // First iteration
+                  ctr[j] = rej_uniform(a[j/3].vec[j%3].coeffs + ctr[j] , KYBER_N - ctr[j], buf + (j*buflen), buflen);
+                } else {
+                  ctr[j] = rej_uniform(a[((j+1)/3)+1].vec[(j+1) % 3].coeffs + ctr[j] , KYBER_N - ctr[j], buf + (j*buflen), buflen);
+                }
+                ctr_total += ctr[j];
+              }
+            }
+          }
+        }
+
+      xof_state state;
+      xof_absorb(&state, seed, 2, 2);
+      xof_squeezeblocks(buf, GEN_MATRIX_NBLOCKS, &state);
+
+      buflen = GEN_MATRIX_NBLOCKS*XOF_BLOCKBYTES;
+      ctr_total = rej_uniform(a[2].vec[2].coeffs, KYBER_N, buf, buflen);
+
+      while(ctr_total < KYBER_N) {
+        off = buflen % 3;
+        for(k = 0; k < off; k++)
+          buf[k] = buf[buflen - off + k];
+        xof_squeezeblocks(buf + off, 1, &state);
+        buflen = off + XOF_BLOCKBYTES;
+        ctr_total += rej_uniform(a[2].vec[2].coeffs + ctr_total, KYBER_N - ctr_total, buf, buflen);
+      }
+  #else
+  unsigned int ctr[3] = {0}, ctr_total, i, j, k;
   unsigned int buflen, off;
   xof_state_x4_hybrid state_hybrid;
   uint8_t buf[KYBER_K*(GEN_MATRIX_NBLOCKS*XOF_BLOCKBYTES+2)];
@@ -310,6 +371,7 @@ void gen_matrix_hybrid_Kyber768(polyvec *a, const uint8_t seed[KYBER_SYMBYTES], 
       }
     }
   }
+  #endif /* KECCAK_X4_ONLY */
 }
 
 /*************************************************
@@ -401,10 +463,13 @@ void indcpa_keypair(uint8_t pk[KYBER_INDCPA_PUBLICKEYBYTES],
     poly_getnoise_eta1_x4_hybrid(&skpv.vec[0], &skpv.vec[1], &e.vec[0], &e.vec[1], noiseseed, nonce);
   }
   if (KYBER_K == 3) { // Kyber768
-    #ifdef KECCAK_X4_ONLY
-    
-    #else
     gen_a_hybrid_Kyber768(a, publicseed);
+    #ifdef KECCAK_X4_ONLY
+    poly_getnoise_eta1_x4_hybrid(&skpv.vec[0], &skpv.vec[1], &skpv.vec[2], &e.vec[0], noiseseed, nonce);
+    nonce+=KYBER_K+1;
+    poly_getnoise_eta1(&e.vec[1], noiseseed, nonce++);
+    poly_getnoise_eta1(&e.vec[2], noiseseed, nonce++);
+    #else
     poly_getnoise_eta1_x3_hybrid(&skpv.vec[0], &skpv.vec[1], &skpv.vec[2], noiseseed, nonce);
     nonce+=KYBER_K;
     poly_getnoise_eta1_x3_hybrid(&e.vec[0], &e.vec[1], &e.vec[2], noiseseed, nonce);
@@ -473,22 +538,34 @@ void indcpa_enc(uint8_t c[KYBER_INDCPA_BYTES],
   #ifdef EXPERIMENTAL_AWS_LC_HYBRID_KECCAK
   if(KYBER_K == 2) {
   gen_at_hybrid_Kyber512(at, seed);
+  #ifdef KECCAK_X4_ONLY
   // NOTE:: Option 1 in Quip Design Doc
-  // poly_getnoise_eta1_eta2_x4_hybrid(sp.vec+0, sp.vec+1, ep.vec+0, ep.vec+1, coins, nonce);
-  // nonce+=4;
-  // poly_getnoise_eta2(&epp, coins, nonce++);
+  poly_getnoise_eta1_eta2_x4_hybrid(sp.vec+0, sp.vec+1, ep.vec+0, ep.vec+1, coins, nonce);
+  nonce+=4;
+  poly_getnoise_eta2(&epp, coins, nonce++);
+  #else
   // NOTE:: Option 2 in Quip Design Doc
   poly_getnoise_eta1_x2_hybrid(sp.vec+0, sp.vec+1, coins, nonce);
   nonce += KYBER_K;
   poly_getnoise_eta2_x3_hybrid(ep.vec+0, ep.vec+1, &epp, coins, nonce);
+  #endif /* KECCAK_X4_ONLY */
   }
   if(KYBER_K == 3) {
       gen_at_hybrid_Kyber768(at, seed);
+      #ifdef KECCAK_X4_ONLY
+      // For Kyber768 ETA1 and ETA2 have the same value, therefore, the ep.vec could be passed to poly_getnoise_eta1_x4_hybrid
+      poly_getnoise_eta1_x4_hybrid(sp.vec+0, sp.vec+1, sp.vec+2, ep.vec+0, coins, nonce);
+      nonce+=KYBER_K + 1;
+      poly_getnoise_eta2(ep.vec+1, coins, nonce++);
+      poly_getnoise_eta2(ep.vec+2, coins, nonce++);
+      poly_getnoise_eta2(&epp, coins, nonce++);
+      #else
       poly_getnoise_eta1_x3_hybrid(sp.vec+0, sp.vec+1, sp.vec+2, coins, nonce);
       nonce+=KYBER_K;
       poly_getnoise_eta2_x3_hybrid(ep.vec+0, ep.vec+1, ep.vec+2, coins, nonce);
       nonce+=KYBER_K;
-  poly_getnoise_eta2(&epp, coins, nonce++);
+      poly_getnoise_eta2(&epp, coins, nonce++);
+      #endif 
   }
   if(KYBER_K == 4) {
       gen_at_hybrid_Kyber1024(at, seed);
