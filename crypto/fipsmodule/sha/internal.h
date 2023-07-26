@@ -165,7 +165,6 @@ size_t SHA3_Absorb_hybrid(uint64_t *A, const uint8_t *inp, size_t len,
 
 void SHA3_Squeeze_hybrid(uint64_t *A, uint8_t *out, size_t len, size_t r, uint8_t par_fac);
 
-//OPENSSL_EXPORT void keccak_f1600_x1_scalar(uint64_t state[2*KECCAK1600_WIDTH/8/8]);
 OPENSSL_EXPORT void keccak_f1600_x1_scalar(uint64_t state[1*KECCAK1600_STATE_BYTES]);
 OPENSSL_EXPORT void keccak_f1600_x2_neon(uint64_t state[2*KECCAK1600_STATE_BYTES]);
 OPENSSL_EXPORT void keccak_f1600_x2_v84a(uint64_t state[2*KECCAK1600_STATE_BYTES]); // Feat_SHA3
@@ -173,8 +172,6 @@ OPENSSL_EXPORT void keccak_f1600_x3_neon(uint64_t state[3*KECCAK1600_STATE_BYTES
 OPENSSL_EXPORT void keccak_f1600_x3_v84a(uint64_t state[3*KECCAK1600_STATE_BYTES]); // Feat_SHA3
 OPENSSL_EXPORT void keccak_f1600_x4_neon(uint64_t state[4*KECCAK1600_STATE_BYTES]);
 
-// validate_keccak_f1600_x4_neon{_new} tests the x4 parallel implementation 
-// of Keccakf1600 and returns 1.
 OPENSSL_EXPORT int validate_keccak_f1600_x1_scalar(void);
 OPENSSL_EXPORT int validate_keccak_f1600_x2_neon(void);
 OPENSSL_EXPORT int validate_keccak_f1600_x2_v84a(void);
