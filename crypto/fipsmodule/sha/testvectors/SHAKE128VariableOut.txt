@@ -1,3 +1,6 @@
+# Test Vectors Values for SHAKE128 Variable Output are provided by NIST
+# https://csrc.nist.gov/Projects/cryptographic-algorithm-validation-program/Secure-Hashing
+
 Outputlen = 128
 Msg = 84e950051876050dc851fbd99e6247b8
 MD = 8599bd89f63a848c49ca593ec37a12c6

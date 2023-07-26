@@ -1,3 +1,6 @@
+# Test Vectors Values for SHAKE256 Variable Output are provided by NIST
+# https://csrc.nist.gov/Projects/cryptographic-algorithm-validation-program/Secure-Hashing
+
 Outputlen = 16
 Msg = c61a9188812ae73994bc0d6d4021e31bf124dc72669749111232da7ac29e61c4
 MD = 23ce
