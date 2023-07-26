@@ -256,12 +256,14 @@ TEST(SHAKE256Test, NISTTestVectors) {
 }
 
 TEST(KECCAKf1600Test, Hybrid) {
+  EXPECT_TRUE(validate_keccak_f1600_x1_scalar());
   EXPECT_TRUE(validate_keccak_f1600_x2_neon());
   EXPECT_TRUE(validate_keccak_f1600_x2_v84a());
   EXPECT_TRUE(validate_keccak_f1600_x3_neon());
   EXPECT_TRUE(validate_keccak_f1600_x3_v84a());
   EXPECT_TRUE(validate_keccak_f1600_x4_neon());
 
+  EXPECT_TRUE(benchmark_keccak_f1600_x1_scalar());
   EXPECT_TRUE(benchmark_keccak_f1600_x2_neon());
   EXPECT_TRUE(benchmark_keccak_f1600_x2_v84a());
   EXPECT_TRUE(benchmark_keccak_f1600_x3_neon());

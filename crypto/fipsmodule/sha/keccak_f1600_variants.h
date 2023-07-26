@@ -45,11 +45,4 @@
 void keccak_f1600_x1_scalar_C     ( uint64_t state[KECCAK_F1600_X1_STATE_SIZE_UINT64]);
 #include <arm_neon.h>
 typedef uint64x2_t v128;
-
-/* PQAX implementations and optimizations */
-void keccak_f1600_x2_v84a(uint64_t state[2*25]); // Feat_SHA3
-void keccak_f1600_x2_neon(uint64_t state[2*25]);
-void keccak_f1600_x3_v84a(uint64_t state[3*25]); // Feat_SHA3
-void keccak_f1600_x3_neon(uint64_t state[3*25]);
-void keccak_f1600_x4_neon(uint64_t state[4*25]);
 #endif

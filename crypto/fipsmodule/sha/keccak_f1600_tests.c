@@ -262,12 +262,14 @@ MAKE_BENCHMARK_F1600_X_GENERIC_SKIP(testname,funcname,NUM)
         KECCAK_F1600_X1_FUNCNAME(variant),1)
 
 /////////////////////////////// TEST CASES ////////////////////////////////////
+MAKE_VALIDATE_F1600_X1(scalar)
 MAKE_VALIDATE_F1600_X_GENERIC(validate_keccak_f1600_x2_neon, keccak_f1600_x2_neon,2)
 MAKE_VALIDATE_F1600_X_GENERIC_V84A(validate_keccak_f1600_x2_v84a, keccak_f1600_x2_v84a,2)
 MAKE_VALIDATE_F1600_X_GENERIC(validate_keccak_f1600_x3_neon, keccak_f1600_x3_neon,3)
 MAKE_VALIDATE_F1600_X_GENERIC_V84A(validate_keccak_f1600_x3_v84a, keccak_f1600_x3_v84a,3)
 MAKE_VALIDATE_F1600_X_GENERIC(validate_keccak_f1600_x4_neon, keccak_f1600_x4_neon,4)
 
+MAKE_BENCHMARK_F1600_X1(scalar)
 MAKE_BENCHMARK_F1600_X_GENERIC(benchmark_keccak_f1600_x2_neon, keccak_f1600_x2_neon,2)
 MAKE_BENCHMARK_F1600_X_GENERIC_V84A(benchmark_keccak_f1600_x2_v84a, keccak_f1600_x2_v84a,2)
 MAKE_BENCHMARK_F1600_X_GENERIC(benchmark_keccak_f1600_x3_neon, keccak_f1600_x3_neon,3)
