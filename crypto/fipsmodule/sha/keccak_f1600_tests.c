@@ -174,89 +174,91 @@ int testname (void) {                                                       \
 #define KECCAK_F1600_X1_BENCHMARK_TESTNAME(variant)                         \
     benchmark_keccak_f1600_x1_ ## variant
 #define MAKE_BENCHMARK_F1600_X1(variant)                                    \
-    MAKE_BENCHMARK_F1600_X_GENERIC_DO(                                     \
+    MAKE_BENCHMARK_F1600_X_GENERIC_DO(                                      \
         KECCAK_F1600_X1_BENCHMARK_TESTNAME(variant),                        \
         KECCAK_F1600_X1_FUNCNAME(variant),1)
 
-#define MAKE_BENCHMARK_F1600_X_GENERIC_DO(testname,funcname,NUM) \
-int testname (void)                                                     \
-{                                                                       \
-    ALIGN(64)                                                           \
-    uint64_t state [NUM*KECCAK_F1600_X1_STATE_SIZE_UINT64] = { 0 };     \
-                                                                        \
-    fill_random_u8((uint8_t*) state,                                   \
-                    NUM*KECCAK_F1600_X1_STATE_SIZE_BYTES);             \
-                                                                        \
-    uint64_t cycles[TEST_ITERATIONS+1];                                 \
-    uint64_t cycles_orig[TEST_ITERATIONS+1];                            \
-                                                                        \
-    for(unsigned cnt=0; cnt < TEST_WARMUP; cnt++)                       \
-        funcname(state);                                              \
-                                                                        \
-    unsigned cnt;                                                       \
-    for(cnt=0; cnt < TEST_ITERATIONS; cnt++)                          \
-    {                                                                   \
-        cycles[cnt] = get_cyclecounter();                               \
-        for(unsigned cnt2=0; cnt2 < TEST_AVG_CNT; cnt2++)             \
-            funcname(state);                                          \
-    }                                                                   \
-    cycles[TEST_ITERATIONS] = get_cyclecounter();                       \
-                                                                        \
-    for(cnt=0; cnt < TEST_ITERATIONS; cnt++)                   \
-        cycles[cnt] = (cycles[cnt+1] - cycles[cnt]) / TEST_AVG_CNT;                    \
-                                                                        \
-    /* Report median */                                                 \
-    memcpy(cycles_orig, cycles, sizeof(cycles));                    \
-    qsort(cycles, TEST_ITERATIONS, sizeof(uint64_t), cmp_uint64_t);   \
-    debug_printf("[0|5|25|50|75|95|100] = " \
+#define MAKE_BENCHMARK_F1600_X_GENERIC_DO(testname,funcname,NUM)            \
+int testname (void)                                                         \
+{                                                                           \
+    enable_cyclecounter();                                                  \
+    ALIGN(64)                                                               \
+    uint64_t state [NUM*KECCAK_F1600_X1_STATE_SIZE_UINT64] = { 0 };         \
+                                                                            \
+    fill_random_u8((uint8_t*) state,                                        \
+                    NUM*KECCAK_F1600_X1_STATE_SIZE_BYTES);                  \
+                                                                            \
+    uint64_t cycles[TEST_ITERATIONS+1];                                     \
+    uint64_t cycles_orig[TEST_ITERATIONS+1];                                \
+                                                                            \
+    for(unsigned cnt=0; cnt < TEST_WARMUP; cnt++)                           \
+        funcname(state);                                                    \
+                                                                            \
+    unsigned cnt;                                                           \
+    for(cnt=0; cnt < TEST_ITERATIONS; cnt++)                                \
+    {                                                                       \
+        cycles[cnt] = get_cyclecounter();                                   \
+        for(unsigned cnt2=0; cnt2 < TEST_AVG_CNT; cnt2++)                   \
+            funcname(state);                                                \
+    }                                                                       \
+    cycles[TEST_ITERATIONS] = get_cyclecounter();                           \
+                                                                            \
+    for(cnt=0; cnt < TEST_ITERATIONS; cnt++)                                \
+        cycles[cnt] = (cycles[cnt+1] - cycles[cnt]) / TEST_AVG_CNT;         \
+                                                                            \
+    /* Report median */                                                     \
+    memcpy(cycles_orig, cycles, sizeof(cycles));                            \
+    qsort(cycles, TEST_ITERATIONS, sizeof(uint64_t), cmp_uint64_t);         \
+    debug_printf("[0|5|25|50|75|95|100] = "                                 \
                   "[(%4lld) | %4lld | %4lld |* %4lld *| %4lld | %4lld | (%4lld)] (%u-th AVGs of " stringify(funcname) ")\n", \
-                  cycles[0],                                            \
-                  cycles[TEST_ITERATIONS*5/100],                        \
-                  cycles[TEST_ITERATIONS*25/100],                       \
-                  cycles[TEST_ITERATIONS*50/100],                       \
-                  cycles[TEST_ITERATIONS*75/100],                       \
-                  cycles[TEST_ITERATIONS*95/100],                       \
-                  cycles[TEST_ITERATIONS-1], TEST_AVG_CNT);            \
-    return(1);                                                        \
+                  cycles[0],                                                \
+                  cycles[TEST_ITERATIONS*5/100],                            \
+                  cycles[TEST_ITERATIONS*25/100],                           \
+                  cycles[TEST_ITERATIONS*50/100],                           \
+                  cycles[TEST_ITERATIONS*75/100],                           \
+                  cycles[TEST_ITERATIONS*95/100],                           \
+                  cycles[TEST_ITERATIONS-1], TEST_AVG_CNT);                 \
+    disable_cyclecounter();                                                  \
+    return(1);                                                              \
 }
 
-#define MAKE_BENCHMARK_F1600_X_GENERIC_SKIP(testname,funcname,NUM)      \
-int testname (void)                                                     \
-{                                                                       \
-    debug_test_start(stringify(testname));                            \
-    debug_printf("skip\n");                                           \
-    return(0);                                                        \
+#define MAKE_BENCHMARK_F1600_X_GENERIC_SKIP(testname,funcname,NUM)          \
+int testname (void)                                                         \
+{                                                                           \
+    debug_test_start(stringify(testname));                                  \
+    debug_printf("skip\n");                                                 \
+    return(0);                                                              \
 }
 
 #if defined(__ARM_FEATURE_SHA3)
-#define MAKE_BENCHMARK_F1600_X_GENERIC_V84A(testname,funcname,NUM)       \
+#define MAKE_BENCHMARK_F1600_X_GENERIC_V84A(testname,funcname,NUM)          \
 MAKE_BENCHMARK_F1600_X_GENERIC_DO(testname,funcname,NUM)
 #else
-#define MAKE_BENCHMARK_F1600_X_GENERIC_V84A(testname,funcname,NUM)       \
+#define MAKE_BENCHMARK_F1600_X_GENERIC_V84A(testname,funcname,NUM)          \
 MAKE_BENCHMARK_F1600_X_GENERIC_SKIP(testname,funcname,NUM)
 #endif
 
 #if defined(__ARM_FEATURE_SVE2)
-#define MAKE_BENCHMARK_F1600_X_GENERIC_V9A(testname,funcname,NUM)       \
+#define MAKE_BENCHMARK_F1600_X_GENERIC_V9A(testname,funcname,NUM)           \
 MAKE_BENCHMARK_F1600_X_GENERIC_DO(testname,funcname,NUM)
 #else
-#define MAKE_BENCHMARK_F1600_X_GENERIC_V9A(testname,funcname,NUM)       \
+#define MAKE_BENCHMARK_F1600_X_GENERIC_V9A(testname,funcname,NUM)           \
 MAKE_BENCHMARK_F1600_X_GENERIC_SKIP(testname,funcname,NUM)
 #endif
 
-#define MAKE_BENCHMARK_F1600_X_GENERIC(testname,funcname,NUM)      \
+#define MAKE_BENCHMARK_F1600_X_GENERIC(testname,funcname,NUM)               \
     MAKE_BENCHMARK_F1600_X_GENERIC_DO(testname,funcname,NUM)
 
 #define KECCAK_F1600_X1_FUNCNAME(variant) keccak_f1600_x1_ ## variant
 #define KECCAK_F1600_X1_TESTNAME(variant) validate_keccak_f1600_x1_ ## variant
-#define MAKE_VALIDATE_F1600_X1(variant)                                    \
-    MAKE_VALIDATE_F1600_X_GENERIC_DO(KECCAK_F1600_X1_TESTNAME(variant),    \
-                                  KECCAK_F1600_X1_FUNCNAME(variant),1)
-#define KECCAK_F1600_X1_BENCHMARK_TESTNAME(variant)              \
-    benchmark_keccak_f1600_x1_ ## variant
-#define MAKE_BENCHMARK_F1600_X1(variant)                         \
-    MAKE_BENCHMARK_F1600_X_GENERIC_DO(                          \
-        KECCAK_F1600_X1_BENCHMARK_TESTNAME(variant),             \
+#define MAKE_VALIDATE_F1600_X1(variant)                                     \
+    MAKE_VALIDATE_F1600_X_GENERIC_DO(KECCAK_F1600_X1_TESTNAME(variant),     \
+                                  KECCAK_F1600_X1_FUNCNAME(variant),1) 
+#define KECCAK_F1600_X1_BENCHMARK_TESTNAME(variant)                         \
+    benchmark_keccak_f1600_x1_ ## variant 
+#define MAKE_BENCHMARK_F1600_X1(variant)                                    \
+    MAKE_BENCHMARK_F1600_X_GENERIC_DO(                                      \
+        KECCAK_F1600_X1_BENCHMARK_TESTNAME(variant),                        \
         KECCAK_F1600_X1_FUNCNAME(variant),1)
 
 /////////////////////////////// TEST CASES ////////////////////////////////////

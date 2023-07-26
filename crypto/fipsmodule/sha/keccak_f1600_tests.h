@@ -45,12 +45,11 @@ void zip_f1600_states_real(int num, uint64_t *dst, uint64_t const  *src);
 void zip_f1600_states( int num, uint64_t *dst, uint64_t const  *src );
 int cmp_uint64_t(const void *a, const void *b);
 
-/* Fill a buffer with random data. */
+// Fill a buffer with random data.
 void fill_random_u8 ( uint8_t  *buf, unsigned len );
-/* Compare buffers
- * Same semantics as memcmp(), but we want to rely on stdlib
- * as little as possible. */
+// Compare buffers. Same semantics as memcmp(), but we want to rely on stdlib
+// as little as possible.
 int compare_buf_u8 ( uint8_t  const *src_a, uint8_t  const *src_b, unsigned len );
-/* Buffer printing helper */
+// Buffer printing helper 
 void debug_print_buf_u8 ( uint8_t  const *buf, unsigned entries, const char *prefix );
 #endif /* KECCAK_F1600_X2_TEST_H */
