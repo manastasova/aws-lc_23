@@ -576,10 +576,10 @@ $code.=<<___;
 
 .text
 .align 4
-.global keccak_f1600_x2_v84a_asm_v2pp2
-.global _keccak_f1600_x2_v84a_asm_v2pp2
-keccak_f1600_x2_v84a_asm_v2pp2:
-_keccak_f1600_x2_v84a_asm_v2pp2:
+.global keccak_f1600_x2_neon
+.global _keccak_f1600_x2_neon
+keccak_f1600_x2_neon:
+_keccak_f1600_x2_neon:
     alloc_stack
     save_vregs
     load_constant_ptr

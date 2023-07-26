@@ -1158,11 +1158,10 @@ ror $A[4][4], $A[4][4], #(64-55)                            SEP
 
 .text
 .align 4
-.global keccak_f1600_x3_hybrid_asm_v6
-.global _keccak_f1600_x3_hybrid_asm_v6
-
-keccak_f1600_x3_hybrid_asm_v6:
-_keccak_f1600_x3_hybrid_asm_v6:
+.global keccak_f1600_x3_v84a
+.global _keccak_f1600_x3_v84a
+keccak_f1600_x3_v84a:
+_keccak_f1600_x3_v84a:
     alloc_stack
     save_gprs
     save_vregs

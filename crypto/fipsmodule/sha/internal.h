@@ -156,25 +156,30 @@ OPENSSL_EXPORT void SHA3_Squeeze(uint64_t A[SHA3_ROWS][SHA3_ROWS],
 
 OPENSSL_EXPORT void KeccakF1600(uint64_t A[SHA3_ROWS][SHA3_ROWS]);
 
-OPENSSL_EXPORT void keccak_f1600_x2_hybrid_asm_v2pp2(uint64_t state[2*25]); // Feat_SHA3
-OPENSSL_EXPORT void keccak_f1600_x2_v84a_asm_v2pp2(uint64_t state[2*25]);
-OPENSSL_EXPORT void keccak_f1600_x3_hybrid_asm_v6(uint64_t state[3*25]); // Feat_SHA3
-OPENSSL_EXPORT void keccak_f1600_x3_hybrid_asm_v3p(uint64_t state[3*25]);
-OPENSSL_EXPORT void keccak_f1600_x4_hybrid_asm_v5p(uint64_t state[4*25]);
-
 size_t SHA3_Absorb_hybrid(uint64_t *A, const uint8_t *inp, size_t len,
                    size_t r, uint8_t par_fac);
 
 void SHA3_Squeeze_hybrid(uint64_t *A, uint8_t *out, size_t len, size_t r, uint8_t par_fac);
 
-// validate_keccak_f1600_x4_hybrid_asm_v5p{_new} tests the x4 parallel implementation 
-// of Keccakf1600 and returns 1.
-OPENSSL_EXPORT int validate_keccak_f1600_x4_hybrid_asm_v5p(void);
+OPENSSL_EXPORT void keccak_f1600_x2_v84a(uint64_t state[2*25]); // Feat_SHA3
+OPENSSL_EXPORT void keccak_f1600_x2_neon(uint64_t state[2*25]);
+OPENSSL_EXPORT void keccak_f1600_x3_v84a(uint64_t state[3*25]); // Feat_SHA3
+OPENSSL_EXPORT void keccak_f1600_x3_neon(uint64_t state[3*25]);
+OPENSSL_EXPORT void keccak_f1600_x4_neon(uint64_t state[4*25]);
 
-OPENSSL_EXPORT int validate_keccak_f1600_x2_v84a_asm_v2pp2(void);
-OPENSSL_EXPORT int validate_keccak_f1600_x3_hybrid_asm_v6(void);
-OPENSSL_EXPORT int benchmark_keccak_f1600_x4_hybrid_asm_v5p(void);
-OPENSSL_EXPORT int benchmark_keccak_f1600_x4_hybrid_asm_v5p_opt(void);
+// validate_keccak_f1600_x4_neon{_new} tests the x4 parallel implementation 
+// of Keccakf1600 and returns 1.
+OPENSSL_EXPORT int validate_keccak_f1600_x2_neon(void);
+OPENSSL_EXPORT int validate_keccak_f1600_x2_v84a(void);
+OPENSSL_EXPORT int validate_keccak_f1600_x3_neon(void);
+OPENSSL_EXPORT int validate_keccak_f1600_x3_v84a(void);
+OPENSSL_EXPORT int validate_keccak_f1600_x4_neon(void);
+
+OPENSSL_EXPORT int benchmark_keccak_f1600_x2_neon(void);
+OPENSSL_EXPORT int benchmark_keccak_f1600_x2_v84a(void);
+OPENSSL_EXPORT int benchmark_keccak_f1600_x3_neon(void);
+OPENSSL_EXPORT int benchmark_keccak_f1600_x3_v84a(void);
+OPENSSL_EXPORT int benchmark_keccak_f1600_x4_neon(void);
 
 #if defined(__cplusplus)
 }  // extern "C"

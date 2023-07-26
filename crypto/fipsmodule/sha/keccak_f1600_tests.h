@@ -53,11 +53,4 @@ void fill_random_u8 ( uint8_t  *buf, unsigned len );
 int compare_buf_u8 ( uint8_t  const *src_a, uint8_t  const *src_b, unsigned len );
 /* Buffer printing helper */
 void debug_print_buf_u8 ( uint8_t  const *buf, unsigned entries, const char *prefix );
-
-#define KECCAK_F1600_TEST_VALIDATE
-int benchmark_keccak_f1600_x4_hybrid_asm_v5p(void);
-
-int validate_keccak_f1600_x2_v84a_asm_v2pp2(void);
-int validate_keccak_f1600_x3_hybrid_asm_v6(void);
-int validate_keccak_f1600_x4_hybrid_asm_v5p(void);
 #endif /* KECCAK_F1600_X2_TEST_H */

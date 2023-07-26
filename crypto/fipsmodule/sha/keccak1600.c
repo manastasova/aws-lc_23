@@ -430,11 +430,11 @@ size_t SHA3_Absorb_hybrid(uint64_t *A, const uint8_t *inp, size_t len,
             A_flat[i] ^= BitInterleave(Ai);
         }
         if(par_fac == 4) {
-            keccak_f1600_x4_hybrid_asm_v5p((uint64_t *)A);
+            keccak_f1600_x4_neon((uint64_t *)A);
         } else if(par_fac == 2) {
-            keccak_f1600_x2_v84a_asm_v2pp2((uint64_t *)A);
+            keccak_f1600_x2_neon((uint64_t *)A);
         } else if(par_fac == 3) {
-            keccak_f1600_x3_hybrid_asm_v6((uint64_t *)A);
+            keccak_f1600_x3_v84a((uint64_t *)A);
         }
         //TODO:: Throug error when else
         
@@ -483,11 +483,11 @@ void SHA3_Squeeze_hybrid(uint64_t *A, uint8_t *out, size_t len, size_t r, uint8_
         }
         if (len != 0) {
             if(par_fac == 4) {
-                keccak_f1600_x4_hybrid_asm_v5p((uint64_t *)A);
+                keccak_f1600_x4_neon((uint64_t *)A);
             } else if(par_fac == 2) {
-                keccak_f1600_x2_v84a_asm_v2pp2((uint64_t *)A);
+                keccak_f1600_x2_neon((uint64_t *)A);
             } else if(par_fac == 3) {
-                keccak_f1600_x3_hybrid_asm_v6((uint64_t *)A);
+                keccak_f1600_x3_v84a((uint64_t *)A);
             }
             
         }

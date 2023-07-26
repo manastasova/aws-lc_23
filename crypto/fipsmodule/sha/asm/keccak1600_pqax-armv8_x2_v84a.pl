@@ -575,10 +575,10 @@ $code.=<<___;
 
 .text
 .align 4
-.global keccak_f1600_x2_hybrid_asm_v2pp2
-.global _keccak_f1600_x2_hybrid_asm_v2pp2
-keccak_f1600_x2_hybrid_asm_v2pp2:
-_keccak_f1600_x2_hybrid_asm_v2pp2:
+.global keccak_f1600_x2_v84a
+.global _keccak_f1600_x2_v84a
+keccak_f1600_x2_v84a:
+_keccak_f1600_x2_v84a:
     alloc_stack
     save_vregs
     load_constant_ptr
@@ -606,7 +606,7 @@ ___
 {
     my  %opcode = (
     "rax1_m0"    => 0xce608c00,    "eor3_m0"    => 0xce000000,
-    "bcax_m0"    => 0xce200000,    "xar_m0"    => 0xce800000 );
+    "bcax_m0"    => 0xce200000,    "xar_m0"     => 0xce800000);
 
     sub unsha3 {
          my ($mnemonic,$arg)=@_;

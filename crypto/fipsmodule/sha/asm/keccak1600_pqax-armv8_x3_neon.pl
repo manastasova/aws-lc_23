@@ -885,10 +885,10 @@ eor $A[0][0], $A[0][0], $cur_const                                              
 
 .text
 .align 4
-.global keccak_f1600_x3_hybrid_asm_v3p
-.global _keccak_f1600_x3_hybrid_asm_v3p
-keccak_f1600_x3_hybrid_asm_v3p:
-_keccak_f1600_x3_hybrid_asm_v3p:
+.global keccak_f1600_x3_neon
+.global _keccak_f1600_x3_neon
+keccak_f1600_x3_neon:
+_keccak_f1600_x3_neon:
     alloc_stack
     save_gprs
     save_vregs

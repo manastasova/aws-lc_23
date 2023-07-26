@@ -37,39 +37,35 @@
 
 #define FILENO stderr
 
-void rand_init( unsigned long seed )
-{
+void rand_init(unsigned long seed) {
     ((void) seed);
     srand(time(NULL));
 }
 
-uint8_t get_random_byte(void)
-{
-    return( rand() );
+uint8_t get_random_byte(void) {
+    return(rand());
 }
 
 /* Debugging stubs */
 
-void debug_test_start( const char *testname )
-{
-    fprintf( FILENO, "%s ... ", testname );
-    fflush( FILENO );
+void debug_test_start(const char *testname) {
+    fprintf(FILENO, "%s ... ", testname);
+    fflush(FILENO);
 }
 
-void debug_printf(const char * format, ... )
-{
+void debug_printf(const char * format, ...) {
     va_list argp;
-    va_start( argp, format );
-    vfprintf( FILENO, format, argp );
-    va_end( argp );
+    va_start(argp, format);
+    vfprintf(FILENO, format, argp);
+    va_end(argp);
 }
 
-void debug_test_ok(void )   { printf( "Ok\n"    ); }
-void debug_test_fail(void ) { printf( "FAIL!\n" ); }
+void debug_test_ok(void)   { printf("Ok\n"   ); }
+void debug_test_fail(void) { printf("FAIL!\n"); }
 
 
 #if !defined(EXTERNAL_CYCLES) && !defined(PERF_CYCLES) && !defined(PMU_CYCLES) && !defined(NO_CYCLES)
-#define PERF_CYCLES
+#define PMU_CYCLES
 #endif
 
 #if defined(PMU_CYCLES)
@@ -83,7 +79,7 @@ void enable_cyclecounter(void) {
         "orr    %[tmp], %[tmp], #1<<31\n"
         "msr    pmcntenset_el0, %[tmp]\n"
         : [tmp] "=r" (tmp)
-    );
+   );
 }
 
 void disable_cyclecounter(void) {
@@ -93,7 +89,7 @@ void disable_cyclecounter(void) {
             "orr   %[tmp], %[tmp], #1<<31\n"
             "msr    pmcntenclr_el0, %[tmp]\n"
             : [tmp] "=r" (tmp)
-            );
+           );
 }
 
 uint64_t get_cyclecounter(void) {
