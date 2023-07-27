@@ -47,7 +47,6 @@ round_constants:
 #define STACK_OFFSET_CONST                  (2*8)
 #define STACK_OFFSET_COUNT                  (3*8)
 #define STACK_OFFSET_x27_A44                (4*8)
-#define STACK_OFFSET_x27_C2_E3              (5*8)
 
 #define KECCAK_F1600_ROUNDS 24
 
@@ -166,8 +165,6 @@ round_constants:
 	eor	x20, x0, x20, ROR #21
 	bic	x0, x11, x28, ROR #63
 	eor	x27, x29, x27, ROR #53
-    // Store A[4][4] from bit state
-	str	x27, [sp, STACK_OFFSET_x27_A44]
 	bic	x29, x16, x11, ROR #42
 	eor	x1, x30, x0, ROR #21
 	bic	x0, x21, x16, ROR #57
@@ -178,39 +175,36 @@ round_constants:
 	eor	x16, x29, x16, ROR #43
 	eor	x21, x0, x21, ROR #30
 
-	mov	w27, #1
+	mov	w29, #1
+	str	w29, [sp, #STACK_OFFSET_COUNT]
 
 	eor	x1, x1, x26
-	str	w27, [sp, #STACK_OFFSET_COUNT]
 .endm
 
 .macro	keccak_f1600_round_noninitial
-	eor	x27, x15, x11, ROR #52
-	eor	x30, x1, x2, ROR #61
 	eor	x29, x23, x22, ROR #50
+	eor	x29, x29, x24, ROR #34
 	eor	x26, x8, x9, ROR #57
+	eor	x29, x29, x21, ROR #26
+	eor	x30, x1, x2, ROR #61
+	eor	x29, x29, x27, ROR #15
+    // Store A[4][4] from bit state
+	str	x27, [sp, #STACK_OFFSET_x27_A44]
+
+	eor	x27, x15, x11, ROR #52
 	eor	x28, x16, x25, ROR #63
 	eor	x27, x27, x13, ROR #48
 	eor	x30, x30, x4, ROR #54
-	eor	x29, x29, x24, ROR #34
 	eor	x26, x26, x6, ROR #51
 	eor	x28, x28, x19, ROR #37
 	eor	x27, x27, x14, ROR #10
 	eor	x30, x30, x3, ROR #39
-	eor	x29, x29, x21, ROR #26
 	eor	x26, x26, x10, ROR #31
-	eor	x27, x27, x12, ROR #5
 	eor	x28, x28, x17, ROR #36
-    // Store C[2]
-	str	x27, [sp, STACK_OFFSET_x27_C2_E3]
+	eor	x27, x27, x12, ROR #5
 	eor	x30, x30, x5, ROR #25
-    // Load A[4][4] from bit state
-	ldr	x27, [sp, STACK_OFFSET_x27_A44]
-	eor	x29, x29, x27, ROR #15
 	eor	x26, x26, x7, ROR #27
 	eor	x28, x28, x20, ROR #2
-    // Load C[2]
-	ldr	x27, [sp, STACK_OFFSET_x27_C2_E3]
 	eor	x0, x30, x27, ROR #61
 	ror	x27, x27, 62
 	eor	x27, x27, x29, ROR #57
@@ -243,6 +237,7 @@ round_constants:
 	eor	x5, x28, x21, ROR #20
     // Load A[4][4] from bit state
 	ldr	x27, [sp, #STACK_OFFSET_x27_A44]
+
 	eor	x21, x28, x27, ROR #9
 	eor	x27, x0, x10, ROR #23
 	eor	x10, x29, x2, ROR #61
@@ -288,15 +283,6 @@ round_constants:
 	eor	x20, x0, x20, ROR #21
 	bic	x0, x11, x28, ROR #63
 	eor	x27, x29, x27, ROR #53
-    // Store A[4][4] from bit state
-	str	x27, [sp, #STACK_OFFSET_x27_A44]
-
-	ldr	w27, [sp, #STACK_OFFSET_COUNT]
-	load_constant_ptr_stack
-	ldr	x26, [x26, w27, UXTW #3]
-	add	w27, w27, #1
-	str	w27 , [sp , #STACK_OFFSET_COUNT]
-
 	bic	x29, x16, x11, ROR #42
 	eor	x1, x30, x0, ROR #21
 	bic	x0, x21, x16, ROR #57
@@ -307,12 +293,16 @@ round_constants:
 	eor	x16, x29, x16, ROR #43
 	eor	x21, x0, x21, ROR #30
 
+	ldr	w29, [sp, #STACK_OFFSET_COUNT]
+	load_constant_ptr_stack
+	ldr	x26, [x26, w29, UXTW #3]
+	add	w29, w29, #1
+	str	w29 , [sp , #STACK_OFFSET_COUNT]
+
 	eor	x1, x1, x26
 .endm
 
 .macro	final_rotate_store
-    // Load A[4][4] from bit state
-	ldr	x27, [sp, #STACK_OFFSET_x27_A44]
 	ror	x2, x2, #(64-3)
 	ror	x21, x21, #(64-44)
 	ror	x3, x3, #(64-25)
@@ -349,7 +339,7 @@ keccak_f1600_x1_scalar_asm_lazy_rotation:
 
 loop:
 	keccak_f1600_round_noninitial
-	cmp	w27, #(KECCAK_F1600_ROUNDS-1)
+	cmp	w29, #(KECCAK_F1600_ROUNDS-1)
 	ble	loop
 
 	final_rotate_store
