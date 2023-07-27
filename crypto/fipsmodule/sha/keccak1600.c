@@ -14,7 +14,7 @@
  // Publication: https://eprint.iacr.org/2022/1243.pdf
  // Implementation repo: https://gitlab.com/arm-research/security/pqax
  // Integrated file: https://gitlab.com/arm-research/security/pqax/-/blob/master/asm/manual/keccak_f1600/keccak_f1600_x1_scalar_asm_v5.s
-#define KECCAKf1600_LAZY_ROTATION
+ // #define KECCAKf1600_LAZY_ROTATION
 
 #if defined(__x86_64__) || defined(__aarch64__) || \
     defined(__mips64) || defined(__ia64) || \
