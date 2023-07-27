@@ -98,7 +98,10 @@ void zip_f1600_states(int num, uint64_t *dst, uint64_t const  *src) {
 int testname (void)                                                          \
 {                                                                            \
     debug_test_start(stringify(testname));                                   \
-                                                                             \
+    if (CRYPTO_is_ARMv8_SHA3_capable() == 0) {                               \
+        debug_printf("skip\n");                                              \
+        return 0;                                                            \
+    }                                                                        \
     ALIGN(64)                                                                \
     uint64_t state[NUM*KECCAK_F1600_X1_STATE_SIZE_UINT64] = { 0 };           \
     ALIGN(64)                                                                \
@@ -139,28 +142,8 @@ int testname (void)                                                          \
     return 1;                                                                \
 }
 
-#define MAKE_VALIDATE_F1600_X_GENERIC_SKIP(testname,funcname,NUM)           \
-int testname (void) {                                                       \
-    debug_test_start(stringify(testname));                                  \
-    debug_printf("skip\n");                                                 \
-    return(1);                                                              \
-}
-
-#if defined(__ARM_FEATURE_SHA3)
 #define MAKE_VALIDATE_F1600_X_GENERIC_V84A(testname,funcname,NUM)           \
     MAKE_VALIDATE_F1600_X_GENERIC_DO(testname,funcname,NUM)
-#else
-#define MAKE_VALIDATE_F1600_X_GENERIC_V84A(testname,funcname,NUM)           \
-    MAKE_VALIDATE_F1600_X_GENERIC_SKIP(testname,funcname,NUM)
-#endif
-
-#if defined(__ARM_FEATURE_SVE2)
-#define MAKE_VALIDATE_F1600_X_GENERIC_V9A(testname,funcname,NUM)            \
-    MAKE_VALIDATE_F1600_X_GENERIC_DO(testname,funcname,NUM)
-#else
-#define MAKE_VALIDATE_F1600_X_GENERIC_V9A(testname,funcname,NUM)            \
-    MAKE_VALIDATE_F1600_X_GENERIC_SKIP(testname,funcname,NUM)
-#endif
 
 #define MAKE_VALIDATE_F1600_X_GENERIC(testname,funcname,NUM)                \
     MAKE_VALIDATE_F1600_X_GENERIC_DO(testname,funcname,NUM)
@@ -180,6 +163,11 @@ int testname (void) {                                                       \
 #define MAKE_BENCHMARK_F1600_X_GENERIC_DO(testname,funcname,NUM)            \
 int testname (void)                                                         \
 {                                                                           \
+    if (CRYPTO_is_ARMv8_SHA3_capable() == 0) {                              \
+        debug_test_start(stringify(testname));                              \
+        debug_printf("skip\n");                                             \
+        return 0;                                                           \
+    }                                                                       \
     enable_cyclecounter();                                                  \
     ALIGN(64)                                                               \
     uint64_t state [NUM*KECCAK_F1600_X1_STATE_SIZE_UINT64] = { 0 };         \
@@ -221,29 +209,8 @@ int testname (void)                                                         \
     return(1);                                                              \
 }
 
-#define MAKE_BENCHMARK_F1600_X_GENERIC_SKIP(testname,funcname,NUM)          \
-int testname (void)                                                         \
-{                                                                           \
-    debug_test_start(stringify(testname));                                  \
-    debug_printf("skip\n");                                                 \
-    return(0);                                                              \
-}
-
-#if defined(__ARM_FEATURE_SHA3)
 #define MAKE_BENCHMARK_F1600_X_GENERIC_V84A(testname,funcname,NUM)          \
 MAKE_BENCHMARK_F1600_X_GENERIC_DO(testname,funcname,NUM)
-#else
-#define MAKE_BENCHMARK_F1600_X_GENERIC_V84A(testname,funcname,NUM)          \
-MAKE_BENCHMARK_F1600_X_GENERIC_SKIP(testname,funcname,NUM)
-#endif
-
-#if defined(__ARM_FEATURE_SVE2)
-#define MAKE_BENCHMARK_F1600_X_GENERIC_V9A(testname,funcname,NUM)           \
-MAKE_BENCHMARK_F1600_X_GENERIC_DO(testname,funcname,NUM)
-#else
-#define MAKE_BENCHMARK_F1600_X_GENERIC_V9A(testname,funcname,NUM)           \
-MAKE_BENCHMARK_F1600_X_GENERIC_SKIP(testname,funcname,NUM)
-#endif
 
 #define MAKE_BENCHMARK_F1600_X_GENERIC(testname,funcname,NUM)               \
     MAKE_BENCHMARK_F1600_X_GENERIC_DO(testname,funcname,NUM)
@@ -261,6 +228,7 @@ MAKE_BENCHMARK_F1600_X_GENERIC_SKIP(testname,funcname,NUM)
         KECCAK_F1600_X1_FUNCNAME(variant),1)
 
 /////////////////////////////// TEST CASES ////////////////////////////////////
+#ifdef EXPERIMENTAL_AWS_LC_HYBRID_KECCAK
 MAKE_VALIDATE_F1600_X1(scalar)
 MAKE_VALIDATE_F1600_X_GENERIC(validate_keccak_f1600_x2_neon, keccak_f1600_x2_neon,2)
 MAKE_VALIDATE_F1600_X_GENERIC_V84A(validate_keccak_f1600_x2_v84a, keccak_f1600_x2_v84a,2)
@@ -274,3 +242,4 @@ MAKE_BENCHMARK_F1600_X_GENERIC_V84A(benchmark_keccak_f1600_x2_v84a, keccak_f1600
 MAKE_BENCHMARK_F1600_X_GENERIC(benchmark_keccak_f1600_x3_neon, keccak_f1600_x3_neon,3)
 MAKE_BENCHMARK_F1600_X_GENERIC_V84A(benchmark_keccak_f1600_x3_v84a, keccak_f1600_x3_v84a,3)
 MAKE_BENCHMARK_F1600_X_GENERIC(benchmark_keccak_f1600_x4_neon, keccak_f1600_x4_neon,4)
+#endif

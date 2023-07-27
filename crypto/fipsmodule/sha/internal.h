@@ -20,7 +20,7 @@ extern "C" {
 #endif
 
 // EXPERIMENTAL_AWS_LC_HYBRID_KECCAK
-#define EXPERIMENTAL_AWS_LC_HYBRID_KECCAK
+//#define EXPERIMENTAL_AWS_LC_HYBRID_KECCAK
 // Uncomment to enable only support for x4 parallel KeccakF1600 
 // When commented x2 and x3 parallel Keccaks are also suported
 // #define KECCAK_X4_ONLY
