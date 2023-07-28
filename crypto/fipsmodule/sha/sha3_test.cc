@@ -58,10 +58,11 @@ static uint64_t gettime() {
 #endif
 
 //#define COUNT_SW_CPU_CLOCK
-//#define COUNT_SW_TASK_CLOCK
+
 //#define COUNT_HW_CPU_CYCLES
+//#define COUNT_SW_TASK_CLOCK
 //#define COUNT_HW_INSTRUCTIONS
-#define COUNT_HW_STALLED_CYCLES_BACKEND
+//#define COUNT_HW_STALLED_CYCLES_BACKEND
 
 static uint64_t start_benchmark(int *perf_fd){
     #ifdef __linux__
@@ -333,7 +334,7 @@ void Benchmark_SHA3_224() const {
     end_bench = end_benchmark(&perf_fd);
 
     if (start_bench != (uint64_t) -1 && end_bench != 0) {
-      printf("SHAKE128 %lu\n", (unsigned long)(end_bench - start_bench)/NTEST );
+      printf("%lu\n", (unsigned long)(end_bench - start_bench)/NTEST );
     }
     else {
       printf("Not supported platform and OS. Could not benchmark SHAKE128\n");
@@ -361,7 +362,7 @@ void Benchmark_SHA3_224() const {
     end_bench = end_benchmark(&perf_fd);
 
     if (start_bench != (uint64_t) -1 && end_bench != 0) {
-      printf("SHAKE256 %lu\n", (unsigned long)(end_bench - start_bench)/NTEST );
+      printf("%lu\n", (unsigned long)(end_bench - start_bench)/NTEST );
     }
     else {
       printf("Not supported platform and OS. Could not benchmark SHAKE256\n");
@@ -585,7 +586,7 @@ TEST(SHA3TestBench, Benchmark_SHA3_384) {
   });
 }
 
-TEST(SHAKE128TestBench, Benchmark_SHAKE128) {
+TEST(SHAKETestBench, Benchmark_SHAKE128) {
   FileTestGTest("crypto/fipsmodule/sha/testvectors/SHA3Bench.txt", [](FileTest *t) {
     SHA3TestVector test_vec;
     EXPECT_TRUE(test_vec.ReadFromFileTest(t));
@@ -593,7 +594,7 @@ TEST(SHAKE128TestBench, Benchmark_SHAKE128) {
   });
 }
 
-TEST(SHAKE256TestBench, Benchmark_SHAKE256) {
+TEST(SHAKETestBench, Benchmark_SHAKE256) {
   FileTestGTest("crypto/fipsmodule/sha/testvectors/SHA3Bench.txt", [](FileTest *t) {
     SHA3TestVector test_vec;
     EXPECT_TRUE(test_vec.ReadFromFileTest(t));
