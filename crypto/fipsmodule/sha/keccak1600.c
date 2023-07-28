@@ -13,7 +13,7 @@
  // Uncomment to use keccak1600_pqax-armv8 implementation of Keccakf1600
  // keccak1600_pqax-armv8 design is based on lazy rotation implementation
  //#define KECCAKf1600_LAZY_ROTATION
- #define KECCAKf1600_LAZY_ABSORB
+ //#define KECCAKf1600_LAZY_ABSORB
 
 #if defined(__x86_64__) || defined(__aarch64__) || \
     defined(__mips64) || defined(__ia64) || \
