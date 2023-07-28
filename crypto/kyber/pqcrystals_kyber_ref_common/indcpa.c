@@ -193,7 +193,7 @@ void gen_matrix(polyvec *a, const uint8_t seed[KYBER_SYMBYTES], int transposed)
   }
 }
 
-#ifdef EXPERIMENTAL_AWS_LC_HYBRID_KECCAK
+#if (defined(KECCAK1600_ASM) && defined(EXPERIMENTAL_AWS_LC_HYBRID_KECCAK))
 /*************************************************
 * Name:        gen_matrix_hybrid_Kyber512
 *
@@ -457,7 +457,7 @@ void indcpa_keypair(uint8_t pk[KYBER_INDCPA_PUBLICKEYBYTES],
   pq_custom_randombytes(buf, KYBER_SYMBYTES);
   hash_g(buf, buf, KYBER_SYMBYTES);
 
-  #ifdef EXPERIMENTAL_AWS_LC_HYBRID_KECCAK
+#if (defined(KECCAK1600_ASM) && defined(EXPERIMENTAL_AWS_LC_HYBRID_KECCAK))
   if(KYBER_K == 2) { // Kyber512
     gen_a_hybrid_Kyber512(a, publicseed);
     poly_getnoise_eta1_x4_hybrid(&skpv.vec[0], &skpv.vec[1], &e.vec[0], &e.vec[1], noiseseed, nonce);
@@ -535,7 +535,7 @@ void indcpa_enc(uint8_t c[KYBER_INDCPA_BYTES],
   unpack_pk(&pkpv, seed, pk);
   poly_frommsg(&k, m);
 
-  #ifdef EXPERIMENTAL_AWS_LC_HYBRID_KECCAK
+#if (defined(KECCAK1600_ASM) && defined(EXPERIMENTAL_AWS_LC_HYBRID_KECCAK))
   if(KYBER_K == 2) {
   gen_at_hybrid_Kyber512(at, seed);
   #ifdef KECCAK_X4_ONLY

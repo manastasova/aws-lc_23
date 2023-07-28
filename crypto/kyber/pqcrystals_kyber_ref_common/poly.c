@@ -231,7 +231,7 @@ void poly_getnoise_eta2(poly *r, const uint8_t seed[KYBER_SYMBYTES], uint8_t non
   poly_cbd_eta2(r, buf);
 }
 
-#ifdef EXPERIMENTAL_AWS_LC_HYBRID_KECCAK
+#if (defined(KECCAK1600_ASM) && defined(EXPERIMENTAL_AWS_LC_HYBRID_KECCAK))
 /*************************************************
 * Name:        poly_getnoise_eta1_x2_hybrid
 *

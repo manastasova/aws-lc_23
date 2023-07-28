@@ -32,8 +32,8 @@
 #define KECCAK_F1600_X2_TEST_H
 
 #define TEST_WARMUP     1000
-#define TEST_ITERATIONS 100
-#define TEST_AVG_CNT    100
+#define TEST_ITERATIONS 100000
+#define TEST_AVG_CNT    100000
 
 // #define KECCAK_F1600_TEST_HAVE_SHA3_EXTENSION
 #define ALIGN(x) __attribute__((aligned(x)))

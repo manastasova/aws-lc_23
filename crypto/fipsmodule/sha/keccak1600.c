@@ -12,8 +12,8 @@
 
  // Uncomment to use keccak1600_pqax-armv8 implementation of Keccakf1600
  // keccak1600_pqax-armv8 design is based on lazy rotation implementation
- //#define KECCAKf1600_LAZY_ROTATION
- //#define KECCAKf1600_LAZY_ABSORB
+//#define KECCAKf1600_LAZY_ROTATION
+#define KECCAKf1600_LAZY_ABSORB
 
 #if defined(__x86_64__) || defined(__aarch64__) || \
     defined(__mips64) || defined(__ia64) || \
@@ -27,7 +27,7 @@
 # define BIT_INTERLEAVE (sizeof(void *) < 8)
 #endif
 
-#if (!defined(KECCAK1600_ASM) || defined(EXPERIMENTAL_AWS_LC_HYBRID_KECCAK))
+#if (!defined(KECCAK1600_ASM) || (defined(KECCAK1600_ASM) && defined(EXPERIMENTAL_AWS_LC_HYBRID_KECCAK)))
 static uint64_t BitInterleave(uint64_t Ai)
 {
     if (BIT_INTERLEAVE) {
@@ -404,7 +404,7 @@ void SHA3_Squeeze(uint64_t A[SHA3_ROWS][SHA3_ROWS], uint8_t *out, size_t len, si
 }
 #else
 
-#ifdef EXPERIMENTAL_AWS_LC_HYBRID_KECCAK
+#if (defined(KECCAK1600_ASM) && defined(EXPERIMENTAL_AWS_LC_HYBRID_KECCAK))
  // SHA3_Absorb_hybrid can be called multiple times; at each invocation the
  // largest multiple of |r| out of |len| bytes are processed. The
  // remaining amount of bytes is returned. This is done to spare caller

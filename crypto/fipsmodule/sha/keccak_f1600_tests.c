@@ -228,7 +228,7 @@ MAKE_BENCHMARK_F1600_X_GENERIC_DO(testname,funcname,NUM)
         KECCAK_F1600_X1_FUNCNAME(variant),1)
 
 /////////////////////////////// TEST CASES ////////////////////////////////////
-#ifdef EXPERIMENTAL_AWS_LC_HYBRID_KECCAK
+#if (defined(KECCAK1600_ASM) && defined(EXPERIMENTAL_AWS_LC_HYBRID_KECCAK))
 MAKE_VALIDATE_F1600_X1(scalar)
 MAKE_VALIDATE_F1600_X_GENERIC(validate_keccak_f1600_x2_neon, keccak_f1600_x2_neon,2)
 MAKE_VALIDATE_F1600_X_GENERIC_V84A(validate_keccak_f1600_x2_v84a, keccak_f1600_x2_v84a,2)

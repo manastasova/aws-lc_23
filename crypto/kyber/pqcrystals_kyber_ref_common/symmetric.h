@@ -37,9 +37,8 @@ void kyber_aes256ctr_prf(uint8_t *out, size_t outlen, const uint8_t key[32],
 
 #else
 
-#ifdef EXPERIMENTAL_AWS_LC_HYBRID_KECCAK
+
 #include "../../fipsmodule/sha/internal.h"
-#endif
 
 #include "fips202.h"
 #define XOF_BLOCKBYTES SHAKE128_RATE
@@ -59,7 +58,7 @@ void kyber_shake256_prf(uint8_t *out, size_t outlen,
 #define shake256_kyber_hybrid KYBER_NAMESPACE(shake256_kyber_hybrid)
 void shake256_kyber_hybrid(uint8_t *out, size_t outlen, const uint8_t in[KYBER_SYMBYTES + 1], size_t inlen, int par_fac);
        
-#ifdef EXPERIMENTAL_AWS_LC_HYBRID_KECCAK
+#if (defined(KECCAK1600_ASM) && defined(EXPERIMENTAL_AWS_LC_HYBRID_KECCAK))
 
 typedef keccak_state_x2_hybrid xof_state_x2_hybrid;
 typedef keccak_state_x3_hybrid xof_state_x3_hybrid;

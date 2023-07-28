@@ -27,10 +27,10 @@ void kyber_shake128_absorb(keccak_state *state,
   extseed[KYBER_SYMBYTES + 0] = x;
   extseed[KYBER_SYMBYTES + 1] = y;
 
-  #ifndef EXPERIMENTAL_AWS_LC_HYBRID_KECCAK
-  shake128_absorb_once(state, extseed, sizeof(extseed));
+  // #ifndef EXPERIMENTAL_AWS_LC_HYBRID_KECCAK
+  // shake128_absorb_once(state, extseed, sizeof(extseed));
 
-  #else
+  // #else
   int p = 0x1F; 
 
   for (int i = 0; i < 25; i++)
@@ -49,7 +49,7 @@ void kyber_shake128_absorb(keccak_state *state,
   state->s[i/8] ^= (uint64_t)p << 8*(i%8);
   state->s[(SHAKE128_RATE-1)/8] ^= 1ULL << 63;
 
-#endif
+//#endif
 }
 
 void kyber_shake128_squeeze(uint8_t *out, int nblocks, keccak_state *state)
@@ -84,7 +84,7 @@ void kyber_shake256_prf(uint8_t *out, size_t outlen,
   //#endif
 }
 
-#ifdef EXPERIMENTAL_AWS_LC_HYBRID_KECCAK
+#if (defined(KECCAK1600_ASM) && defined(EXPERIMENTAL_AWS_LC_HYBRID_KECCAK))
 /*************************************************
  * Name:        kyber_shake128_absorb_hybrid
  *

@@ -59,9 +59,9 @@ static uint64_t gettime() {
 
 //#define COUNT_SW_CPU_CLOCK
 //#define COUNT_SW_TASK_CLOCK
-#define COUNT_HW_CPU_CYCLES
+//#define COUNT_HW_CPU_CYCLES
 //#define COUNT_HW_INSTRUCTIONS
-//#define COUNT_HW_STALLED_CYCLES_BACKEND
+#define COUNT_HW_STALLED_CYCLES_BACKEND
 
 static uint64_t start_benchmark(int *perf_fd){
     #ifdef __linux__
@@ -209,7 +209,7 @@ void Benchmark_SHA3_224() const {
     end_bench = end_benchmark(&perf_fd);
 
     if (start_bench != (uint64_t) -1 && end_bench != 0) {
-      printf("SHA3_224 %lu\n", (unsigned long)(end_bench - start_bench)/NTEST );
+      printf("%lu\n", (unsigned long)(end_bench - start_bench)/NTEST );
     }
     else {
       printf("Not supported platform and OS. Could not benchmark SHAKE128\n");
@@ -241,7 +241,7 @@ void Benchmark_SHA3_224() const {
     end_bench = end_benchmark(&perf_fd);
 
     if (start_bench != (uint64_t) -1 && end_bench != 0) {
-      printf("SHA3_256 %lu\n", (unsigned long)(end_bench - start_bench)/NTEST );
+      printf("%lu\n", (unsigned long)(end_bench - start_bench)/NTEST );
     }
     else {
       printf("Not supported platform and OS. Could not benchmark SHAKE128\n");
@@ -273,7 +273,7 @@ void Benchmark_SHA3_224() const {
     end_bench = end_benchmark(&perf_fd);
 
     if (start_bench != (uint64_t) -1 && end_bench != 0) {
-      printf("SHA3_384 %lu\n", (unsigned long)(end_bench - start_bench)/NTEST );
+      printf("%lu\n", (unsigned long)(end_bench - start_bench)/NTEST );
     }
     else {
       printf("Not supported platform and OS. Could not benchmark SHAKE128\n");
@@ -305,7 +305,7 @@ void Benchmark_SHA3_224() const {
     end_bench = end_benchmark(&perf_fd);
 
     if (start_bench != (uint64_t) -1 && end_bench != 0) {
-      printf("SHA3_512 %lu\n", (unsigned long)(end_bench - start_bench)/NTEST );
+      printf("%lu\n", (unsigned long)(end_bench - start_bench)/NTEST );
     }
     else {
       printf("Not supported platform and OS. Could not benchmark SHAKE128\n");
@@ -585,7 +585,7 @@ TEST(SHA3TestBench, Benchmark_SHA3_384) {
   });
 }
 
-TEST(SHA3TestBench, Benchmark_SHAKE128) {
+TEST(SHAKE128TestBench, Benchmark_SHAKE128) {
   FileTestGTest("crypto/fipsmodule/sha/testvectors/SHA3Bench.txt", [](FileTest *t) {
     SHA3TestVector test_vec;
     EXPECT_TRUE(test_vec.ReadFromFileTest(t));
@@ -593,7 +593,7 @@ TEST(SHA3TestBench, Benchmark_SHAKE128) {
   });
 }
 
-TEST(SHA3TestBench, Benchmark_SHAKE256) {
+TEST(SHAKE256TestBench, Benchmark_SHAKE256) {
   FileTestGTest("crypto/fipsmodule/sha/testvectors/SHA3Bench.txt", [](FileTest *t) {
     SHA3TestVector test_vec;
     EXPECT_TRUE(test_vec.ReadFromFileTest(t));
@@ -602,7 +602,7 @@ TEST(SHA3TestBench, Benchmark_SHAKE256) {
 }
 
 TEST(KECCAKf1600Test, Hybrid) {
-  #ifdef EXPERIMENTAL_AWS_LC_HYBRID_KECCAK
+  #if (defined(KECCAK1600_ASM) && defined(EXPERIMENTAL_AWS_LC_HYBRID_KECCAK))
   EXPECT_TRUE(validate_keccak_f1600_x1_scalar());
   EXPECT_TRUE(validate_keccak_f1600_x2_neon());
   EXPECT_TRUE(validate_keccak_f1600_x2_v84a());
