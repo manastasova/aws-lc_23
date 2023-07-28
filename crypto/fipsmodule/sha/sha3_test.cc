@@ -403,7 +403,7 @@ TEST(SHAKE256Test, NISTTestVectors) {
 }
 
 // Benchmarking functions for SHA3 and SHAKE
-TEST(SHA3Test, Benchmark_SHA3_224) {
+TEST(SHA3TestBench, Benchmark_SHA3_224) {
   FileTestGTest("crypto/fipsmodule/sha/testvectors/SHA3Bench.txt", [](FileTest *t) {
     SHA3TestVector test_vec;
     EXPECT_TRUE(test_vec.ReadFromFileTest(t));
@@ -411,7 +411,7 @@ TEST(SHA3Test, Benchmark_SHA3_224) {
     test_vec.NISTTestVectors(algorithm);
   });
 }
-TEST(SHA3Test, Benchmark_SHA3_256) {
+TEST(SHA3TestBench, Benchmark_SHA3_256) {
     FileTestGTest("crypto/fipsmodule/sha/testvectors/SHA3Bench.txt", [](FileTest *t) {
     SHA3TestVector test_vec;
     EXPECT_TRUE(test_vec.ReadFromFileTest(t));
@@ -419,7 +419,7 @@ TEST(SHA3Test, Benchmark_SHA3_256) {
     test_vec.NISTTestVectors(algorithm);
   });
 }
-TEST(SHA3Test, Benchmark_SHA3_384) {
+TEST(SHA3TestBench, Benchmark_SHA3_384) {
   FileTestGTest("crypto/fipsmodule/sha/testvectors/SHA3Bench.txt", [](FileTest *t) {
     SHA3TestVector test_vec;
     EXPECT_TRUE(test_vec.ReadFromFileTest(t));
@@ -427,7 +427,7 @@ TEST(SHA3Test, Benchmark_SHA3_384) {
     test_vec.NISTTestVectors(algorithm);
   });
   }
-  TEST(SHA3Test, Benchmark_SHA3_512) {
+  TEST(SHA3TestBench, Benchmark_SHA3_512) {
   FileTestGTest("crypto/fipsmodule/sha/testvectors/SHA3Bench.txt", [](FileTest *t) {
     SHA3TestVector test_vec;
     EXPECT_TRUE(test_vec.ReadFromFileTest(t));
