@@ -12,6 +12,8 @@
 #define NROUNDS 24
 #define ROL(a, offset) ((a << offset) ^ (a >> (64-offset)))
 
+  #if (!defined(KECCAK1600_ASM_CURRENT_AWS_LC))
+  
 /*************************************************
 * Name:        load64
 *
@@ -486,6 +488,7 @@ static void keccak_absorb_once(uint64_t s[25],
   s[(r-1)/8] ^= 1ULL << 63;
 }
 
+
 /*************************************************
 * Name:        keccak_squeezeblocks
 *
@@ -774,3 +777,4 @@ void sha3_512(uint8_t h[64], const uint8_t *in, size_t inlen)
   for(i=0;i<8;i++)
     store64(h+8*i,s[i]);
 }
+#endif
